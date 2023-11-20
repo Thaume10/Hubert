@@ -1,4 +1,4 @@
-package fr.insalyonif.hubert;
+package fr.insalyonif.hubert.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

@@ -8,5 +8,8 @@ module fr.insalyonif.hubert {
     requires org.kordamp.bootstrapfx.core;
 
     opens fr.insalyonif.hubert to javafx.fxml;
-    exports fr.insalyonif.hubert;
+    exports fr.insalyonif.hubert.controller;
+    opens fr.insalyonif.hubert.controller to javafx.fxml;
+    exports fr.insalyonif.hubert.views;
+    opens fr.insalyonif.hubert.views to javafx.fxml;
 }
