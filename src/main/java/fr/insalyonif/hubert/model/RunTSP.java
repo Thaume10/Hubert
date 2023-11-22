@@ -1,4 +1,4 @@
-package tsp;
+package fr.insalyonif.hubert.model;
 
 //list chemin
 
@@ -19,4 +19,4 @@ public class RunTSP {
 		}
 	}
 
-}
+
