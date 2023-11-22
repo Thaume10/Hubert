@@ -8,35 +8,65 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Représente une carte de ville avec un ensemble d'intersections et l'emplacement d'un entrepôt.
+ * Fournit des méthodes pour gérer les intersections, définir l'emplacement de l'entrepôt,
+ * et charger les données à partir d'un fichier XML.
+ */
 public class CityMap {
     private List<Intersection> intersections;
     private Intersection wareHouseLocation;
 
+    /**
+     * Constructeur par défaut qui initialise la liste des intersections.
+     */
     public CityMap() {
         this.intersections = new ArrayList<>();
     }
 
-    public CityMap(List<Intersection> intersections, Intersection wareHouseLocation) {
-        this.intersections = intersections;
-        this.wareHouseLocation = wareHouseLocation;
-    }
-
+    /**
+     * Retourne la liste des intersections de la ville.
+     *
+     * @return la liste des intersections.
+     */
     public List<Intersection> getIntersections() {
         return intersections;
     }
 
+    /**
+     * Définit la liste des intersections de la ville.
+     *
+     * @param intersections la nouvelle liste des intersections.
+     */
     public void setIntersections(List<Intersection> intersections) {
         this.intersections = intersections;
     }
 
+    /**
+     * Retourne l'emplacement de l'entrepôt.
+     *
+     * @return l'intersection représentant l'emplacement de l'entrepôt.
+     */
     public Intersection getWareHouseLocation() {
         return wareHouseLocation;
     }
 
+    /**
+     * Définit l'emplacement de l'entrepôt.
+     *
+     * @param wareHouseLocation l'intersection représentant le nouvel emplacement de l'entrepôt.
+     */
     public void setWareHouseLocation(Intersection wareHouseLocation) {
         this.wareHouseLocation = wareHouseLocation;
     }
 
+    /**
+     * Charge les données de la carte à partir d'un fichier XML.
+     * Parse le fichier et initialise les intersections et segments de route.
+     *
+     * @param filename le chemin du fichier XML à charger.
+     * @throws Exception si une erreur survient pendant le chargement ou le parsing du fichier.
+     */
     public void loadFromXML(String filename) throws Exception {
         // Création d'une instance de File pour le fichier XML
         File xmlFile = new File(filename);
