@@ -1,6 +1,7 @@
 package fr.insalyonif.hubert.model;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -37,17 +38,11 @@ public class CityMap {
         this.wareHouseLocation = wareHouseLocation;
     }
 
-    public void loadFromXML(String filename) throws Exception {
-        // Création d'une instance de File pour le fichier XML
-        File xmlFile = new File(filename);
-
-        // Initialisation du constructeur de documents XML
+    public void loadFromXML(InputStream xmlInputStream) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-
-        // Parsing du document XML
-        Document doc = dBuilder.parse(xmlFile);
-
+        Document doc = dBuilder.parse(xmlInputStream);
+        
         // Normalisation du document XML pour éliminer les espaces blancs inutiles
         doc.getDocumentElement().normalize();
 
@@ -63,6 +58,7 @@ public class CityMap {
             long id = Long.parseLong(intersectionElement.getAttribute("id"));
             double latitude = Double.parseDouble(intersectionElement.getAttribute("latitude"));
             double longitude = Double.parseDouble(intersectionElement.getAttribute("longitude"));
+           
 
             // Création d'un nouvel objet Intersection et ajout dans la Map et la liste
             Intersection intersection = new Intersection(latitude, longitude, id, i);
