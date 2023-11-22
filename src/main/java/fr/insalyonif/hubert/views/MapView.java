@@ -43,14 +43,8 @@ public class MapView extends Application {
         CityMap cityMap = new CityMap();
         // Assuming you have a method to load your city map data
         try {
-           InputStream xmlStream = getClass().getResourceAsStream("/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
-            if (xmlStream != null) {
-                cityMap.loadFromXML(xmlStream);
-            } else {
-                throw new FileNotFoundException("Cannot find resource smallMap.xml");
-            }
+            cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
