@@ -10,6 +10,8 @@ public class Dijkstra {
 
     public static ArrayList<Chemin> chemins = new ArrayList<Chemin>();
 
+
+
     public Dijkstra(int sizeGraph, CityMap cityMap) {
         this.distance = new double[sizeGraph];
         this.pi = new int[sizeGraph];
@@ -30,14 +32,26 @@ public class Dijkstra {
         Arrays.fill(distance, INFINITY);
         Arrays.fill(pi, 0);
         Arrays.fill(visited, false);
+
         distance[ start.getPos()] = 0.0;
+        for (int i = 0; i < distance.length; i++) {
+            System.out.println("distance["+i+"] = "+ distance[i]);
+        }
+        for (int i = 0; i < distance.length; i++) {
+            System.out.println("visited["+i+"] = "+ visited[i]);
+        }
 
 
         // Continuer tant qu'il reste des nœuds non visités
         while (!allNodesVisited()) {
             // Choisir le nœud avec la distance minimale non visitée
             int indiceMinDistance = minDistance();
-            System.out.println(indiceMinDistance);
+            if(indiceMinDistance == -1){
+                //sortir de la boucle while
+                break;
+            }
+
+            System.out.println("indiceMin = "+indiceMinDistance);
             Intersection u = cityMap.findIntersectionByPos(indiceMinDistance);
 
             // Marquer le nœud comme visité
@@ -68,8 +82,20 @@ public class Dijkstra {
         double min = INFINITY;
         int minIntersection = -1;
 
+        /*for (RoadSegment successor: successors) {
+            if (!visited[successor.getDestination().getPos()] && distance[successor.getDestination().getPos()] < min) {
+                System.out.println("min = "+distance[successor.getDestination().getPos()]+" ,i = "+successor.getDestination().getPos());
+                min = distance[successor.getDestination().getPos()];
+                minIntersection = successor.getDestination().getPos();
+            }
+        }*/
+
         for (int i = 0; i < distance.length; i++) {
+            System.out.println("passe");
+            //System.out.println(visited[i]);
+            //System.out.println(distance[i]);
             if (!visited[i] && distance[i] < min) {
+                System.out.println("min = "+distance[i]+" ,i = "+i);
                 min = distance[i];
                 minIntersection = i;
             }
@@ -129,12 +155,18 @@ public class Dijkstra {
         int sizeGraph = 4; // Mettez la taille correcte de votre graphe
 
         CityMap cityMap = new CityMap(intersections, intersectionA);
+
+
         Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
         //System.out.println(pi[2]);
 
         // Appel de l'algorithme de Dijkstra avec le nœud de départ et le nœud d'arrivée
         //dij.dijkstra(intersectionA, cityMap);
-        dijkstra(intersectionB, cityMap);
+        System.out.println("intersectionB");
+        dij.dijkstra(intersectionB, cityMap);
+        dij.dijkstra(intersectionC, cityMap);
+        dij.dijkstra(intersectionD, cityMap);
+
         for (Chemin chemin : chemins) {
             System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() +
                     " : " + chemin.getCout());
