@@ -45,7 +45,7 @@ public class CompleteGraph implements Graph {
 		return i != j;
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		// Création des intersections
 		Intersection intersection1 = new Intersection(45.7597, 4.8422, 1, 1);
 		Intersection intersection2 = new Intersection(45.7583, 4.8415, 2, 2);
@@ -69,7 +69,7 @@ public class CompleteGraph implements Graph {
 			System.out.println(chemin.toString());
 		}
 		Graph g = new CompleteGraph(chemins);
-	}
+	}*/
 }
 
 

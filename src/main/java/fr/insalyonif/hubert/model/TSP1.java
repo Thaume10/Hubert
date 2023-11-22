@@ -5,8 +5,16 @@ import java.util.Iterator;
 
 public class TSP1 extends TemplateTSP {
 	@Override
-	protected int bound(Integer currentVertex, Collection<Integer> unvisited) {
-		return 0;
+	protected double bound(Integer currentVertex, Collection<Integer> unvisited) {
+		double minCost = Double.POSITIVE_INFINITY;
+
+		for (Integer vertex : unvisited) {
+			if (g.isArc(currentVertex, vertex)) {
+				minCost = Math.min(minCost, g.getCost(currentVertex, vertex));
+			}
+		}
+
+		return minCost;
 	}
 
 	@Override
@@ -15,7 +23,7 @@ public class TSP1 extends TemplateTSP {
 	}
 
 	@Override
-	public int getSolutionCost() {
+	public double getSolutionCost() {
 		return 0;
 	}
 }
