@@ -96,4 +96,22 @@ public class CityMap {
             destination.getPredecessors().add(segment);
         }
     }
+
+    /**
+     * Trouve une intersection basée sur sa position.
+     *
+     * @param pos la position de l'intersection à trouver
+     * @return l'intersection correspondante, ou null si elle n'est pas trouvée
+     */
+    public Intersection findIntersectionByPos(int pos) {
+        // Parcourt toutes les intersections
+        for (Intersection intersection : this.intersections) {
+            if (intersection.getPos() == pos) {
+                // Retourne l'intersection si la position correspond
+                return intersection;
+            }
+        }
+        // Retourne null si aucune intersection correspondante n'est trouvée
+        return null;
+    }
 }
