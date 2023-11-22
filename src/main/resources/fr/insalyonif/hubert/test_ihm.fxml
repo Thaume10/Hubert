@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="back" stylesheets="@test.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+
+    <children>
+      <ScrollPane layoutX="348.0" layoutY="146.0" prefHeight="418.0" prefWidth="429.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="411.0">
+               <children>
+                  <ListView prefHeight="571.0" prefWidth="412.0" />
+               </children></AnchorPane>
+        </content>
+      </ScrollPane>
+      <Pane layoutX="29.0" layoutY="99.0" prefHeight="465.0" prefWidth="294.0" styleClass="panel-default">
+         <children>
+            <Text layoutX="133.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Carte" />
+         </children>
+      </Pane>
+      <ChoiceBox layoutX="488.0" layoutY="99.0" prefWidth="150.0" styleClass="lbl-info" />
+      <Pane layoutX="29.0" layoutY="14.0" prefHeight="69.0" prefWidth="757.0" styleClass="panel-info">
+         <children>
+            <Button layoutX="279.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="Save File" />
+            <Button layoutX="149.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="New courrier" />
+            <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="New Delivery" />
+            <ImageView fitHeight="50.0" fitWidth="133.0" layoutX="657.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</Pane>
