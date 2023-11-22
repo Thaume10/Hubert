@@ -2,13 +2,13 @@ package fr.insalyonif.hubert.model;
 import java.util.*;
 
 public class Dijkstra {
-    private static final int INFINITY = Integer.MAX_VALUE;
+    private final int INFINITY = Integer.MAX_VALUE;
 
-    public static double[] distance;
-    public static int[] pi;
-    public static boolean[] visited;
+    public double[] distance;
+    public int[] pi;
+    public boolean[] visited;
 
-    public static String[] colors;
+    public String[] colors;
 
     public static ArrayList<Chemin> chemins = new ArrayList<Chemin>();
 
@@ -19,6 +19,7 @@ public class Dijkstra {
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
         this.colors = new String[sizeGraph];
+
 
 
 
@@ -110,10 +111,10 @@ public class Dijkstra {
         }
         return true;
     }*/
-    public static void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
+    public void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
-            pi[i] = -1;
+            this.pi[i] = -1;
             colors[i] = "white";
         }
         distance[start.getPos()] = 0.0;
@@ -132,17 +133,25 @@ public class Dijkstra {
                 }
             }
         }
+        /*for (int i = 0; i < pi.length; i++) {
+            System.out.println("pi "+pi[i]);
+
+        }*/
+
 
         for (int i = 0; i < distance.length; i++) {
             if(distance[i] != INFINITY && distance[i] != 0){
-                Chemin chemin = new Chemin(start, cityMap.findIntersectionByPos(i), pi, distance[i]);
+                int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
+                Chemin chemin = new Chemin(start, cityMap.findIntersectionByPos(i), piCopy, distance[i]);
                 chemins.add(chemin);
+                System.out.println(Arrays.toString(chemin.getPi()));
+                System.out.println(chemin);
             }
 
         }
     }
 
-    private static boolean hasGrayNode() {
+    private boolean hasGrayNode() {
         for (String color : colors) {
             if (color.equals("gray")) {
                 return true;
@@ -151,11 +160,11 @@ public class Dijkstra {
         return false;
     }
 
-    private static Intersection minGrayNode(CityMap cityMap) {
+    private Intersection minGrayNode(CityMap cityMap) {
         double min = INFINITY;
         Intersection minNode = null;
-        //réduire ça pour regarder le min que des gris
-        // TO DO
+
+        //Essayer de parcourir que les grays
         for (Intersection intersection : cityMap.getIntersections()) {
             if (colors[intersection.getPos()].equals("gray") && distance[intersection.getPos()] < min) {
                 min = distance[intersection.getPos()];
@@ -166,10 +175,10 @@ public class Dijkstra {
         return minNode;
     }
 
-    private static void relax(Intersection u, Intersection v, double weight) {
+    private void relax(Intersection u, Intersection v, double weight) {
         if (distance[u.getPos()] + weight < distance[v.getPos()]) {
             distance[v.getPos()] = distance[u.getPos()] + weight;
-            pi[v.getPos()] = u.getPos();
+            this.pi[v.getPos()] = u.getPos();
         }
     }
 
@@ -227,8 +236,9 @@ public class Dijkstra {
         dij.dijkstra(intersectionD, cityMap, sizeGraph);
 
         for (Chemin chemin : chemins) {
-            System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() +
-                    " : " + chemin.getCout());
+            //System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() + " : " + chemin.getCout());
+            //System.out.println(chemin);
+            //System.out.println(Arrays.toString(chemin.getPi()));
         }
     }
 
