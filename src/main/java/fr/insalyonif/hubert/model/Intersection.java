@@ -77,8 +77,6 @@ public class Intersection {
         return "Intersection{" +
                 "latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", predecessors=" + predecessors +
-                ", successors=" + successors +
                 ", id=" + id +
                 ", pos=" + pos +
                 '}';
