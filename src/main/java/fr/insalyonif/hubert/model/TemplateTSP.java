@@ -34,11 +34,11 @@ public abstract class TemplateTSP implements TSP {
 		return -1;
 	}
 	
-	/*public double getSolutionCost(){
+	public double getSolutionCost(){
 		if (g != null)
 			return bestSolCost;
 		return -1;
-	}*/
+	}
 	
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
@@ -47,10 +47,10 @@ public abstract class TemplateTSP implements TSP {
 	 * @return a lower bound of the cost of paths in <code>g</code> starting from <code>currentVertex</code>, visiting 
 	 * every vertex in <code>unvisited</code> exactly once, and returning back to vertex <code>0</code>.
 	 */
-	protected int bound(Integer currentVertex, Collection<Integer> unvisited){
-		return 0;
-	};
-	
+	protected abstract double bound(Integer currentVertex, Collection<Integer> unvisited) ;
+
+
+
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
 	 * @param currentVertex
@@ -71,7 +71,7 @@ public abstract class TemplateTSP implements TSP {
 			Collection<Integer> visited, double currentCost){
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.size() == 0){ 
-	    	if (g.isArc(currentVertex,0)){ 
+	    	if (g.isArc(currentVertex,0)){
 	    		if (currentCost+g.getCost(currentVertex,0) < bestSolCost){ 
 	    			visited.toArray(bestSol);
 	    			bestSolCost = currentCost+g. getCost(currentVertex,0);
