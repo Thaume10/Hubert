@@ -18,6 +18,7 @@ public class Dijkstra {
         Arrays.fill(distance, INFINITY);
         Arrays.fill(pi, 0);
         Arrays.fill(visited, false);
+        //test
 
         // cache warehouse
         // TO DO
