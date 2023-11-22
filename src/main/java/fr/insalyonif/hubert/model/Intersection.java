@@ -1,5 +1,6 @@
 package fr.insalyonif.hubert.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Intersection {
@@ -7,20 +8,16 @@ public class Intersection {
     private double longitude;
     private List<RoadSegment> predecessors;
     private List<RoadSegment> successors;
-    private int id;
+    private long id;
+    private int pos;
 
-    public Intersection(double latitude, double longitude) {
+    public Intersection(double latitude, double longitude, long id, int pos) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.predecessors = null;
-        this.successors = null;
-    }
-    public Intersection(double latitude, double longitude, List<RoadSegment> predecessors, List<RoadSegment> successors, int id) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.predecessors = predecessors;
-        this.successors = successors;
+        this.predecessors = new ArrayList<>();;
+        this.successors = new ArrayList<>();;
         this.id = id;
+        this.pos = pos;
     }
 
     public double getLatitude() {
@@ -59,12 +56,20 @@ public class Intersection {
         return "lat: "+this.latitude+" ; lng: "+this.longitude;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
 
     @Override
@@ -74,6 +79,8 @@ public class Intersection {
                 ", longitude=" + longitude +
                 ", predecessors=" + predecessors +
                 ", successors=" + successors +
+                ", id=" + id +
+                ", pos=" + pos +
                 '}';
     }
 }
