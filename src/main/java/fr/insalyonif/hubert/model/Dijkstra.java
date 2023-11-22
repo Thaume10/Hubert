@@ -129,6 +129,12 @@ public class Dijkstra {
 
                 if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
                     relax(u, v, roadSegment.getLength());
+
+                    // Mettez à jour la distance en ajoutant l'heuristique
+                    double heuristicValue = heuristic(v, cityMap.getWareHouseLocation());
+                    distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength() + heuristicValue;
+                    pi[v.getPos()] = u.getPos();
+
                     colors[v.getPos()] = "gray";
                 }
             }
@@ -149,6 +155,17 @@ public class Dijkstra {
             }
 
         }
+    }
+
+    private double calculateEuclideanDistance(Intersection a, Intersection b) {
+        double deltaX = a.getLatitude() - b.getLatitude();
+        double deltaY = a.getLongitude() - b.getLongitude();
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    // Dans la méthode dijkstra, utilisez la distance euclidienne comme heuristique
+    private double heuristic(Intersection current, Intersection goal) {
+        return calculateEuclideanDistance(current, goal);
     }
 
     private boolean hasGrayNode() {
