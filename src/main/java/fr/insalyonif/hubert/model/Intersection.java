@@ -7,12 +7,20 @@ public class Intersection {
     private double longitude;
     private List<RoadSegment> predecessors;
     private List<RoadSegment> successors;
+    private int id;
 
-    public Intersection(double latitude, double longitude, List<RoadSegment> predecessors, List<RoadSegment> successors) {
+    public Intersection(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.predecessors = null;
+        this.successors = null;
+    }
+    public Intersection(double latitude, double longitude, List<RoadSegment> predecessors, List<RoadSegment> successors, int id) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.predecessors = predecessors;
         this.successors = successors;
+        this.id = id;
     }
 
     public double getLatitude() {
@@ -49,6 +57,14 @@ public class Intersection {
 
     public String getCoordinates() {
         return "lat: "+this.latitude+" ; lng: "+this.longitude;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
