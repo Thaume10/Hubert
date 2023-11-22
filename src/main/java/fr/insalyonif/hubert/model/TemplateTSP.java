@@ -1,15 +1,18 @@
-package tsp;
+package fr.insalyonif.hubert.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public abstract class TemplateTSP implements TSP {
 	private Integer[] bestSol;
 	protected Graph g;
-	private int bestSolCost;
+	private double bestSolCost;
 	private int timeLimit;
 	private long startTime;
+
+
 	
 	public void searchSolution(int timeLimit, Graph g){
 		if (timeLimit <= 0) return;
@@ -31,11 +34,11 @@ public abstract class TemplateTSP implements TSP {
 		return -1;
 	}
 	
-	public int getSolutionCost(){
+	/*public double getSolutionCost(){
 		if (g != null)
 			return bestSolCost;
 		return -1;
-	}
+	}*/
 	
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
@@ -44,7 +47,9 @@ public abstract class TemplateTSP implements TSP {
 	 * @return a lower bound of the cost of paths in <code>g</code> starting from <code>currentVertex</code>, visiting 
 	 * every vertex in <code>unvisited</code> exactly once, and returning back to vertex <code>0</code>.
 	 */
-	protected abstract int bound(Integer currentVertex, Collection<Integer> unvisited);
+	protected int bound(Integer currentVertex, Collection<Integer> unvisited){
+		return 0;
+	};
 	
 	/**
 	 * Method that must be defined in TemplateTSP subclasses
@@ -63,7 +68,7 @@ public abstract class TemplateTSP implements TSP {
 	 * @param currentCost the cost of the path corresponding to <code>visited</code>
 	 */	
 	private void branchAndBound(int currentVertex, Collection<Integer> unvisited, 
-			Collection<Integer> visited, int currentCost){
+			Collection<Integer> visited, double currentCost){
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.size() == 0){ 
 	    	if (g.isArc(currentVertex,0)){ 

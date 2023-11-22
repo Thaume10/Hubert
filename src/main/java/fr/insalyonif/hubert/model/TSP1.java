@@ -1,4 +1,4 @@
-package tsp;
+package fr.insalyonif.hubert.model;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,4 +14,8 @@ public class TSP1 extends TemplateTSP {
 		return new SeqIter(unvisited, currentVertex, g);
 	}
 
+	@Override
+	public int getSolutionCost() {
+		return 0;
+	}
 }
