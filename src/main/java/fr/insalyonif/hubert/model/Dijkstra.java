@@ -10,32 +10,38 @@ public class Dijkstra {
 
     public static ArrayList<Chemin> chemins = new ArrayList<Chemin>();
 
-    public Dijkstra(int sizeGraph) {
+    public Dijkstra(int sizeGraph, CityMap cityMap) {
         this.distance = new double[sizeGraph];
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
-        // Initialiser toutes les distances à l'infini, les prédécesseurs à null et les nœuds visités à false
-        Arrays.fill(distance, INFINITY);
-        Arrays.fill(pi, 0);
-        Arrays.fill(visited, false);
+
+
+
         //test
 
         // cache warehouse
+        dijkstra(cityMap.getWareHouseLocation(), cityMap);
         // TO DO
     }
 
     public static void dijkstra(Intersection start, CityMap cityMap) {
         // Initialiser la distance pour le nœud de départ
-        distance[(int) start.getPos()] = 0.0;
+        // Initialiser toutes les distances à l'infini, les prédécesseurs à null et les nœuds visités à false
+        Arrays.fill(distance, INFINITY);
+        Arrays.fill(pi, 0);
+        Arrays.fill(visited, false);
+        distance[ start.getPos()] = 0.0;
+
 
         // Continuer tant qu'il reste des nœuds non visités
         while (!allNodesVisited()) {
             // Choisir le nœud avec la distance minimale non visitée
             int indiceMinDistance = minDistance();
+            System.out.println(indiceMinDistance);
             Intersection u = cityMap.findIntersectionByPos(indiceMinDistance);
 
             // Marquer le nœud comme visité
-            visited[(int) u.getPos()] = true;
+            visited[ u.getPos()] = true;
 
             // Mettre à jour les distances des nœuds adjacents non visités
             for (RoadSegment roadSegment : u.getSuccessors()) {
@@ -121,12 +127,13 @@ public class Dijkstra {
 
         // Initialisation de l'algorithme de Dijkstra
         int sizeGraph = 4; // Mettez la taille correcte de votre graphe
-        Dijkstra dijkstra = new Dijkstra(sizeGraph);
+
         CityMap cityMap = new CityMap(intersections, intersectionA);
+        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
         //System.out.println(pi[2]);
 
         // Appel de l'algorithme de Dijkstra avec le nœud de départ et le nœud d'arrivée
-        dijkstra(intersectionA, cityMap);
+        //dij.dijkstra(intersectionA, cityMap);
         dijkstra(intersectionB, cityMap);
         for (Chemin chemin : chemins) {
             System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() +
