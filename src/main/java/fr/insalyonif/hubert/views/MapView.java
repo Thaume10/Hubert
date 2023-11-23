@@ -27,7 +27,7 @@ public class MapView extends Application {
         <body>
             <div id="map"></div>
             <script>
-                var map = L.map('map').setView([45.75, 4.85], 13);
+                var map = L.map('map').setView([45.755, 4.87], 15);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 18
                 }).addTo(map);
@@ -74,7 +74,6 @@ public class MapView extends Application {
         System.out.println(markersJs.toString());  // Debugging
         return markersJs.toString();
     }
-    
 
     public static void main(String[] args) {
         launch(args);
