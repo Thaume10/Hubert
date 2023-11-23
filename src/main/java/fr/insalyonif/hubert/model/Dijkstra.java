@@ -14,7 +14,9 @@ public class Dijkstra {
     public ArrayList<Integer> gray = new ArrayList<>();
     public ArrayList<Integer> black = new ArrayList<>();
 
-    public static ArrayList<Chemin> chemins = new ArrayList<Chemin>();
+    public static ArrayList<Chemin> chemins = new ArrayList<>();
+
+    public static ArrayList<Intersection> deliveryRequest = new ArrayList<>();
 
 
 
@@ -23,23 +25,26 @@ public class Dijkstra {
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
         this.colors = new String[sizeGraph];
-
+        deliveryRequest.add(cityMap.getWareHouseLocation());
 
 
 
         //test
 
         // cache warehouse
-        dijkstra(cityMap.getWareHouseLocation(), cityMap, sizeGraph);
+        //dijkstra(cityMap.getWareHouseLocation(), cityMap, sizeGraph);
         // TO DO
     }
     public void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
+        deliveryRequest.add(start);
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
             //colors[i] = "white";
             white.add(i);
         }
+        black.clear();
+        gray.clear();
         distance[start.getPos()] = 0.0;
         //colors[start.getPos()] = "gray";
         white.remove(Integer.valueOf(start.getPos()));
@@ -78,43 +83,59 @@ public class Dijkstra {
 
         for (int i = 0; i < distance.length; i++) {
             if(distance[i] != INFINITY && distance[i] != 0){
-                int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
-                Chemin chemin = new Chemin(start, cityMap.findIntersectionByPos(i), piCopy, distance[i]);
-                chemins.add(chemin);
-                System.out.println(Arrays.toString(chemin.getPi()));
-                System.out.println(chemin);
+                Intersection destination = cityMap.findIntersectionByPos(i);
+                if (deliveryRequest.contains(start) && deliveryRequest.contains(destination)) {
+                    int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
+                    Chemin chemin = new Chemin(start, destination, piCopy, distance[i]);
+                    chemins.add(chemin);
+                    System.out.println(Arrays.toString(chemin.getPi()));
+                    System.out.println(chemin);
+                }
             }
 
         }
+        dijkstraReverse(start, cityMap, sizeGraph);
     }
+
 
 
     public void dijkstraReverse(Intersection start, CityMap cityMap, int sizeGraph) {
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
-            colors[i] = "white";
+            //colors[i] = "white";
+            white.add(i);
         }
+        black.clear();
+        gray.clear();
         distance[start.getPos()] = 0.0;
-        colors[start.getPos()] = "gray";
+        //colors[start.getPos()] = "gray";
+        white.remove(Integer.valueOf(start.getPos()));
+        gray.add(start.getPos());
 
         while (hasGrayNode()) {
             Intersection u = minGrayNode(cityMap);
-            colors[u.getPos()] = "black";
+            //colors[u.getPos()] = "black";
+            white.remove(Integer.valueOf(u.getPos()));
+            gray.remove(Integer.valueOf(u.getPos()));
+            black.add(u.getPos());
 
             for (RoadSegment roadSegment : u.getPredecessors()) {
                 Intersection v = roadSegment.getDestination();
 
-                if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
-                //if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
+                //if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
+                if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
                     relax(u, v, roadSegment.getLength());
 
                     //Mettez à jour la distance en ajoutant l'heuristique
                     //double heuristicValue = heuristic(v, cityMap.getWareHouseLocation());
-                    distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength();
-                    pi[v.getPos()] = u.getPos();
+                    //distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength();
+                    //pi[v.getPos()] = u.getPos();
 
-                    colors[v.getPos()] = "gray";
+                    //colors[v.getPos()] = "gray";
+                    white.remove(Integer.valueOf(v.getPos()));
+                    black.remove(Integer.valueOf(v.getPos()));
+                    gray.add(v.getPos());
                 }
             }
         }
@@ -126,13 +147,14 @@ public class Dijkstra {
 
         for (int i = 0; i < distance.length; i++) {
             if(distance[i] != INFINITY && distance[i] != 0){
-
-                int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
-                Chemin chemin = new Chemin(start, cityMap.findIntersectionByPos(i), piCopy, distance[i]);
-                //ici avant de add il faut trouver un moyen pour inverser la liste pi, mais en soit pour la team TSP ca suffit prc si on inverse le debut et fin du chemin il ont ce qu il faut
-                chemins.add(chemin);
-                System.out.println(Arrays.toString(chemin.getPi()));
-                System.out.println(chemin);
+                Intersection destination = cityMap.findIntersectionByPos(i);
+                if (deliveryRequest.contains(start) && deliveryRequest.contains(destination)) {
+                    int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
+                    Chemin chemin = new Chemin( destination,start, piCopy, distance[i]);
+                    chemins.add(chemin);
+                    System.out.println(Arrays.toString(chemin.getPi()));
+                    System.out.println(chemin);
+                }
             }
 
         }
@@ -252,6 +274,8 @@ public class Dijkstra {
         int sizeGraph = 4; // Mettez la taille correcte de votre graphe
 
         CityMap cityMap = new CityMap(intersections, intersectionA);
+        //deliveryRequest.add(intersectionA);
+        //deliveryRequest.add(intersectionD);
 
 
         Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
@@ -260,15 +284,20 @@ public class Dijkstra {
         // Appel de l'algorithme de Dijkstra avec le nœud de départ et le nœud d'arrivée
         //dij.dijkstra(intersectionA, cityMap);
         System.out.println("intersectionB");
-        dij.dijkstra(intersectionB, cityMap, sizeGraph);
+        //dij.dijkstra(intersectionB, cityMap, sizeGraph);
         dij.dijkstra(intersectionD, cityMap, sizeGraph);
-        dij.dijkstraReverse(intersectionD, cityMap, sizeGraph);
+        //dij.dijkstraReverse(intersectionD, cityMap, sizeGraph);
 
-        for (Chemin chemin : chemins) {
+
+        dij.dijkstra(intersectionB, cityMap, sizeGraph);
+        //dij.dijkstraReverse(intersectionB, cityMap, sizeGraph);
+
+
+        //for (Chemin chemin : chemins) {
             //System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() + " : " + chemin.getCout());
             //System.out.println(chemin);
             //System.out.println(Arrays.toString(chemin.getPi()));
-        }
+        //}
     }
 
 
