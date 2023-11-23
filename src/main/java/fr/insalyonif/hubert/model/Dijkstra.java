@@ -10,6 +10,10 @@ public class Dijkstra {
 
     public String[] colors;
 
+    public ArrayList<Integer> white = new ArrayList<>();
+    public ArrayList<Integer> gray = new ArrayList<>();
+    public ArrayList<Integer> black = new ArrayList<>();
+
     public static ArrayList<Chemin> chemins = new ArrayList<Chemin>();
 
 
@@ -29,113 +33,40 @@ public class Dijkstra {
         dijkstra(cityMap.getWareHouseLocation(), cityMap, sizeGraph);
         // TO DO
     }
-
-    /*public static void dijkstra(Intersection start, CityMap cityMap) {
-        // Initialiser la distance pour le nœud de départ
-        // Initialiser toutes les distances à l'infini, les prédécesseurs à null et les nœuds visités à false
-        Arrays.fill(distance, INFINITY);
-        Arrays.fill(pi, 0);
-        Arrays.fill(visited, false);
-
-        distance[ start.getPos()] = 0.0;
-        for (int i = 0; i < distance.length; i++) {
-            System.out.println("distance["+i+"] = "+ distance[i]);
-        }
-        for (int i = 0; i < distance.length; i++) {
-            System.out.println("visited["+i+"] = "+ visited[i]);
-        }
-
-
-        // Continuer tant qu'il reste des nœuds non visités
-        while (!allNodesVisited()) {
-            // Choisir le nœud avec la distance minimale non visitée
-            int indiceMinDistance = minDistance();
-            if(indiceMinDistance == -1){
-                //sortir de la boucle while
-                break;
-            }
-
-            System.out.println("indiceMin = "+indiceMinDistance);
-            Intersection u = cityMap.findIntersectionByPos(indiceMinDistance);
-
-            // Marquer le nœud comme visité
-            visited[ u.getPos()] = true;
-
-            // Mettre à jour les distances des nœuds adjacents non visités
-            for (RoadSegment roadSegment : u.getSuccessors()) {
-                Intersection v = roadSegment.getDestination();
-                if (!visited[ v.getPos()] && distance[u.getPos()] != INFINITY &&
-                        distance[u.getPos()] + roadSegment.getLength() < distance[v.getPos()]) {
-                    distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength();
-                    pi[v.getPos()] = u.getPos();
-                }
-            }
-        }
-
-        // Afficher les distances les plus courtes depuis le nœud de départ
-        for (int i = 0; i < distance.length; i++) {
-            Chemin chemin = new Chemin(start, cityMap.findIntersectionByPos(i), pi, distance[i]) ;
-            //System.out.println(chemin);
-            chemins.add(chemin);
-        }
-
-
-    }
-
-    private static int minDistance() {
-        double min = INFINITY;
-        int minIntersection = -1;
-
-
-
-        for (int i = 0; i < distance.length; i++) {
-            System.out.println("passe");
-            //System.out.println(visited[i]);
-            //System.out.println(distance[i]);
-            if (!visited[i] && distance[i] < min) {
-                System.out.println("min = "+distance[i]+" ,i = "+i);
-                min = distance[i];
-                minIntersection = i;
-            }
-        }
-
-        return minIntersection;
-    }
-
-    // Méthode pour vérifier si tous les nœuds ont été visités
-    private static boolean allNodesVisited() {
-        for (boolean nodeVisited : visited) {
-            if (!nodeVisited) {
-                return false;
-            }
-        }
-        return true;
-    }*/
     public void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
-            colors[i] = "white";
+            //colors[i] = "white";
+            white.add(i);
         }
         distance[start.getPos()] = 0.0;
-        colors[start.getPos()] = "gray";
+        //colors[start.getPos()] = "gray";
+        white.remove(Integer.valueOf(start.getPos()));
+        gray.add(start.getPos());
 
         while (hasGrayNode()) {
             Intersection u = minGrayNode(cityMap);
-            colors[u.getPos()] = "black";
+            white.remove(Integer.valueOf(u.getPos()));
+            gray.remove(Integer.valueOf(u.getPos()));
+            black.add(u.getPos());
+            //colors[u.getPos()] = "black";
 
             for (RoadSegment roadSegment : u.getSuccessors()) {
                 Intersection v = roadSegment.getDestination();
 
-                if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
+                //if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
+                if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
                     relax(u, v, roadSegment.getLength());
 
                     // Mettez à jour la distance en ajoutant l'heuristique
                     //double heuristicValue = heuristic(v, cityMap.getWareHouseLocation());
-                    distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength() ;
-                    pi[v.getPos()] = u.getPos();
-
-                    colors[v.getPos()] = "gray";
+                    //distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength() ;
+                    //pi[v.getPos()] = u.getPos();
+                    white.remove(Integer.valueOf(v.getPos()));
+                    black.remove(Integer.valueOf(v.getPos()));
+                    gray.add(v.getPos());
+                    //colors[v.getPos()] = "gray";
                 }
             }
         }
@@ -175,6 +106,7 @@ public class Dijkstra {
                 Intersection v = roadSegment.getDestination();
 
                 if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
+                //if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
                     relax(u, v, roadSegment.getLength());
 
                     //Mettez à jour la distance en ajoutant l'heuristique
@@ -220,12 +152,12 @@ public class Dijkstra {
     }
 
     private boolean hasGrayNode() {
-        for (String color : colors) {
+        /*for (String color : colors) {
             if (color.equals("gray")) {
                 return true;
             }
-        }
-        return false;
+        }*/
+        return !gray.isEmpty();
     }
 
     private Intersection minGrayNode(CityMap cityMap) {
@@ -233,12 +165,20 @@ public class Dijkstra {
         Intersection minNode = null;
 
         //Essayer de parcourir que les grays
-        for (Intersection intersection : cityMap.getIntersections()) {
+        /*for (Intersection intersection : cityMap.getIntersections()) {
             if (colors[intersection.getPos()].equals("gray") && distance[intersection.getPos()] < min) {
                 min = distance[intersection.getPos()];
                 minNode = intersection;
             }
+        }*/
+
+        for (Integer element : gray) {
+            if ( distance[cityMap.findIntersectionByPos(element).getPos()] < min) {
+                min = distance[cityMap.findIntersectionByPos(element).getPos()];
+                minNode = cityMap.findIntersectionByPos(element);
+            }
         }
+
 
         return minNode;
     }
@@ -320,8 +260,8 @@ public class Dijkstra {
         // Appel de l'algorithme de Dijkstra avec le nœud de départ et le nœud d'arrivée
         //dij.dijkstra(intersectionA, cityMap);
         System.out.println("intersectionB");
-        //dij.dijkstra(intersectionB, cityMap, sizeGraph);
-        //dij.dijkstra(intersectionD, cityMap, sizeGraph);
+        dij.dijkstra(intersectionB, cityMap, sizeGraph);
+        dij.dijkstra(intersectionD, cityMap, sizeGraph);
         dij.dijkstraReverse(intersectionD, cityMap, sizeGraph);
 
         for (Chemin chemin : chemins) {
