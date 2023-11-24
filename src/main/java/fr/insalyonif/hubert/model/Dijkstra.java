@@ -8,7 +8,7 @@ public class Dijkstra {
     public int[] pi;
     public boolean[] visited;
 
-    public String[] colors;
+    //public String[] colors;
 
     public ArrayList<Integer> white = new ArrayList<>();
     public ArrayList<Integer> gray = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Dijkstra {
         this.distance = new double[sizeGraph];
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
-        this.colors = new String[sizeGraph];
+        //this.colors = new String[sizeGraph];
         deliveryRequest.add(cityMap.getWareHouseLocation());
 
 
@@ -50,8 +50,11 @@ public class Dijkstra {
         white.remove(Integer.valueOf(start.getPos()));
         gray.add(start.getPos());
 
-        while (hasGrayNode() && !allBlack()) {
+        while (hasGrayNode() && notAllBlack()) {
             Intersection u = minGrayNode(cityMap);
+//            if (u == null) {
+//                break;  // Tous les nœuds gris ont été explorés
+//            }
             white.remove(Integer.valueOf(u.getPos()));
             gray.remove(Integer.valueOf(u.getPos()));
             black.add(u.getPos());
@@ -75,10 +78,11 @@ public class Dijkstra {
                 }
             }
         }
-        /*for (int i = 0; i < pi.length; i++) {
-            System.out.println("pi "+pi[i]);
+//        for (Integer in : black) {
+//            System.out.println("black "+in);
+//
+//        }
 
-        }*/
 
 
         for (int i = 0; i < distance.length; i++) {
@@ -92,8 +96,22 @@ public class Dijkstra {
                     System.out.println(chemin);
                 }
             }
-
         }
+
+//        for (Integer inter : black) {
+//            System.out.println("black "+inter);
+//            if(distance[inter] != INFINITY && distance[inter] != 0){
+//                Intersection destination = cityMap.findIntersectionByPos(inter);
+//                if (deliveryRequest.contains(start) && deliveryRequest.contains(destination)) {
+//                    int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
+//                    Chemin chemin = new Chemin(start, destination, piCopy, distance[inter]);
+//                    chemins.add(chemin);
+//                    System.out.println(Arrays.toString(chemin.getPi()));
+//                    System.out.println(chemin);
+//                }
+//            }
+//        }
+
         dijkstraReverse(start, cityMap, sizeGraph);
     }
 
@@ -113,8 +131,11 @@ public class Dijkstra {
         white.remove(Integer.valueOf(start.getPos()));
         gray.add(start.getPos());
 
-        while (hasGrayNode() && !allBlack()) {
+        while (hasGrayNode() && notAllBlack()) {
             Intersection u = minGrayNode(cityMap);
+//            if (u == null) {
+//                break;  // Tous les nœuds gris ont été explorés
+//            }
             //colors[u.getPos()] = "black";
             white.remove(Integer.valueOf(u.getPos()));
             gray.remove(Integer.valueOf(u.getPos()));
@@ -125,7 +146,7 @@ public class Dijkstra {
 
                 //if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
                 if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
-                    relax(u, v, roadSegment.getLength());
+                    relaxInverse(u, v, roadSegment.getLength());
 
                     //Mettez à jour la distance en ajoutant l'heuristique
                     //double heuristicValue = heuristic(v, cityMap.getWareHouseLocation());
@@ -156,8 +177,21 @@ public class Dijkstra {
                     System.out.println(chemin);
                 }
             }
-
         }
+
+//        for (Integer inter : black) {
+//            //System.out.println("black "+inter);
+//            if(distance[inter] != INFINITY && distance[inter] != 0){
+//                Intersection destination = cityMap.findIntersectionByPos(inter);
+//                if (deliveryRequest.contains(start) && deliveryRequest.contains(destination)) {
+//                    int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
+//                    Chemin chemin = new Chemin( destination,start, piCopy, distance[inter]);
+//                    chemins.add(chemin);
+//                    System.out.println(Arrays.toString(chemin.getPi()));
+//                    System.out.println(chemin);
+//                }
+//            }
+//        }
     }
 
 
@@ -182,16 +216,16 @@ public class Dijkstra {
         return !gray.isEmpty();
     }
 
-    private boolean allBlack() {
+    private boolean notAllBlack() {
 
 
         for (Intersection intersection : deliveryRequest) {
             if (!black.contains(intersection.getPos())) {
-                return false;
+                return true;
                 //break;  // Pas besoin de continuer dès qu'on trouve un élément qui n'est pas dans black
             }
         }
-        return true;
+        return false;
     }
 
     private Intersection minGrayNode(CityMap cityMap) {
@@ -221,6 +255,13 @@ public class Dijkstra {
         if (distance[u.getPos()] + weight < distance[v.getPos()]) {
             distance[v.getPos()] = distance[u.getPos()] + weight;
             this.pi[v.getPos()] = u.getPos();
+        }
+    }
+
+    private void relaxInverse(Intersection u, Intersection v, double weight) {
+        if (distance[u.getPos()] + weight < distance[v.getPos()]) {
+            distance[v.getPos()] = distance[u.getPos()] + weight;
+            this.pi[u.getPos()] = v.getPos();
         }
     }
 
@@ -260,6 +301,19 @@ public class Dijkstra {
 
         List<RoadSegment> successorsD = new ArrayList<>();
         intersectionD.setSuccessors(successorsD);
+
+//        List<RoadSegment> predecessorsB = new ArrayList<>();
+//        predecessorsB.add(segmentAB);
+//        intersectionB.setPredecessors(predecessorsB);
+//
+//        List<RoadSegment> predecessorsC = new ArrayList<>();
+//        predecessorsC.add(segmentAC);
+//        intersectionC.setPredecessors(predecessorsC);
+//
+//        List<RoadSegment> predecessorsD = new ArrayList<>();
+//        predecessorsD.add(segmentBD);
+//        predecessorsD.add(segmentCD);
+//        intersectionC.setPredecessors(predecessorsD);
 
         RoadSegment segmentBA = new RoadSegment(intersectionB, intersectionA, "BA", 5.0);
         RoadSegment segmentCA = new RoadSegment(intersectionC, intersectionA, "CA", 2.0);
