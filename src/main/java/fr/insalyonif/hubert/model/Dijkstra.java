@@ -50,7 +50,7 @@ public class Dijkstra {
         white.remove(Integer.valueOf(start.getPos()));
         gray.add(start.getPos());
 
-        while (hasGrayNode()) {
+        while (hasGrayNode() && !allBlack()) {
             Intersection u = minGrayNode(cityMap);
             white.remove(Integer.valueOf(u.getPos()));
             gray.remove(Integer.valueOf(u.getPos()));
@@ -113,7 +113,7 @@ public class Dijkstra {
         white.remove(Integer.valueOf(start.getPos()));
         gray.add(start.getPos());
 
-        while (hasGrayNode()) {
+        while (hasGrayNode() && !allBlack()) {
             Intersection u = minGrayNode(cityMap);
             //colors[u.getPos()] = "black";
             white.remove(Integer.valueOf(u.getPos()));
@@ -180,6 +180,18 @@ public class Dijkstra {
             }
         }*/
         return !gray.isEmpty();
+    }
+
+    private boolean allBlack() {
+
+
+        for (Intersection intersection : deliveryRequest) {
+            if (!black.contains(intersection.getPos())) {
+                return false;
+                //break;  // Pas besoin de continuer dès qu'on trouve un élément qui n'est pas dans black
+            }
+        }
+        return true;
     }
 
     private Intersection minGrayNode(CityMap cityMap) {
