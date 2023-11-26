@@ -37,7 +37,7 @@ public class Dijkstra {
     }
     public void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
         deliveryRequest.add(start);
-        for (int i = 0; i < sizeGraph; i++) {
+        for(int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
             //colors[i] = "white";
@@ -111,6 +111,7 @@ public class Dijkstra {
 //                }
 //            }
 //        }
+
 
         dijkstraReverse(start, cityMap, sizeGraph);
     }
@@ -284,22 +285,29 @@ public class Dijkstra {
         RoadSegment segmentAC = new RoadSegment(intersectionA, intersectionC, "AC", 2.0);
         RoadSegment segmentBD = new RoadSegment(intersectionB, intersectionD, "BD", 4.0);
         RoadSegment segmentCD = new RoadSegment(intersectionC, intersectionD, "CD", 1.0);
+        RoadSegment segmentBA = new RoadSegment(intersectionB, intersectionA, "BA", 5.0);
+        RoadSegment segmentCA = new RoadSegment(intersectionC, intersectionA, "CA", 2.0);
+        RoadSegment segmentDB = new RoadSegment(intersectionD, intersectionB, "DB", 4.0);
+        RoadSegment segmentDC = new RoadSegment(intersectionD, intersectionC, "DC", 1.0);
+
 
         // Ajout des successeurs pour chaque intersection
         List<RoadSegment> successorsA = new ArrayList<>();
         successorsA.add(segmentAB);
         successorsA.add(segmentAC);
         intersectionA.setSuccessors(successorsA);
-
+//
         List<RoadSegment> successorsB = new ArrayList<>();
         successorsB.add(segmentBD);
         intersectionB.setSuccessors(successorsB);
-
+//
         List<RoadSegment> successorsC = new ArrayList<>();
-        successorsC.add(segmentCD);
+        successorsC.add(segmentCA);
+//
         intersectionC.setSuccessors(successorsC);
-
+//
         List<RoadSegment> successorsD = new ArrayList<>();
+        successorsD.add(segmentDC);
         intersectionD.setSuccessors(successorsD);
 
 //        List<RoadSegment> predecessorsB = new ArrayList<>();
@@ -315,19 +323,17 @@ public class Dijkstra {
 //        predecessorsD.add(segmentCD);
 //        intersectionC.setPredecessors(predecessorsD);
 
-        RoadSegment segmentBA = new RoadSegment(intersectionB, intersectionA, "BA", 5.0);
-        RoadSegment segmentCA = new RoadSegment(intersectionC, intersectionA, "CA", 2.0);
-        RoadSegment segmentDB = new RoadSegment(intersectionD, intersectionB, "DB", 4.0);
-        RoadSegment segmentDC = new RoadSegment(intersectionD, intersectionC, "DC", 1.0);
 
 
-        // Ajout des prédécesseurs pour chaque intersection
+
+         //Ajout des prédécesseurs pour chaque intersection
         List<RoadSegment> predecessorsB = new ArrayList<>();
         predecessorsB.add(segmentBA);
         intersectionB.setPredecessors(predecessorsB);
 
         List<RoadSegment> predecessorsC = new ArrayList<>();
         predecessorsC.add(segmentCA);
+        //predecessorsC.add(segmentDC);
         intersectionC.setPredecessors(predecessorsC);
 
         List<RoadSegment> predecessorsD = new ArrayList<>();
@@ -350,12 +356,14 @@ public class Dijkstra {
         // Appel de l'algorithme de Dijkstra avec le nœud de départ et le nœud d'arrivée
         //dij.dijkstra(intersectionA, cityMap);
         System.out.println("intersectionB");
-        //dij.dijkstra(intersectionB, cityMap, sizeGraph);
-        dij.dijkstra(intersectionD, cityMap, sizeGraph);
-        //dij.dijkstraReverse(intersectionD, cityMap, sizeGraph);
-
-
+        //dij.dijkstra(intersectionD, cityMap, sizeGraph);
+        //dij.dijkstra(intersectionD, cityMap, sizeGraph);
         dij.dijkstra(intersectionB, cityMap, sizeGraph);
+        dij.dijkstra(intersectionD, cityMap, sizeGraph);
+
+
+
+        //dij.dijkstra(intersectionB, cityMap, sizeGraph);
         //dij.dijkstraReverse(intersectionB, cityMap, sizeGraph);
 
 
