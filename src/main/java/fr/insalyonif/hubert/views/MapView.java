@@ -12,30 +12,35 @@ import fr.insalyonif.hubert.model.*;
 
 public class MapView extends Application {
     private static final String MAP_HTML_TEMPLATE = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Simple Map</title>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-            <style>
-                #map { width: 800px; height: 600px; }
-            </style>
-        </head>
-        <body>
-            <div id="map"></div>
-            <script>
-                var map = L.map('map').setView([45.755, 4.87], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 18
-                }).addTo(map);
-                %s  // This will be replaced by the markers JavaScript
-            </script>
-        </body>
-        </html>
-        """;
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Simple Map</title>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <style>
+                    #map { width: 800px; height: 600px; }
+                </style>
+            </head>
+            <body>
+                <div id="map"></div>
+                <script>
+                    var map = L.map('map').setView([45.755, 4.87], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 18
+                    }).addTo(map);
+                    var customIcon = L.icon({
+                        iconUrl: 'https://cdn-icons-png.flaticon.com/512/929/929426.png',
+                        iconSize: [25, 25],
+                        iconAnchor: [12, 12],
+                    });
+                    %s
+                </script>
+            </body>
+            </html>
+            """;
 
     @Override
     public void start(Stage primaryStage) {
@@ -68,12 +73,12 @@ public class MapView extends Application {
     private String generateMarkersJs(CityMap cityMap) {
         StringBuilder markersJs = new StringBuilder();
         for (Intersection intersection : cityMap.getIntersections()) {
-            String markerJs = "L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "]).addTo(map);";
+            String markerJs = "L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "], {icon: customIcon}).addTo(map);";
             markersJs.append(markerJs);
         }
-        System.out.println(markersJs.toString());  // Debugging
         return markersJs.toString();
     }
+
 
     public static void main(String[] args) {
         launch(args);
