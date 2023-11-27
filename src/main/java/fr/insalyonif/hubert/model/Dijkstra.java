@@ -285,9 +285,9 @@ public class Dijkstra {
         RoadSegment segmentAC = new RoadSegment(intersectionA, intersectionC, "AC", 2.0);
         RoadSegment segmentBD = new RoadSegment(intersectionB, intersectionD, "BD", 4.0);
         RoadSegment segmentCD = new RoadSegment(intersectionC, intersectionD, "CD", 1.0);
-        RoadSegment segmentBA = new RoadSegment(intersectionB, intersectionA, "BA", 5.0);
+        //RoadSegment segmentBA = new RoadSegment(intersectionB, intersectionA, "BA", 5.0);
         RoadSegment segmentCA = new RoadSegment(intersectionC, intersectionA, "CA", 2.0);
-        RoadSegment segmentDB = new RoadSegment(intersectionD, intersectionB, "DB", 4.0);
+        //RoadSegment segmentDB = new RoadSegment(intersectionD, intersectionB, "DB", 4.0);
         RoadSegment segmentDC = new RoadSegment(intersectionD, intersectionC, "DC", 1.0);
 
 
@@ -303,6 +303,7 @@ public class Dijkstra {
 //
         List<RoadSegment> successorsC = new ArrayList<>();
         successorsC.add(segmentCA);
+        successorsC.add(segmentCD);
 //
         intersectionC.setSuccessors(successorsC);
 //
@@ -324,21 +325,23 @@ public class Dijkstra {
 //        intersectionC.setPredecessors(predecessorsD);
 
 
-
+        List<RoadSegment> predecessorsA = new ArrayList<>();
+        predecessorsA.add(segmentCA);
+        intersectionB.setPredecessors(predecessorsA);
 
          //Ajout des prédécesseurs pour chaque intersection
         List<RoadSegment> predecessorsB = new ArrayList<>();
-        predecessorsB.add(segmentBA);
+        predecessorsB.add(segmentAB);
         intersectionB.setPredecessors(predecessorsB);
 
         List<RoadSegment> predecessorsC = new ArrayList<>();
-        predecessorsC.add(segmentCA);
-        //predecessorsC.add(segmentDC);
+        predecessorsC.add(segmentAC);
+        predecessorsC.add(segmentDC);
         intersectionC.setPredecessors(predecessorsC);
 
         List<RoadSegment> predecessorsD = new ArrayList<>();
-        predecessorsD.add(segmentDB);
-        predecessorsD.add(segmentDC);
+        predecessorsD.add(segmentBD);
+        predecessorsD.add(segmentCD);
         intersectionD.setPredecessors(predecessorsD);
 
 
