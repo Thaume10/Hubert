@@ -92,8 +92,8 @@ public class Dijkstra {
                     int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
                     Chemin chemin = new Chemin(start, destination, piCopy, distance[i]);
                     chemins.add(chemin);
-                    System.out.println(Arrays.toString(chemin.getPi()));
-                    System.out.println(chemin);
+                    //System.out.println(Arrays.toString(chemin.getPi()));
+                    //System.out.println(chemin);
                 }
             }
         }
@@ -177,8 +177,8 @@ public class Dijkstra {
                     int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
                     Chemin chemin = new Chemin( destination,start, piCopy, distance[i]);
                     chemins.add(chemin);
-                    System.out.println(Arrays.toString(chemin.getPi()));
-                    System.out.println(chemin);
+                    //System.out.println(Arrays.toString(chemin.getPi()));
+                    //System.out.println(chemin);
                 }
             }
         }
@@ -269,7 +269,7 @@ public class Dijkstra {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // Création d'intersections
         Intersection intersectionA = new Intersection(0, 0, 89 , 0);
         Intersection intersectionB = new Intersection(1, 1, 82 , 1);
@@ -349,11 +349,13 @@ public class Dijkstra {
 
 
         // Initialisation de l'algorithme de Dijkstra
-        int sizeGraph = 4; // Mettez la taille correcte de votre graphe
 
-        CityMap cityMap = new CityMap(intersections, intersectionA);
+
+        CityMap cityMap = new CityMap();
         //deliveryRequest.add(intersectionA);
         //deliveryRequest.add(intersectionD);
+        cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
+        int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
 
 
         Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
@@ -364,8 +366,8 @@ public class Dijkstra {
         System.out.println("intersectionB");
         //dij.dijkstra(intersectionD, cityMap, sizeGraph);
         //dij.dijkstra(intersectionD, cityMap, sizeGraph);
-        dij.dijkstra(intersectionB, cityMap, sizeGraph);
-        dij.dijkstra(intersectionD, cityMap, sizeGraph);
+        dij.dijkstra(cityMap.findIntersectionByPos(7), cityMap, sizeGraph);
+        //dij.dijkstra(intersectionD, cityMap, sizeGraph);
 
 
 
@@ -373,11 +375,11 @@ public class Dijkstra {
         //dij.dijkstraReverse(intersectionB, cityMap, sizeGraph);
 
 
-        //for (Chemin chemin : chemins) {
+        for (Chemin chemin : chemins) {
             //System.out.println("Chemin de " + chemin.getDebut() + " à " + chemin.getFin() + " : " + chemin.getCout());
-            //System.out.println(chemin);
+            System.out.println(chemin);
             //System.out.println(Arrays.toString(chemin.getPi()));
-        //}
+        }
     }
 
 
