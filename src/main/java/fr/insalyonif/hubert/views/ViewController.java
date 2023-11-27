@@ -104,6 +104,30 @@ public class ViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+
+        //dijkstra.addDeliveryRequest(cityMap.getWareHouseLocation());
+
+
+        // Affichez les résultats, par exemple, les chemins calculés
+        //for (Chemin chemin : dijkstra.getChemins()) {
+        //System.out.println(chemin);
+        //}
+        //System.out.println("fin");
+        // Créez une instance de DijkstraInverse et exécutez l'algorithme
+
+        //System.out.println("encore fin");
+        // Affichez les résultats, par exemple, les chemins inverses calculés
+        //for (Chemin chemin : dijkstraInverse.getChemins()) {
+            //System.out.println(chemin);
+        //}
+
+
+
+
+
+
         CityMap cityMap = new CityMap();
         try {
             String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
@@ -114,9 +138,19 @@ public class ViewController implements Initializable {
         
         
         int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
-        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
-        dij.dijkstra(cityMap.findIntersectionByPos(10), cityMap, sizeGraph);
-        cityMap.setChemins(dij.getChemins());
+        // Créez une instance de Dijkstra et exécutez l'algorithme
+        Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
+        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+
+        for (Chemin chemin : dijkstra.getChemins()) {
+            System.out.println(chemin);
+        }
+        for (Chemin chemin : dijkstraInverse.getChemins()) {
+            System.out.println(chemin);
+        }
+        cityMap.setChemins(dijkstraInverse.getChemins());
         
         String markersJs = generateMarkersJs(cityMap);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);

@@ -12,11 +12,11 @@ public abstract class AbstractDijkstra {
     public static int[] pi;
     public static boolean[] visited;
 
-    //public String[] colors;
+    public String[] colors;
 
-    public static ArrayList<Integer> white = new ArrayList<>();
-    public static ArrayList<Integer> gray = new ArrayList<>();
-    public static ArrayList<Integer> black = new ArrayList<>();
+//    public static ArrayList<Integer> white = new ArrayList<>();
+//    public static ArrayList<Integer> gray = new ArrayList<>();
+//    public static ArrayList<Integer> black = new ArrayList<>();
 
     public static ArrayList<Chemin> chemins = new ArrayList<>();
 
@@ -29,6 +29,9 @@ public abstract class AbstractDijkstra {
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
         this.cityMap = cityMap;
+
+        colors = new String[sizeGraph];
+        Arrays.fill(colors, "white");
 
     }
 
@@ -45,26 +48,40 @@ public abstract class AbstractDijkstra {
     }
 
     protected boolean hasGrayNode() {
-        return !gray.isEmpty();
-    }
-
-    protected boolean notAllBlack() {
-        for (Intersection intersection : deliveryRequest) {
-            if (!black.contains(intersection.getPos())) {
+        for (String color : colors) {
+            if (color.equals("gray")) {
                 return true;
             }
         }
         return false;
     }
 
+
+
+//    protected boolean notAllBlack() {
+//        for (Intersection intersection : deliveryRequest) {
+//            if (!black.contains(intersection.getPos())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
     protected Intersection minGrayNode() {
         double min = INFINITY;
         Intersection minNode = null;
 
-        for (Integer element : gray) {
-            if (distance[cityMap.findIntersectionByPos(element).getPos()] < min) {
-                min = distance[cityMap.findIntersectionByPos(element).getPos()];
-                minNode = cityMap.findIntersectionByPos(element);
+//        for (Integer element : gray) {
+//            if (distance[cityMap.findIntersectionByPos(element).getPos()] < min) {
+//                min = distance[cityMap.findIntersectionByPos(element).getPos()];
+//                minNode = cityMap.findIntersectionByPos(element);
+//            }
+//        }
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i].equals("gray") && distance[i] < min) {
+                min = distance[i];
+                minNode = cityMap.findIntersectionByPos(i);
+                //System.out.println(minNode);
             }
         }
 
@@ -74,37 +91,44 @@ public abstract class AbstractDijkstra {
 
 
     protected void runDijkstra(Intersection start, int sizeGraph){
-        white.clear();
+        //white.clear();
         deliveryRequest.add(start);
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
-            white.add(i);
+            //white.add(i);
+            colors[i] = "white";
         }
-        black.clear();
-        gray.clear();
+        //black.clear();
+        //gray.clear();
         distance[start.getPos()] = 0.0;
-        white.remove(Integer.valueOf(start.getPos()));
-        gray.add(start.getPos());
+        //white.remove(Integer.valueOf(start.getPos()));
+        //gray.add(start.getPos());
+        colors[start.getPos()] = "gray";
 
-        while (hasGrayNode() && notAllBlack()) {
+        while (hasGrayNode() ) {
             //System.out.println("test");
             Intersection u = minGrayNode();
-            white.remove(Integer.valueOf(u.getPos()));
-            gray.remove(Integer.valueOf(u.getPos()));
-            black.add(u.getPos());
+            //white.remove(Integer.valueOf(u.getPos()));
+            //gray.remove(Integer.valueOf(u.getPos()));
+            //black.add(u.getPos());
+            System.out.println("gray "+Arrays.toString(colors));
+            System.out.println("d "+Arrays.toString(distance));
+            System.out.println("pi "+Arrays.toString(pi));
 
             for (RoadSegment roadSegment : getNeighbors(u)) {
                 Intersection v = selectNode(roadSegment);
 
-                if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
+                if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
                     //System.out.println("test");
                     relax(u, v, roadSegment.getLength());
-                    white.remove(Integer.valueOf(v.getPos()));
-                    black.remove(Integer.valueOf(v.getPos()));
-                    gray.add(v.getPos());
+                    //white.remove(Integer.valueOf(v.getPos()));
+                    //black.remove(Integer.valueOf(v.getPos()));
+                    //gray.add(v.getPos());
+                    colors[v.getPos()] = "gray";
                 }
             }
+            colors[u.getPos()] = "black";
         }
 
         for (int i = 0; i < distance.length; i++) {
