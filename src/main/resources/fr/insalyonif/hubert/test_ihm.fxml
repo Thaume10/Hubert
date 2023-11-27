@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1201.0" styleClass="back" stylesheets="@test.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.Controller">
+
+
+    <children>
+      <ScrollPane layoutX="724.0" layoutY="147.0" prefHeight="643.0" prefWidth="429.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="411.0">
+               <children>
+                  <ListView prefHeight="571.0" prefWidth="412.0" />
+               </children></AnchorPane>
+        </content>
+      </ScrollPane>
+      <ChoiceBox layoutX="864.0" layoutY="102.0" prefWidth="150.0" styleClass="lbl-info" />
+      <Pane layoutX="29.0" layoutY="14.0" prefHeight="72.0" prefWidth="1150.0" styleClass="panel-info">
+         <children>
+            <Button layoutX="279.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="Save File" />
+            <Button layoutX="149.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="New courrier" />
+            <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" styleClass="btn-primary" text="New Delivery" />
+            <ImageView fitHeight="50.0" fitWidth="133.0" layoutX="1073.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <WebView fx:id="webView" layoutX="47.0" layoutY="146.0" prefHeight="576.0" prefWidth="633.0" />
+   </children>
+</Pane>
