@@ -86,7 +86,7 @@ public abstract class TemplateTSP implements TSP {
 	private void branchAndBound(int currentVertex, Collection<Integer> unvisited,
 			Collection<Integer> visited, double currentCost){
 
-		System.out.println("cout " + bestSolCost);
+		//System.out.println("cout " + bestSolCost);
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.size() == 0){
 	    	if (g.isArc(currentVertex,0)){

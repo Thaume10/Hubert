@@ -1,6 +1,9 @@
 package fr.insalyonif.hubert.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static fr.insalyonif.hubert.model.Dijkstra.deliveryRequest;
 
 public class CompleteGraph implements Graph {
 	private static final int MAX_COST = 40;
@@ -11,20 +14,32 @@ public class CompleteGraph implements Graph {
 	/**
 	 * Create a complete directed graph such that each edge has a weight within [MIN_COST,MAX_COST]
 	 * @param chemins
-	 * @param intersections
 	 */
-	public CompleteGraph(List<Chemin> chemins, List<Intersection> intersections){
+	public CompleteGraph(List<Chemin> chemins, ArrayList<Intersection> intersections){
 		this.nbVertices = intersections.size() ;
 		System.out.println("nb vertice "+ nbVertices);
 
 		cost = new double[nbVertices][nbVertices];
 		System.out.println("Cost size "+ cost[0].length);
 
-		for (int i=0; i<intersections.size(); i++){
-			/*System.out.println("position début"+ chemins.get(i).getDebut().getPos());
-			System.out.println("position fin"+ chemins.get(i).getFin().getPos()); */
-			cost[chemins.get(i).getDebut().getPos()][chemins.get(i).getFin().getPos()]= chemins.get(i).getCout();
+		System.out.println("chemins size "+ chemins.size());
+
+		for (int i=0; i<chemins.size(); i++) {
+			for (int j = 0; j < chemins.size(); j++) {
+
+				cost[chemins.get(i).getDebut().getPos()][chemins.get(i).getFin().getPos()]= chemins.get(i).getCout();
+				//cost[i][j] = chemins.get(i).getCout();
+			}
 		}
+
+			System.out.println("Tableau des coûts :");
+			for (int i = 0; i < cost.length; i++) {
+				for (int j = 0; j < cost[i].length; j++) {
+					System.out.print(cost[i][j] + "\t");
+				}
+				System.out.println(); // Passer à la ligne après chaque ligne du tableau
+			}
+
 	}
 
 	@Override
