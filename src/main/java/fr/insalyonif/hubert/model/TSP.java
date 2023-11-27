@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 
+import java.util.List;
+
 public interface TSP {
 	/**
 	 * Search for a shortest cost hamiltonian circuit in <code>g</code> within <code>timeLimit</code> milliseconds
@@ -9,7 +11,11 @@ public interface TSP {
 	 * @param g
 	 */
 	public void searchSolution(int timeLimit, Graph g);
-	
+
+	public default List<Chemin> bestCheminGlobal(List<Chemin> chemins) {
+		return null;
+	}
+
 	/**
 	 * @param i
 	 * @return the ith visited vertex in the solution computed by <code>searchSolution</code> 

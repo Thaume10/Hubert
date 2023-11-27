@@ -33,9 +33,14 @@ public class RunTSP {
 		TSP tsp = new TSP1();
 		tsp.searchSolution(20000, g);
 		System.out.print("Solution of cost "+tsp.getSolutionCost());
-		for (int i=0; i<= intersections.size()  ; i++)
+		for (int i=0; i< intersections.size()  ; i++)
 			System.out.print(tsp.getSolution(i)+" ");
 		System.out.println("0");
+		List<Chemin> bestChemin = tsp.bestCheminGlobal(chemins);
+		System.out.println("Meilleur chemin global :");
+		for (Chemin chemin : bestChemin) {
+			System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+		}
 
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){
 			System.out.println("Graphs with "+nbVertices+" vertices:");
