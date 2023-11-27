@@ -14,6 +14,4 @@ module fr.insalyonif.hubert {
     opens fr.insalyonif.hubert.controller to javafx.fxml;
     exports fr.insalyonif.hubert.views;
     opens fr.insalyonif.hubert.views to javafx.fxml;
-
-    exports fr.insalyonif.hubert;
 }

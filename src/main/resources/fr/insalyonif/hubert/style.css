@@ -179,35 +179,35 @@ a.text-danger:focused {
 
 a.bg-primary:hover,
 a.bg-primary:focused {
-    --fxbackground-color: darken($color, 10%); }
+    --fxbackground-color: darken(color, 10%); }
 
 .bg-success {
     -fx-background-color: #dff0d8; }
 
 a.bg-success:hover,
 a.bg-success:focused {
-    --fxbackground-color: darken($color, 10%); }
+    --fxbackground-color: darken(color, 10%); }
 
 .bg-info {
     -fx-background-color: #d9edf7; }
 
 a.bg-info:hover,
 a.bg-info:focused {
-    --fxbackground-color: darken($color, 10%); }
+    --fxbackground-color: darken(color, 10%); }
 
 .bg-warning {
     -fx-background-color: #fcf8e3; }
 
 a.bg-warning:hover,
 a.bg-warning:focused {
-    --fxbackground-color: darken($color, 10%); }
+    --fxbackground-color: darken(color, 10%); }
 
 .bg-danger {
     -fx-background-color: #f2dede; }
 
 a.bg-danger:hover,
 a.bg-danger:focused {
-    --fxbackground-color: darken($color, 10%); }
+    --fxbackground-color: darken(color, 10%); }
 
 .btn {
     -fx-font-weight: normal;
