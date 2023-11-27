@@ -60,7 +60,7 @@ public class ViewController implements Initializable {
             );
             markersJs.append(markerJs);
         }
-        System.out.println(markersJs.toString());  // Debugging
+        //System.out.println(markersJs.toString());  // Debugging
         return markersJs.toString();
     }
 

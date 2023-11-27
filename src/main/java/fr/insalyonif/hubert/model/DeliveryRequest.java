@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 
+import java.time.Instant;
+
 /**
  * Représente une demande de livraison caractérisée par un lieu de livraison et une fenêtre temporelle.
  * Cette classe est utilisée pour gérer les informations relatives à une demande de livraison spécifique.
@@ -17,6 +19,16 @@ public class DeliveryRequest {
     public DeliveryRequest(Intersection deliveryLocation, TimeWindow timeWindow) {
         this.deliveryLocation = deliveryLocation;
         this.timeWindow = timeWindow;
+    }
+
+    /**
+     * Constructeur pour créer une nouvelle demande de livraison sans timeWindow.
+     *
+     * @param deliveryLocation l'intersection représentant le lieu de livraison.
+     */
+    public DeliveryRequest(Intersection deliveryLocation) {
+        this.deliveryLocation = deliveryLocation;
+        this.timeWindow = new TimeWindow(Instant.parse("2023-11-27T08:00:00Z"),Instant.parse("2023-11-27T09:00:00Z"));
     }
 
     /**
