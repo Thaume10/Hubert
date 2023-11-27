@@ -1,4 +1,6 @@
-package fr.insalyonif.hubert.model;
+package tsp;
+
+
 
 /**
  * Représente un segment de route dans une carte de ville.

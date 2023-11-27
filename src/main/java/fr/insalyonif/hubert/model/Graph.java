@@ -1,4 +1,4 @@
-package fr.insalyonif.hubert.model;
+package tsp;
 
 public interface Graph {
 	/**
@@ -7,8 +7,8 @@ public interface Graph {
 	public abstract int getNbVertices();
 
 	/**
-	 * @param i 
-	 * @param j 
+	 * @param i
+	 * @param j
 	 * @return the cost of arc (i,j) if (i,j) is an arc; -1 otherwise
 	 */
 	public abstract double getCost(int i, int j);
