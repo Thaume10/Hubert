@@ -1,13 +1,9 @@
 package fr.insalyonif.hubert.views;
-import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -16,7 +12,7 @@ import fr.insalyonif.hubert.model.*;
 
 
 
-public class Controller implements Initializable {
+public class ViewController implements Initializable {
     @FXML
     private WebView webView;
 
@@ -40,7 +36,12 @@ public class Controller implements Initializable {
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 18
                 }).addTo(map);
-                %s  // This will be replaced by the markers JavaScript
+                var customIcon = L.icon({
+                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/929/929426.png',
+                    iconSize: [25, 25],
+                    iconAnchor: [12, 12],
+                });
+                %s
             </script>
         </body>
         </html>
@@ -51,7 +52,7 @@ public class Controller implements Initializable {
     private String generateMarkersJs(CityMap cityMap) {
         StringBuilder markersJs = new StringBuilder();
         for (Intersection intersection : cityMap.getIntersections()) {
-            String markerJs = "L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "]).addTo(map);";
+            String markerJs = "L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "], {icon: customIcon}).addTo(map);";
             markersJs.append(markerJs);
         }
         System.out.println(markersJs.toString());  // Debugging
@@ -61,23 +62,16 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         CityMap cityMap = new CityMap();
-        // Assuming you have a method to load your city map data
         try {
-            InputStream xmlStream = getClass().getResourceAsStream("/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
-            if (xmlStream != null) {
-                cityMap.loadFromXML(xmlStream);
-            } else {
-                throw new FileNotFoundException("Cannot find resource smallMap.xml");
-            }
+            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
+            cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         String markersJs = generateMarkersJs(cityMap);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
         WebEngine engine = webView.getEngine();
-        //engine.load("https://www.google.com");
         engine.loadContent(mapHtml);
     }
 }
