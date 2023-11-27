@@ -33,12 +33,13 @@ public class ViewController implements Initializable {
             <div id="map"></div>
             <script>
                 var map = L.map('map').setView([45.755, 4.87], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                    attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
                     maxZoom: 18
                 }).addTo(map);
                 var customIcon = L.icon({
-                    iconUrl: 'https://cdn-icons-png.flaticon.com/512/929/929426.png',
-                    iconSize: [25, 25],
+                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png',
+                    iconSize: [15, 20],
                     iconAnchor: [12, 12],
                 });
                 %s
@@ -52,7 +53,11 @@ public class ViewController implements Initializable {
     private String generateMarkersJs(CityMap cityMap) {
         StringBuilder markersJs = new StringBuilder();
         for (Intersection intersection : cityMap.getIntersections()) {
-            String markerJs = "L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "], {icon: customIcon}).addTo(map);";
+            String markerJs = String.format(
+                    "var marker = L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "], {icon: customIcon}).addTo(map);"
+                            + "marker.bindTooltip('ID: %d').openTooltip();",
+                    intersection.getId()
+            );
             markersJs.append(markerJs);
         }
         System.out.println(markersJs.toString());  // Debugging
