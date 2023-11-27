@@ -32,6 +32,7 @@ public abstract class TemplateTSP implements TSP {
 			Chemin chemin = getCheminBy(chemins,bestSol[i],bestSol[i+1]);
 			bestChemin.add(chemin);
 		}
+
 		bestChemin.add(getCheminBy(chemins,bestSol[bestSol.length-1],0));
 		return bestChemin;
 
@@ -74,7 +75,10 @@ public abstract class TemplateTSP implements TSP {
 	 * @param g
 	 * @return an iterator for visiting all vertices in <code>unvisited</code> which are successors of <code>currentVertex</code>
 	 */
+
 	public abstract Iterator<Integer> iterator(Integer currentVertex, Collection<Integer> unvisited, Graph g);
+
+
 
 	/**
 	 * Template method of a branch and bound algorithm for solving the TSP in <code>g</code>.
@@ -86,7 +90,9 @@ public abstract class TemplateTSP implements TSP {
 	private void branchAndBound(int currentVertex, Collection<Integer> unvisited,
 			Collection<Integer> visited, double currentCost){
 
+
 		//System.out.println("cout " + bestSolCost);
+
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.size() == 0){
 	    	if (g.isArc(currentVertex,0)){
