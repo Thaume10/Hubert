@@ -25,9 +25,9 @@ public abstract class AbstractDijkstra {
     protected CityMap cityMap;
 
     public AbstractDijkstra(int sizeGraph, CityMap cityMap) {
-        this.distance = new double[sizeGraph];
-        this.pi = new int[sizeGraph];
-        this.visited = new boolean[sizeGraph];
+        distance = new double[sizeGraph];
+        pi = new int[sizeGraph];
+        visited = new boolean[sizeGraph];
         this.cityMap = cityMap;
 
     }

@@ -1,5 +1,5 @@
 package fr.insalyonif.hubert.model;
-import java.util.*;
+
 
 public class Dijkstra extends AbstractDijkstra {
     public Dijkstra(int sizeGraph, CityMap cityMap) {
@@ -13,7 +13,7 @@ public class Dijkstra extends AbstractDijkstra {
     protected void relax(Intersection u, Intersection v, double weight) {
         if (distance[u.getPos()] + weight < distance[v.getPos()]) {
             distance[v.getPos()] = distance[u.getPos()] + weight;
-            this.pi[v.getPos()] = u.getPos();
+            pi[v.getPos()] = u.getPos();
         }
     }
 
@@ -30,7 +30,7 @@ public class Dijkstra extends AbstractDijkstra {
 
     @Override
     protected Chemin createChemin(Intersection start, Intersection destination, int[] pi, double cout) {
-        Chemin chemin = new Chemin(start, destination, pi, cout);;
+        Chemin chemin = new Chemin(start, destination, pi, cout);
         return chemin;
     }
 
