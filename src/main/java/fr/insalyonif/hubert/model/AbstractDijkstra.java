@@ -92,7 +92,11 @@ public abstract class AbstractDijkstra {
 
     protected void runDijkstra(Intersection start, int sizeGraph){
         //white.clear();
-        deliveryRequest.add(start);
+        if( !deliveryRequest.contains(start)){
+            deliveryRequest.add(start);
+        }
+
+        System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -112,9 +116,10 @@ public abstract class AbstractDijkstra {
             //white.remove(Integer.valueOf(u.getPos()));
             //gray.remove(Integer.valueOf(u.getPos()));
             //black.add(u.getPos());
-            System.out.println("gray "+Arrays.toString(colors));
-            System.out.println("d "+Arrays.toString(distance));
-            System.out.println("pi "+Arrays.toString(pi));
+            //System.out.println("gray "+Arrays.toString(colors));
+            //System.out.println("d "+Arrays.toString(distance));
+            //System.out.println("pi "+Arrays.toString(pi));
+            colors[u.getPos()] = "black";
 
             for (RoadSegment roadSegment : getNeighbors(u)) {
                 Intersection v = selectNode(roadSegment);
@@ -128,7 +133,7 @@ public abstract class AbstractDijkstra {
                     colors[v.getPos()] = "gray";
                 }
             }
-            colors[u.getPos()] = "black";
+
         }
 
         for (int i = 0; i < distance.length; i++) {
@@ -157,6 +162,10 @@ public abstract class AbstractDijkstra {
 
     public List<Chemin> getChemins() {
         return chemins;
+    }
+
+    public List<Intersection> getDeliveryRequest() {
+        return deliveryRequest;
     }
 
 }
