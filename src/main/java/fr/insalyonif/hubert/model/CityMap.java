@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+
 /**
  * Représente une carte de ville avec un ensemble d'intersections et l'emplacement d'un entrepôt.
  * Fournit des méthodes pour gérer les intersections, définir l'emplacement de l'entrepôt,
@@ -16,12 +21,22 @@ import java.util.Map;
 public class CityMap {
     private List<Intersection> intersections;
     private Intersection wareHouseLocation;
+    private List<Chemin> chemins; // List to store Chemin objects
 
     /**
      * Constructeur par défaut qui initialise la liste des intersections.
      */
     public CityMap() {
         this.intersections = new ArrayList<>();
+    }
+      // Getter for chemins
+      public List<Chemin> getChemins() {
+        return chemins;
+    }
+
+      // Getter for chemins
+      public void setChemins(List<Chemin>paths ) {
+        chemins=paths;
     }
 
     /**
@@ -145,27 +160,32 @@ public class CityMap {
         return null;
     }
 
-    public void displayIntersections() {
-        for (Intersection intersection : intersections) {
-            System.out.println("Intersection ID: " + intersection.getId());
-            System.out.println("Latitude: " + intersection.getLatitude());
-            System.out.println("Longitude: " + intersection.getLongitude());
+    public void displayIntersections(String filePath) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            for (Intersection intersection : intersections) {
+                writer.println("Intersection ID: " + intersection.getId());
+                writer.println("Latitude: " + intersection.getLatitude());
+                writer.println("Longitude: " + intersection.getLongitude());
 
-            // Display predecessors
-            System.out.print("Predecessors: ");
-            for (RoadSegment predecessor : intersection.getPredecessors()) {
-                System.out.print(predecessor.getOrigin().getId() + " ");
+                // Write predecessors
+                writer.print("Predecessors: ");
+                for (RoadSegment predecessor : intersection.getPredecessors()) {
+                    writer.print(predecessor.getOrigin().getId() + " ");
+                }
+                writer.println();
+
+                // Write successors
+                writer.print("Successors: ");
+                for (RoadSegment successor : intersection.getSuccessors()) {
+                    writer.print(successor.getDestination().getId() + " ");
+                }
+                writer.println();
+
+                writer.println("----------");
             }
-            System.out.println();
-
-            // Display successors
-            System.out.print("Successors: ");
-            for (RoadSegment successor : intersection.getSuccessors()) {
-                System.out.print(successor.getDestination().getId() + " ");
-            }
-            System.out.println();
-
-            System.out.println("----------");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+        
 }
