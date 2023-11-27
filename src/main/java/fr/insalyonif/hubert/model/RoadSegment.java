@@ -1,4 +1,6 @@
-package fr.insalyonif.hubert.model;
+package tsp;
+
+
 
 public class RoadSegment {
     private Intersection origin;
