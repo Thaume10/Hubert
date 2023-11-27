@@ -11,9 +11,8 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/test_ihm.fxml"));
-
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-
+        //fxmlLoader.setController(new MapView());
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
         stage.setTitle("Hubert!");
         stage.setScene(scene);
         stage.show();
