@@ -92,4 +92,28 @@ public class CityMap {
             destination.getPredecessors().add(segment);
         }
     }
+
+    public void displayIntersections() {
+        for (Intersection intersection : intersections) {
+            System.out.println("Intersection ID: " + intersection.getId());
+            System.out.println("Latitude: " + intersection.getLatitude());
+            System.out.println("Longitude: " + intersection.getLongitude());
+
+            // Display predecessors
+            System.out.print("Predecessors: ");
+            for (RoadSegment predecessor : intersection.getPredecessors()) {
+                System.out.print(predecessor.getOrigin().getId() + " ");
+            }
+            System.out.println();
+
+            // Display successors
+            System.out.print("Successors: ");
+            for (RoadSegment successor : intersection.getSuccessors()) {
+                System.out.print(successor.getDestination().getId() + " ");
+            }
+            System.out.println();
+
+            System.out.println("----------");
+        }
+    }
 }

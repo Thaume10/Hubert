@@ -67,7 +67,10 @@ public class MapView extends Application {
         primaryStage.show();
 
         
-        System.out.println(mapHtml);
+        //System.out.println(mapHtml);
+        
+    // Display intersections
+    //cityMap.displayIntersections();
     }
 
     private String generateMarkersJs(CityMap cityMap) {
