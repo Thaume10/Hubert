@@ -119,6 +119,7 @@ public class Dijkstra {
 
 
     public void dijkstraReverse(Intersection start, CityMap cityMap, int sizeGraph) {
+        //deliveryRequest.add(start);
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -134,6 +135,7 @@ public class Dijkstra {
 
         while (hasGrayNode() && notAllBlack()) {
             Intersection u = minGrayNode(cityMap);
+            //System.out.println("u "+u);
 //            if (u == null) {
 //                break;  // Tous les nœuds gris ont été explorés
 //            }
@@ -143,7 +145,8 @@ public class Dijkstra {
             black.add(u.getPos());
 
             for (RoadSegment roadSegment : u.getPredecessors()) {
-                Intersection v = roadSegment.getDestination();
+                Intersection v = roadSegment.getOrigin();
+                //System.out.println("u "+);
 
                 //if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
                 if (white.contains(v.getPos()) || gray.contains(v.getPos())) {
