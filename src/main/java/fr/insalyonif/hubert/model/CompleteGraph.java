@@ -1,4 +1,4 @@
-package tsp;
+package fr.insalyonif.hubert.model;
 
 import java.util.List;
 
