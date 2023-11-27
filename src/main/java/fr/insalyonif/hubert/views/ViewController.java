@@ -1,20 +1,33 @@
 package fr.insalyonif.hubert.views;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import fr.insalyonif.hubert.model.*;
-
-
+import javafx.stage.Stage;
 
 
 public class ViewController implements Initializable {
     @FXML
     private WebView webView;
+
+    @FXML
+    private Button delivery;
+
+    private CityMap cityMap;
+    private List<DeliveryRequest> listeDelivery;
 
     private static final String MAP_HTML_TEMPLATE = """
         <!DOCTYPE html>
@@ -49,7 +62,73 @@ public class ViewController implements Initializable {
         """;
 
 
+    @FXML
+    void handleOpenNewWindow(ActionEvent event) {
+        if(event.getSource()==delivery) {
+            try {
+                // Charger le fichier FXML de la nouvelle fenêtre
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/addDelivery.fxml"));
+                Parent root = (Parent) loader.load();
 
+
+                // Créer une nouvelle fenêtre
+                Stage newStage = new Stage();
+                newStage.setTitle("add Delivery");
+                newStage.setScene(new Scene(root));
+                DeliveryIHMController deliveryIHM = loader.getController();
+
+
+                // Afficher la nouvelle fenêtre
+                newStage.showAndWait();
+                Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
+
+                // Afficher les résultats
+                System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
+                System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
+                listeDelivery.add(new DeliveryRequest((intersectionPlusProche)));
+                System.out.println(listeDelivery.get(0).getDeliveryLocation().getId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    public static Intersection trouverIntersectionPlusProche(double lat, double lng, List<Intersection> intersections) {
+        if (intersections == null || intersections.isEmpty()) {
+            return null; // La liste d'intersections est vide
+        }
+
+        Intersection intersectionPlusProche = intersections.get(0);
+        double distanceMin = distance(lat, lng, intersectionPlusProche.getLatitude(), intersectionPlusProche.getLongitude());
+
+        for (Intersection intersection : intersections) {
+            double distanceActuelle = distance(lat, lng, intersection.getLatitude(), intersection.getLongitude());
+            if (distanceActuelle < distanceMin) {
+                distanceMin = distanceActuelle;
+                intersectionPlusProche = intersection;
+            }
+        }
+
+        return intersectionPlusProche;
+    }
+
+    // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
+    private static double distance(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371; // Rayon de la Terre en kilomètres
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadius * c; // Distance en kilomètres
+    }
     private String generateMarkersJs(CityMap cityMap) {
         StringBuilder markersJs = new StringBuilder();
         for (Intersection intersection : cityMap.getIntersections()) {
@@ -66,7 +145,8 @@ public class ViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CityMap cityMap = new CityMap();
+        cityMap = new CityMap();
+        listeDelivery = new ArrayList<>();
         try {
             String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
             cityMap.loadFromXML(xmlMap);
