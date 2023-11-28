@@ -117,21 +117,27 @@ public class ViewController implements Initializable {
         int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
         dij.dijkstra(cityMap.findIntersectionByPos(10), cityMap, sizeGraph);
+
         //minimiser les chemins
-        System.out.println(dij.getChemins());
+        //System.out.println(dij.getChemins());
+        //System.out.println(deliveryRequest);
+
         Graph g = new CompleteGraph(dij.getChemins(),deliveryRequest);
+
+
         TSP tsp = new TSP1();
         tsp.searchSolution(20000, g);
         System.out.print("Solution of cost "+tsp.getSolutionCost());
-        for (int i=0; i< cityMap.getIntersections().size()  ; i++)
+        for (int i=0; i< deliveryRequest.size()  ; i++)
             System.out.print(tsp.getSolution(i)+" ");
         System.out.println("0");
         List<Chemin> bestChemin = tsp.bestCheminGlobal(dij.getChemins());
+
         System.out.println("Meilleur chemin global :");
         for (Chemin chemin : bestChemin) {
             System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
         }
-        cityMap.setChemins(dij.getChemins());
+        cityMap.setChemins(bestChemin);
         
         String markersJs = generateMarkersJs(cityMap);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);

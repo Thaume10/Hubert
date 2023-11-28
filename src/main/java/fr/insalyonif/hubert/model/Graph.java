@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 
+import java.util.Map;
+
 public interface Graph {
 	/**
 	 * @return the number of vertices in <code>this</code>
@@ -19,5 +21,7 @@ public interface Graph {
 	 * @return true if <code>(i,j)</code> is an arc of <code>this</code>
 	 */
 	public abstract boolean isArc(int i, int j);
+
+	public abstract Map<Integer, Integer> getPositionToIndexMap();
 
 }

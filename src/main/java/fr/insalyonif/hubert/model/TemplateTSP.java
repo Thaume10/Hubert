@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public abstract class TemplateTSP implements TSP {
 	private Integer[] bestSol;
@@ -26,7 +28,7 @@ public abstract class TemplateTSP implements TSP {
 		branchAndBound(0, unvisited, visited, 0);
 	}
 
-	public List<Chemin> bestCheminGlobal(List<Chemin> chemins){
+	/*public List<Chemin> bestCheminGlobal(List<Chemin> chemins){
 		List<Chemin> bestChemin = new ArrayList<>();
 		for(int i=0;i<bestSol.length-1;i++){
 			Chemin chemin = getCheminBy(chemins,bestSol[i],bestSol[i+1]);
@@ -36,7 +38,45 @@ public abstract class TemplateTSP implements TSP {
 		bestChemin.add(getCheminBy(chemins,bestSol[bestSol.length-1],0));
 		return bestChemin;
 
+	}*/
+
+	public List<Chemin> bestCheminGlobal(List<Chemin> chemins) {
+		List<Chemin> bestChemin = new ArrayList<>();
+
+		// Récupérer la HashMap associant les positions aux indices
+		Map<Integer, Integer> positionToIndex = g.getPositionToIndexMap();
+		System.out.println("Clés de la HashMap : " + positionToIndex.keySet());
+
+		for (int i = 0; i < bestSol.length - 1; i++) {
+			int debutPosition = bestSol[i];
+			int finPosition = bestSol[i+1];
+			Integer cleTrouvee = null;
+			Integer cleTrouvee2 = null;
+			for (Map.Entry<Integer, Integer> entry : positionToIndex.entrySet()) {
+				if (entry.getValue().equals(debutPosition)) {
+					cleTrouvee = entry.getKey();
+					  // On a trouvé la clé, on peut sortir de la boucle
+				}else if (entry.getValue().equals(finPosition)) {
+					cleTrouvee2 = entry.getKey();
+					  // On a trouvé la clé, on peut sortir de la boucle
+				}
+				if(cleTrouvee!=null && cleTrouvee2!=null)break;
+			}
+
+			// Utiliser la HashMap pour obtenir l'indice associé à la position dans bestSol
+			Integer debutIndex = cleTrouvee;
+			Integer finIndex = cleTrouvee2;
+
+			Chemin chemin = getCheminBy(chemins, debutIndex, finIndex);
+			bestChemin.add(chemin);
+
+		}
+
+		return bestChemin;
 	}
+
+
+
 	public Chemin getCheminBy(List<Chemin> chemins, int debut, int fin) {
 		for (Chemin chemin : chemins) {
 			if (chemin.getDebut().getPos() == debut && chemin.getFin().getPos() == fin) {
@@ -91,14 +131,14 @@ public abstract class TemplateTSP implements TSP {
 			Collection<Integer> visited, double currentCost){
 
 
-		//System.out.println("cout " + bestSolCost);
+		//System.out.println("best Sol  " + bestSol);
 
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.size() == 0){
 	    	if (g.isArc(currentVertex,0)){
 	    		if (currentCost+g.getCost(currentVertex,0) < bestSolCost){
 	    			visited.toArray(bestSol);
-	    			bestSolCost = currentCost+g. getCost(currentVertex,0);
+	    			bestSolCost = currentCost+g.getCost(currentVertex,0);
 	    		}
 	    	}
 	    } else if (currentCost+bound(currentVertex,unvisited) < bestSolCost){

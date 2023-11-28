@@ -9,16 +9,18 @@ public class RunTSP {
 
 
 		ArrayList<Intersection> intersections = new ArrayList<>();
-		Intersection intersection0 = new Intersection(45.7597, 4.8422, 1, 0);
-		Intersection intersection1 = new Intersection(45.7583, 4.8415, 2, 1);
-		Intersection intersection2 = new Intersection(45.7570, 4.8400, 3, 2);
-		Intersection intersection3 = new Intersection(45.7570, 4.8400, 4, 3);
-		Intersection intersection4 = new Intersection(45.7570, 4.8400, 5, 4);
+		Intersection intersection0 = new Intersection(45.7597, 4.8422, 1, 9);
+		Intersection intersection1 = new Intersection(45.7583, 4.8415, 2, 50);
+		Intersection intersection2 = new Intersection(45.7570, 4.8400, 3, 3);
+		Intersection intersection3 = new Intersection(45.7570, 4.8400, 4, 4);
+		Intersection intersection4 = new Intersection(45.7570, 4.8400, 5, 7);
 		intersections.add(intersection0);
+		intersections.add(intersection1);
 		intersections.add(intersection2);
 		intersections.add(intersection3);
 		intersections.add(intersection4);
-		intersections.add(intersection1);
+
+
 
 
 // Création de la liste de Chemin
