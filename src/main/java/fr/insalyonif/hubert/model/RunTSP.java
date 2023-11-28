@@ -63,7 +63,9 @@ public class RunTSP {
 		List<Chemin> bestChemin = tsp.bestCheminGlobal(chemins);
 		System.out.println("Meilleur chemin global :");
 		for (Chemin chemin : bestChemin) {
-			System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout()) ;
+			System.out.println(chemin);
+			//System.out.print("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout()) ;
+
 		}
 
 		/*for (int nbVertices = 8; nbVertices <= 16; nbVertices += 2){

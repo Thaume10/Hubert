@@ -122,6 +122,7 @@ public class ViewController implements Initializable {
         //System.out.println(dij.getChemins());
         //System.out.println(deliveryRequest);
 
+        //APPEL AU TSP
         Graph g = new CompleteGraph(dij.getChemins(),deliveryRequest);
 
 
@@ -135,8 +136,10 @@ public class ViewController implements Initializable {
 
         System.out.println("Meilleur chemin global :");
         for (Chemin chemin : bestChemin) {
-            System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+            System.out.println(chemin);
+            //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
         }
+
         cityMap.setChemins(bestChemin);
         
         String markersJs = generateMarkersJs(cityMap);
