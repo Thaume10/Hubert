@@ -130,7 +130,7 @@ public class ViewController implements Initializable {
 
         CityMap cityMap = new CityMap();
         try {
-            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
+            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml";
             cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,9 +140,17 @@ public class ViewController implements Initializable {
         int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
-        dijkstra.runDijkstra(cityMap.findIntersectionByPos(37), sizeGraph);
         DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(37), sizeGraph);
+        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+
+//        for (Intersection intersection : cityMap.getIntersections()) {
+//            if(intersection.getPos()<100 && intersection.getPos()!=cityMap.getWareHouseLocation().getPos()){
+//                dijkstra.runDijkstra(intersection, sizeGraph);
+//                dijkstraInverse.runDijkstra(intersection, sizeGraph);
+//            }
+//
+//        }
 
 //        for (Chemin chemin : dijkstra.getChemins()) {
 //            System.out.println(chemin);

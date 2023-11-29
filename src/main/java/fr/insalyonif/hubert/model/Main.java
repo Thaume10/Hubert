@@ -18,7 +18,8 @@ public class Main {
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
         //dijkstra.addDeliveryRequest(cityMap.getWareHouseLocation());
-        dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        boolean test = dijkstra.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+        System.out.println(test);
 //        List<RoadSegment> successors = cityMap.findIntersectionByPos(8).getSuccessors();
 //        for(RoadSegment successor : successors){
 //            System.out.println("succ"+successor);
@@ -36,16 +37,18 @@ public class Main {
 //            }
 //        }
 
-        // Affichez les résultats, par exemple, les chemins calculés
-        for (Chemin chemin : dijkstra.getChemins()) {
-        System.out.println(chemin);
-        }
+
         //System.out.println("fin");
         // Créez une instance de DijkstraInverse et exécutez l'algorithme
 
 
-        //DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+//        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
+//        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(200), sizeGraph);
+
+        // Affichez les résultats, par exemple, les chemins calculés
+        for (Chemin chemin : dijkstra.getChemins()) {
+            System.out.println(chemin);
+        }
 
         //System.out.println("encore fin");
         // Affichez les résultats, par exemple, les chemins inverses calculés

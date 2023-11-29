@@ -90,7 +90,7 @@ public abstract class AbstractDijkstra {
 
 
 
-    public void runDijkstra(Intersection start, int sizeGraph){
+    public boolean runDijkstra(Intersection start, int sizeGraph){
         //white.clear();
         if( !deliveryRequest.contains(start)){
             deliveryRequest.add(start);
@@ -164,13 +164,16 @@ public abstract class AbstractDijkstra {
                 for (int i=0; i < sizeGraph; i++){
                     piCopy[i]= -1;
                 }
+                if(pi[deliveryRequest.getPos()]==-1){
+                    return false;
+                }
                 piCopyConstructor(piCopy,start,deliveryRequest);
-//
                 Chemin chemin = createChemin(start, deliveryRequest, piCopy, distance[deliveryRequest.getPos()]);
-                System.out.println(chemin);
+                //System.out.println(chemin);
                 chemins.add(chemin);
             }
         }
+        return true;
 
         //System.out.println("FinDijkstra");
     }
