@@ -9,7 +9,7 @@ import java.util.List;
  * un identifiant unique et une position. Elle peut également avoir des segments de route
  * qui la précèdent et la suivent.
  */
-public class Intersection {
+public class Intersection implements Comparable<Intersection>{
     private double latitude;
     private double longitude;
     private List<RoadSegment> predecessors;
@@ -164,6 +164,13 @@ public class Intersection {
                 ", id=" + id +
                 ", pos=" + pos +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Intersection other) {
+        // Implement comparison logic based on your requirements.
+        // For example, you can compare based on the intersection's position.
+        return Integer.compare(this.getPos(), other.getPos());
     }
 
 }
