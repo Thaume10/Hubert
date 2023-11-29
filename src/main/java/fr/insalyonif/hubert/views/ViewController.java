@@ -9,7 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import java.util.Random;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -116,7 +118,7 @@ public class ViewController implements Initializable {
                 }
 
                 cityMap.setChemins(bestChemin);
-
+                MAJDeliveryPointList();
                 String markersJs = drawPaths(cityMap);
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
@@ -127,6 +129,22 @@ public class ViewController implements Initializable {
             }
 
         }
+    }
+
+    private void MAJDeliveryPointList(){
+        List<Chemin> chemins =cityMap.getChemins();
+        Map<Intersection, Integer> intersectionIndexMap = new HashMap<>();
+        for (int i = 0; i < chemins.size(); i++) {
+            Chemin chemin = chemins.get(i);
+            intersectionIndexMap.put(chemin.getFin(), i);
+        }
+
+        // Trier la liste de points de livraison en fonction de l'ordre des intersections dans les chemins
+        listeDelivery.sort((dp1, dp2) -> {
+            int index1 = intersectionIndexMap.get(dp1.getDeliveryLocation());
+            int index2 = intersectionIndexMap.get(dp2.getDeliveryLocation());
+            return Integer.compare(index1, index2);
+        });
     }
 
 
@@ -166,21 +184,23 @@ public class ViewController implements Initializable {
     }
     private StringBuilder displayDeliveryPoints() {
         StringBuilder markersJs = new StringBuilder();
-        
         String iconUrl   = "https://api.iconify.design/mdi/map-marker.svg?color=%23ffae42";
         String markerJs = String.format(
                 "var marker = L.marker([" + cityMap.getWareHouseLocation().getLatitude() + ", " +  cityMap.getWareHouseLocation().getLongitude() + "], {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 30]})}).addTo(map);"
                         + "marker.bindTooltip('ID: %d').openTooltip();", iconUrl, cityMap.getWareHouseLocation().getId()
-            );
+        );
+        int i=0;
         for (DeliveryRequest deliveryRequest : listeDelivery) {
             markersJs.append(markerJs);
             iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
-            markerJs = String.format(
-                "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "], {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
-                        + "marker.bindTooltip('ID: %d').openTooltip();",
-                iconUrl, deliveryRequest.getDeliveryLocation().getId()
+            i++;
+            String markerJs = String.format(
+                    "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]}).addTo(map);"
+                            + "marker.bindTooltip('Nb: %d').openTooltip();",
+                     //deliveryRequest.getDeliveryLocation().getId()
+                    iconUrl,i
             );
-            
+
             markersJs.append(markerJs);
         }
         return markersJs;
