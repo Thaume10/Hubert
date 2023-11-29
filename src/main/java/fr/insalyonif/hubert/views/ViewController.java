@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import java.util.Random;
 
 import java.io.IOException;
 import java.net.URL;
@@ -208,22 +209,51 @@ public class ViewController implements Initializable {
             polylineCoords.append("]");
 
 
-            if(index==0){
-                String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'blue'}).addTo(map);";
+            //if(index==0){
+                //String polylineJs = "L.polyline(" + polylineCoords + ", {color: '#0000FF'}).addTo(map);";
+                //markersJs.append(polylineJs);
+              //   System.out.println(polylineJs);
+            //}else{
+                String polylineJs = "L.polyline(" + polylineCoords + ", {color: '"+generateRandomColor()+"'}).addTo(map);";
                 markersJs.append(polylineJs);
                  System.out.println(polylineJs);
-            }else{
-                String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'red'}).addTo(map);";
-                markersJs.append(polylineJs);
-                 System.out.println(polylineJs);
-            }
+            //}
 
-                 System.out.println("CHemin index "+ i);
+                 System.out.println("Chemin index "+ i);
            
 
             index++;
         }
         return markersJs.toString();
+    }
+
+    public static String generateRandomColor() {
+        // Générateur de nombres aléatoires
+        Random random = new Random();
+
+        // Génération de trois composants de couleur (R, G, B)
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+
+        // Conversion des composants de couleur en format hexadécimal
+        String hexRed = Integer.toHexString(red);
+        String hexGreen = Integer.toHexString(green);
+        String hexBlue = Integer.toHexString(blue);
+
+        // Assurez-vous que chaque composant a deux chiffres hexadécimaux
+        hexRed = padZero(hexRed);
+        hexGreen = padZero(hexGreen);
+        hexBlue = padZero(hexBlue);
+
+        // Concaténation des composants pour obtenir la couleur complète
+        String hexColor = "#" + hexRed + hexGreen + hexBlue;
+
+        return hexColor.toUpperCase(); // Retourne la couleur en majuscules
+    }
+
+    private static String padZero(String hexComponent) {
+        return hexComponent.length() == 1 ? "0" + hexComponent : hexComponent;
     }
 
     @Override
