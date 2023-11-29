@@ -27,6 +27,10 @@ public class ViewController implements Initializable {
     private Button delivery;
 
     private CityMap cityMap;
+    private Dijkstra dij;
+    private int sizeGraph;
+
+    private  WebEngine engine;
     private List<DeliveryRequest> listeDelivery;
 
     private static final String MAP_HTML_TEMPLATE = """
@@ -86,7 +90,15 @@ public class ViewController implements Initializable {
                 System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
                 System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
                 listeDelivery.add(new DeliveryRequest((intersectionPlusProche)));
-                System.out.println(listeDelivery.get(0).getDeliveryLocation().getId());
+
+                dij.dijkstra(intersectionPlusProche, cityMap, sizeGraph);
+                cityMap.setChemins(dij.getChemins());
+
+                String markersJs = drawPaths(cityMap);
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+
+                engine.loadContent(mapHtml);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -139,8 +151,10 @@ public class ViewController implements Initializable {
             );
             markersJs.append(markerJs);
         }
-
-        // Draw paths (chemins)
+        return markersJs.toString();
+    }
+    private String drawPaths(CityMap cityMap) {
+        StringBuilder markersJs = new StringBuilder();
         int index=0;
         for (Chemin chemin : cityMap.getChemins()) {
             // Begin with the end intersection
@@ -184,6 +198,7 @@ public class ViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cityMap = new CityMap();
         listeDelivery = new ArrayList<>();
+        engine = webView.getEngine();
         try {
             String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
             cityMap.loadFromXML(xmlMap);
@@ -191,14 +206,15 @@ public class ViewController implements Initializable {
             e.printStackTrace();
         }
 
-        int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
-        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
-        dij.dijkstra(cityMap.findIntersectionByPos(10), cityMap, sizeGraph);
-        cityMap.setChemins(dij.getChemins());
+        sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
+        dij = new Dijkstra(sizeGraph, cityMap);
+
+
+
 
         String markersJs = generateMarkersJs(cityMap);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-        WebEngine engine = webView.getEngine();
+
         engine.loadContent(mapHtml);
     }
 }
