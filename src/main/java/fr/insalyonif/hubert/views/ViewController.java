@@ -139,7 +139,44 @@ public class ViewController implements Initializable {
             );
             markersJs.append(markerJs);
         }
-        //System.out.println(markersJs.toString());  // Debugging
+
+        // Draw paths (chemins)
+        int index=0;
+        for (Chemin chemin : cityMap.getChemins()) {
+            // Begin with the end intersection
+            int currentIndex = chemin.getFin().getPos();
+            int nextIndex = chemin.getPi()[currentIndex];
+
+            StringBuilder polylineCoords = new StringBuilder("[");
+            polylineCoords.append("[").append(chemin.getFin().getLatitude()).append(", ").append(chemin.getFin().getLongitude()).append("],");
+
+            System.out.println("fin"+chemin.getFin());
+            // Loop through pi array
+            while (nextIndex != -1) {
+                Intersection currentIntersection = cityMap.findIntersectionByPos(nextIndex);
+                System.out.println(currentIntersection);
+                if (currentIntersection != null) {
+                    polylineCoords.append("[").append(currentIntersection.getLatitude()).append(", ").append(currentIntersection.getLongitude()).append("],");
+                }
+                currentIndex = nextIndex;
+                nextIndex = chemin.getPi()[currentIndex];
+            }
+            System.out.println("debut"+chemin.getDebut());
+            // End with the start intersection
+            polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
+
+            polylineCoords.append("]");
+            if(index==0){
+                String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'blue'}).addTo(map);";
+                markersJs.append(polylineJs);
+            }else{
+                String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'red'}).addTo(map);";
+                markersJs.append(polylineJs);
+            }
+
+
+            index++;
+        }
         return markersJs.toString();
     }
 
@@ -153,6 +190,11 @@ public class ViewController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
+        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
+        dij.dijkstra(cityMap.findIntersectionByPos(10), cityMap, sizeGraph);
+        cityMap.setChemins(dij.getChemins());
 
         String markersJs = generateMarkersJs(cityMap);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);

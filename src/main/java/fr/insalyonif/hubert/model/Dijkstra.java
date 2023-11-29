@@ -36,7 +36,7 @@ public class Dijkstra {
 
     public void dijkstra(Intersection start, CityMap cityMap, int sizeGraph) {
         deliveryRequest.add(start);
-        white.clear();
+        //white.clear();
         for(int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -120,7 +120,7 @@ public class Dijkstra {
 
     public void dijkstraReverse(Intersection start, CityMap cityMap, int sizeGraph) {
         //deliveryRequest.add(start);
-        white.clear();
+        //white.clear();
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -156,7 +156,7 @@ public class Dijkstra {
                     //Mettez à jour la distance en ajoutant l'heuristique
                     //double heuristicValue = heuristic(v, cityMap.getWareHouseLocation());
                     //distance[v.getPos()] = distance[u.getPos()] + roadSegment.getLength();
-                    pi[v.getPos()] = u.getPos();
+                    //pi[v.getPos()] = u.getPos();
 
                     //colors[v.getPos()] = "gray";
                     white.remove(Integer.valueOf(v.getPos()));
