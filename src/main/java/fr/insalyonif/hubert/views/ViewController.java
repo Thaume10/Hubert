@@ -163,22 +163,25 @@ public class ViewController implements Initializable {
 
         return earthRadius * c; // Distance en kilomètres
     }
-    private String generateMarkersJs(CityMap cityMap) {
+    private StringBuilder displayDeliveryPoints() {
         StringBuilder markersJs = new StringBuilder();
-        for (Intersection intersection : cityMap.getIntersections()) {
+        for (DeliveryRequest deliveryRequest : listeDelivery) {
             String markerJs = String.format(
-                    "var marker = L.marker([" + intersection.getLatitude() + ", " + intersection.getLongitude() + "], {icon: customIcon}).addTo(map);"
+                    "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "], {icon: customIcon}).addTo(map);"
                             + "marker.bindTooltip('ID: %d').openTooltip();",
-                    intersection.getId()
+                     deliveryRequest.getDeliveryLocation().getId()
             );
             markersJs.append(markerJs);
         }
-        return markersJs.toString();
+        return markersJs;
     }
+
+
     private String drawPaths(CityMap cityMap) {
-        StringBuilder markersJs = new StringBuilder();
+        StringBuilder markersJs = displayDeliveryPoints();
         int index=0;
-        for (Chemin chemin : cityMap.getChemins()) {
+        for (int i = cityMap.getChemins().size() - 1; i >= 0; i--) {
+            Chemin chemin = cityMap.getChemins().get(i);
             // Begin with the end intersection
             int currentIndex = chemin.getFin().getPos();
             int nextIndex = chemin.getPi()[currentIndex];
@@ -190,6 +193,8 @@ public class ViewController implements Initializable {
             // Loop through pi array
             while (nextIndex != -1) {
                 Intersection currentIntersection = cityMap.findIntersectionByPos(nextIndex);
+              
+
                 System.out.println(currentIntersection);
                 if (currentIntersection != null) {
                     polylineCoords.append("[").append(currentIntersection.getLatitude()).append(", ").append(currentIntersection.getLongitude()).append("],");
@@ -200,16 +205,21 @@ public class ViewController implements Initializable {
             System.out.println("debut"+chemin.getDebut());
             // End with the start intersection
             polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
-
             polylineCoords.append("]");
+
+
             if(index==0){
                 String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'blue'}).addTo(map);";
                 markersJs.append(polylineJs);
+                 System.out.println(polylineJs);
             }else{
                 String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'red'}).addTo(map);";
                 markersJs.append(polylineJs);
+                 System.out.println(polylineJs);
             }
 
+                 System.out.println("CHemin index "+ i);
+           
 
             index++;
         }
@@ -230,12 +240,14 @@ public class ViewController implements Initializable {
 
         sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         dij = new Dijkstra(sizeGraph, cityMap);
+        //dij.runDijkstra(cityMap.getIntersections().get(7), sizeGraph);
         dijInv = new DijkstraInverse(sizeGraph,cityMap);
-
-
-
-        String markersJs = generateMarkersJs(cityMap);
-        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+        // dijInv.runDijkstra(cityMap.getIntersections().get(7), sizeGraph);
+        // dij.runDijkstra(cityMap.getIntersections().get(10), sizeGraph);
+        // dijInv.runDijkstra(cityMap.getIntersections().get(10), sizeGraph);
+        // cityMap.setChemins(dijInv.getChemins());
+        
+        String mapHtml = MAP_HTML_TEMPLATE;
 
         engine.loadContent(mapHtml);
     }
