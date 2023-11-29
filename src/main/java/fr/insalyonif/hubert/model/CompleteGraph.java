@@ -19,7 +19,7 @@ public class CompleteGraph implements Graph {
 	 * Create a complete directed graph such that each edge has a weight within [MIN_COST,MAX_COST]
 	 * @param chemins
 	 */
-	public CompleteGraph(List<Chemin> chemins, ArrayList<DeliveryRequest> intersections){
+	public CompleteGraph(List<Chemin> chemins, ArrayList<DeliveryRequest> intersections,CityMap cityMap){
 		this.nbVertices = intersections.size()+1 ;
 		System.out.println("nb vertice "+ nbVertices);
 
@@ -35,10 +35,11 @@ public class CompleteGraph implements Graph {
 
 
 		positionToIndex = new HashMap<>();
-		positionToIndex.put(6,0);
+		positionToIndex.put(cityMap.getWareHouseLocation().getPos(),0);
 		for (int i = 1; i < nbVertices; i++) {
 			positionToIndex.put(intersections.get(i-1).getDeliveryLocation().getPos(), i);
 		}
+
 
 		// Remplir la matrice de coût avec les valeurs correctes
 		for (Chemin chemin : chemins) {

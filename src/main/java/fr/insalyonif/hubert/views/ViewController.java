@@ -97,7 +97,7 @@ public class ViewController implements Initializable {
                 dij.runDijkstra(intersectionPlusProche, sizeGraph);
                 dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
 
-                Graph g = new CompleteGraph(dij.getChemins(),listeDelivery);
+                Graph g = new CompleteGraph(dij.getChemins(),listeDelivery,cityMap);
 
 
                 TSP tsp = new TSP1();
@@ -222,7 +222,7 @@ public class ViewController implements Initializable {
         listeDelivery = new ArrayList<>();
         engine = webView.getEngine();
         try {
-            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml";
+            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml";
             cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
             e.printStackTrace();
