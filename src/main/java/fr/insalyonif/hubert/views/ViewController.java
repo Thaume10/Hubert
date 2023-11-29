@@ -184,18 +184,19 @@ public class ViewController implements Initializable {
     }
     private StringBuilder displayDeliveryPoints() {
         StringBuilder markersJs = new StringBuilder();
-        String iconUrl   = "https://api.iconify.design/mdi/map-marker.svg?color=%23ffae42";
+        String iconUrl   = "https://cdn-icons-png.flaticon.com/512/124/124434.png";
+        //https://api.iconify.design/mdi/map-marker.svg?color=%23ffae42
         String markerJs = String.format(
                 "var marker = L.marker([" + cityMap.getWareHouseLocation().getLatitude() + ", " +  cityMap.getWareHouseLocation().getLongitude() + "], {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 30]})}).addTo(map);"
-                        + "marker.bindTooltip('ID: %d').openTooltip();", iconUrl, cityMap.getWareHouseLocation().getId()
+                        + "marker.bindTooltip('%s').openTooltip();", iconUrl, "Warehouse"
         );
         int i=0;
         for (DeliveryRequest deliveryRequest : listeDelivery) {
             markersJs.append(markerJs);
             iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
             i++;
-            String markerJs = String.format(
-                    "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]}).addTo(map);"
+            markerJs = String.format(
+                    "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
                             + "marker.bindTooltip('Nb: %d').openTooltip();",
                      //deliveryRequest.getDeliveryLocation().getId()
                     iconUrl,i
