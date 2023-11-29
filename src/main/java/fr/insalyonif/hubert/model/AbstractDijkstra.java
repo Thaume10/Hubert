@@ -96,7 +96,7 @@ public abstract class AbstractDijkstra {
             deliveryRequest.add(start);
         }
 
-        System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
+        //System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -158,6 +158,25 @@ public abstract class AbstractDijkstra {
         }*
 
          */
+        // Vérifiez si le point de départ peut atteindre tous les points de livraison
+        boolean canReachAllDeliveryPoints = true;
+        for (Intersection deliveryPoint : deliveryRequest) {
+            if (distance[deliveryPoint.getPos()] == INFINITY) {
+                canReachAllDeliveryPoints = false;
+                break;
+            }
+        }
+
+        if (!canReachAllDeliveryPoints) {
+            // Retirez le point de départ des demandes de livraison
+            deliveryRequest.remove(start);
+
+            // Supprimez les chemins qui partent du point de départ
+            chemins.removeIf(chemin -> chemin.getDebut().equals(start));
+            chemins.removeIf(chemin -> chemin.getFin().equals(start));
+
+            return false;
+        }
 
         for (Intersection deliveryRequest : deliveryRequest){
             if(deliveryRequest!=start){

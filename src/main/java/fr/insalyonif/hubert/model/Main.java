@@ -45,10 +45,16 @@ public class Main {
         DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
         //dijkstra.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
         //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
-        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
-        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
-        dijkstra.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
-        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+
+        boolean a = dijkstra.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+        boolean b =dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+
+        if(!a || !b){
+            System.out.println("on ne peut pas afficher ce point");
+        }
+
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
 
         // Affichez les résultats, par exemple, les chemins calculés
         for (Chemin chemin : dijkstra.getChemins()) {
@@ -56,7 +62,12 @@ public class Main {
             //System.out.println(chemin.getPi()[345]);
             //System.out.println(chemin.getPi()[10]);
             //System.out.println(chemin.getPi()[8]);
-            System.out.println(chemin.getPi()[14]);
+            //System.out.println(chemin.getPi()[14]);
+        }
+
+        for (Intersection inter : dijkstra.getDeliveryRequest()) {
+            System.out.println(inter);
+
         }
 
         //System.out.println("encore fin");
