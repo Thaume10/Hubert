@@ -62,25 +62,25 @@ public class MapView implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        webView = new WebView();
-        CityMap cityMap = new CityMap();
-        // Assuming you have a method to load your city map data
-        try {
-            InputStream xmlStream = getClass().getResourceAsStream("/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
-            if (xmlStream != null) {
-                cityMap.loadFromXML(xmlStream);
-            } else {
-                throw new FileNotFoundException("Cannot find resource smallMap.xml");
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        webView = new WebView();
+//        CityMap cityMap = new CityMap();
+//        // Assuming you have a method to load your city map data
+//        try {
+//            InputStream xmlStream = getClass().getResourceAsStream("/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
+//            if (xmlStream != null) {
+//                cityMap.loadFromXML(xmlStream);
+//            } else {
+//                throw new FileNotFoundException("Cannot find resource smallMap.xml");
+//            }
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
-        String markersJs = generateMarkersJs(cityMap);
-        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-        engine=webView.getEngine();
-        //engine.loadContent(mapHtml);
-        engine.load("http://www.google.com");
+//        String markersJs = generateMarkersJs(cityMap);
+//        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+//        engine=webView.getEngine();
+//        //engine.loadContent(mapHtml);
+//        engine.load("http://www.google.com");
     }
 }

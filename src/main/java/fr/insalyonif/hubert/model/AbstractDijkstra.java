@@ -90,7 +90,7 @@ public abstract class AbstractDijkstra {
 
 
 
-    protected void runDijkstra(Intersection start, int sizeGraph){
+    public void runDijkstra(Intersection start, int sizeGraph){
         //white.clear();
         if( !deliveryRequest.contains(start)){
             deliveryRequest.add(start);
@@ -106,6 +106,7 @@ public abstract class AbstractDijkstra {
         //black.clear();
         //gray.clear();
         distance[start.getPos()] = 0.0;
+
         //white.remove(Integer.valueOf(start.getPos()));
         //gray.add(start.getPos());
         colors[start.getPos()] = "gray";
@@ -119,10 +120,12 @@ public abstract class AbstractDijkstra {
             //System.out.println("gray "+Arrays.toString(colors));
             //System.out.println("d "+Arrays.toString(distance));
             //System.out.println("pi "+Arrays.toString(pi));
-            colors[u.getPos()] = "black";
+
 
             for (RoadSegment roadSegment : getNeighbors(u)) {
+
                 Intersection v = selectNode(roadSegment);
+
 
                 if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
                     //System.out.println("test");
@@ -133,10 +136,12 @@ public abstract class AbstractDijkstra {
                     colors[v.getPos()] = "gray";
                 }
             }
+            colors[u.getPos()] = "black";
 
         }
 
-        for (int i = 0; i < distance.length; i++) {
+
+        /*for (int i = 0; i < distance.length; i++) {
             if (distance[i] != INFINITY && distance[i] != 0) {
                 //System.out.println("pi"+Arrays.toString(pi));
                 Intersection destination = cityMap.findIntersectionByPos(i);
@@ -150,7 +155,23 @@ public abstract class AbstractDijkstra {
                     //System.out.println(chemin);
                 }
             }
+        }*
+
+         */
+        int [] piCopy = new int[sizeGraph];
+        for (Intersection deliveryRequest : deliveryRequest){
+            if(deliveryRequest!=start){
+                for (int i=0; i < sizeGraph; i++){
+                    piCopy[i]= -1;
+                }
+                piCopyConstructor(piCopy,start,deliveryRequest);
+//
+                Chemin chemin = createChemin(start, deliveryRequest, piCopy, distance[deliveryRequest.getPos()]);
+                System.out.println(chemin);
+                chemins.add(chemin);
+            }
         }
+
         //System.out.println("FinDijkstra");
     }
 
@@ -164,6 +185,7 @@ public abstract class AbstractDijkstra {
         return chemins;
     }
 
+    protected abstract void piCopyConstructor(int [] piCopy,Intersection start, Intersection delivery);
     public List<Intersection> getDeliveryRequest() {
         return deliveryRequest;
     }

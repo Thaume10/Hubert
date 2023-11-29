@@ -17,6 +17,15 @@ public class Dijkstra extends AbstractDijkstra {
         }
     }
 
+    protected void piCopyConstructor(int [] piCopy,Intersection start, Intersection delivery) {
+        int j = delivery.getPos();
+        while (j!=start.getPos()) {
+            System.out.println(this.pi[j]);
+            piCopy[j]=this.pi[j];
+            j = this.pi[j];
+        }
+    }
+
 
     @Override
     protected Iterable<RoadSegment> getNeighbors(Intersection intersection) {

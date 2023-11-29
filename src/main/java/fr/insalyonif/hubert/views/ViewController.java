@@ -140,16 +140,16 @@ public class ViewController implements Initializable {
         int sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
-        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(37), sizeGraph);
         DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(37), sizeGraph);
 
-        for (Chemin chemin : dijkstra.getChemins()) {
-            System.out.println(chemin);
-        }
-        for (Chemin chemin : dijkstraInverse.getChemins()) {
-            System.out.println(chemin);
-        }
+//        for (Chemin chemin : dijkstra.getChemins()) {
+//            System.out.println(chemin);
+//        }
+//        for (Chemin chemin : dijkstraInverse.getChemins()) {
+//            System.out.println(chemin);
+//        }
         cityMap.setChemins(dijkstraInverse.getChemins());
         
         String markersJs = generateMarkersJs(cityMap);

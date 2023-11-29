@@ -37,13 +37,16 @@ public class Main {
 //        }
 
         // Affichez les résultats, par exemple, les chemins calculés
-        //for (Chemin chemin : dijkstra.getChemins()) {
-        //System.out.println(chemin);
-        //}
+        for (Chemin chemin : dijkstra.getChemins()) {
+        System.out.println(chemin);
+        }
         //System.out.println("fin");
         // Créez une instance de DijkstraInverse et exécutez l'algorithme
-        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+
+
+        //DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+
         //System.out.println("encore fin");
         // Affichez les résultats, par exemple, les chemins inverses calculés
 
@@ -105,9 +108,14 @@ public class Main {
 //        CityMap cityMap = new CityMap();
 //        cityMap.setWareHouseLocation(intersection0);
 //        cityMap.setIntersections(intersections);
+//        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
 //        Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
 //        dijkstra.runDijkstra(intersection1, sizeGraph);
-//        System.out.println("chemin");
+//        dijkstraInverse.runDijkstra(intersection1, sizeGraph);
+//        dijkstra.runDijkstra(intersection4, sizeGraph);
+//        dijkstraInverse.runDijkstra(intersection4, sizeGraph);
+        //dijkstraInverse.runDijkstra(intersection4, sizeGraph);
+
 //        for (Intersection point : new ArrayList<>(dijkstra.getDeliveryRequest())) {
 //            System.out.println(point);
 //            if (point.getPos() != intersection1.getPos()) {
@@ -119,9 +127,9 @@ public class Main {
 
 
 
-        for(Chemin chemin : dijkstraInverse.getChemins()){
-            System.out.println(chemin);
-        }
+//        for(Chemin chemin : dijkstraInverse.getChemins()){
+//            System.out.println(chemin);
+//        }
 
     }
 
