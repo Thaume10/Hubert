@@ -158,12 +158,15 @@ public abstract class AbstractDijkstra {
         }*
 
          */
-        int [] piCopy = new int[sizeGraph];
+
         for (Intersection deliveryRequest : deliveryRequest){
             if(deliveryRequest!=start){
+                int [] piCopy = new int[sizeGraph];
                 for (int i=0; i < sizeGraph; i++){
                     piCopy[i]= -1;
                 }
+
+
                 piCopyConstructor(piCopy,start,deliveryRequest);
 //
                 Chemin chemin = createChemin(start, deliveryRequest, piCopy, distance[deliveryRequest.getPos()]);
