@@ -28,11 +28,12 @@ public class ViewController implements Initializable {
 
     private CityMap cityMap;
     private Dijkstra dij;
+
     private DijkstraInverse dijInv;
     private int sizeGraph;
 
     private  WebEngine engine;
-    private List<DeliveryRequest> listeDelivery;
+    private ArrayList<DeliveryRequest> listeDelivery;
 
     private static final String MAP_HTML_TEMPLATE = """
         <!DOCTYPE html>
@@ -90,11 +91,30 @@ public class ViewController implements Initializable {
                 // Afficher les résultats
                 System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
                 System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
-                listeDelivery.add(new DeliveryRequest((intersectionPlusProche)));
+                DeliveryRequest deli= new DeliveryRequest((intersectionPlusProche));
+                listeDelivery.add(deli);
 
                 dij.runDijkstra(intersectionPlusProche, sizeGraph);
                 dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
-                cityMap.setChemins(dij.getChemins());
+
+                Graph g = new CompleteGraph(dij.getChemins(),listeDelivery);
+
+
+                TSP tsp = new TSP1();
+                tsp.searchSolution(20000, g);
+                System.out.print("Solution of cost "+tsp.getSolutionCost());
+                for (int i=0; i< listeDelivery.size()  ; i++)
+                    System.out.print(tsp.getSolution(i)+" ");
+                System.out.println("0");
+                List<Chemin> bestChemin = tsp.bestCheminGlobal(dij.getChemins());
+
+                System.out.println("Meilleur chemin global :");
+                for (Chemin chemin : bestChemin) {
+                    System.out.println(chemin);
+                    //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+                }
+
+                cityMap.setChemins(bestChemin);
 
                 String markersJs = drawPaths(cityMap);
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
