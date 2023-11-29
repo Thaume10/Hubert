@@ -2,6 +2,8 @@ package fr.insalyonif.hubert.model;
 import java.util.*;
 
 public class Dijkstra extends AbstractDijkstra {
+
+    private final int INFINITY = Integer.MAX_VALUE;
     public Dijkstra(int sizeGraph, CityMap cityMap) {
         super(sizeGraph, cityMap);
         deliveryRequest.add(cityMap.getWareHouseLocation());
@@ -20,7 +22,7 @@ public class Dijkstra extends AbstractDijkstra {
     protected void piCopyConstructor(int [] piCopy,Intersection start, Intersection delivery) {
         int j = delivery.getPos();
         while (j!=start.getPos()) {
-            System.out.println(this.pi[j]);
+            //System.out.println(this.pi[j]);
             piCopy[j]=this.pi[j];
             j = this.pi[j];
         }
@@ -31,6 +33,18 @@ public class Dijkstra extends AbstractDijkstra {
     protected Iterable<RoadSegment> getNeighbors(Intersection intersection) {
         return intersection.getSuccessors();
     }
+
+//    @Override
+//    protected boolean canReachAllDeliveryPoints(Intersection intersection) {
+//        boolean canReachAllDeliveryPoints = true;
+//        for (Intersection deliveryPoint : deliveryRequest) {
+//            if (distance[deliveryPoint.getPos()] == INFINITY) {
+//                canReachAllDeliveryPoints = false;
+//                break;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     protected Intersection selectNode(RoadSegment roadSegment) {

@@ -8,9 +8,9 @@ import java.util.List;
 public abstract class AbstractDijkstra {
     private final int INFINITY = Integer.MAX_VALUE;
 
-    public static double[] distance;
-    public static int[] pi;
-    public static boolean[] visited;
+    public double[] distance;
+    public int[] pi;
+    public boolean[] visited;
 
     public String[] colors;
 
@@ -90,13 +90,13 @@ public abstract class AbstractDijkstra {
 
 
 
-    public void runDijkstra(Intersection start, int sizeGraph){
+    public boolean runDijkstra(Intersection start, int sizeGraph){
         //white.clear();
         if( !deliveryRequest.contains(start)){
             deliveryRequest.add(start);
         }
 
-        System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
+        //System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
@@ -158,6 +158,25 @@ public abstract class AbstractDijkstra {
         }*
 
          */
+        // Vérifiez si le point de départ peut atteindre tous les points de livraison
+        boolean canReachAllDeliveryPoints = true;
+        for (Intersection deliveryPoint : deliveryRequest) {
+            if (distance[deliveryPoint.getPos()] == INFINITY) {
+                canReachAllDeliveryPoints = false;
+                break;
+            }
+        }
+
+        if (!canReachAllDeliveryPoints) {
+            // Retirez le point de départ des demandes de livraison
+            deliveryRequest.remove(start);
+
+            // Supprimez les chemins qui partent du point de départ
+            chemins.removeIf(chemin -> chemin.getDebut().equals(start));
+            chemins.removeIf(chemin -> chemin.getFin().equals(start));
+
+            return false;
+        }
 
         for (Intersection deliveryRequest : deliveryRequest){
             if(deliveryRequest!=start){
@@ -165,15 +184,18 @@ public abstract class AbstractDijkstra {
                 for (int i=0; i < sizeGraph; i++){
                     piCopy[i]= -1;
                 }
-
-
+                if(pi[deliveryRequest.getPos()]==-1){
+                    //this.deliveryRequest.remove(deliveryRequest);
+                    return false;
+                }
                 piCopyConstructor(piCopy,start,deliveryRequest);
 //
                 Chemin chemin = createChemin(start, deliveryRequest, piCopy, distance[deliveryRequest.getPos()]);
-                System.out.println(chemin);
+                //System.out.println(chemin);
                 chemins.add(chemin);
             }
         }
+        return true;
 
         //System.out.println("FinDijkstra");
     }

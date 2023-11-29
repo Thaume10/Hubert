@@ -6,9 +6,7 @@ import java.util.Arrays;
 // Classe DijkstraInverse
 public class DijkstraInverse extends AbstractDijkstra {
     public DijkstraInverse(int sizeGraph, CityMap cityMap) {
-
         super(sizeGraph,cityMap);
-        //deliveryRequest.add(cityMap.getWareHouseLocation());
     }
 
     @Override
@@ -32,6 +30,7 @@ public class DijkstraInverse extends AbstractDijkstra {
         }
 
     }
+
 
 
     @Override

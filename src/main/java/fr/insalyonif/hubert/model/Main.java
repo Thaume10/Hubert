@@ -10,7 +10,7 @@ public class Main {
 
         // Créez et initialisez votre CityMap
         CityMap cityMap = new CityMap();
-        cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
+        cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml");
 
         // Obtenez la taille du graphe à partir de la CityMap
         int sizeGraph = cityMap.getIntersections().size();
@@ -18,7 +18,8 @@ public class Main {
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
         //dijkstra.addDeliveryRequest(cityMap.getWareHouseLocation());
-        dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+
+        //System.out.println(test);
 //        List<RoadSegment> successors = cityMap.findIntersectionByPos(8).getSuccessors();
 //        for(RoadSegment successor : successors){
 //            System.out.println("succ"+successor);
@@ -36,16 +37,38 @@ public class Main {
 //            }
 //        }
 
-        // Affichez les résultats, par exemple, les chemins calculés
-        for (Chemin chemin : dijkstra.getChemins()) {
-        System.out.println(chemin);
-        }
+
         //System.out.println("fin");
         // Créez une instance de DijkstraInverse et exécutez l'algorithme
 
 
-        //DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
+        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+
+        boolean a = dijkstra.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+        boolean b =dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+
+        if(!a || !b){
+            System.out.println("on ne peut pas afficher ce point");
+        }
+
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+
+        // Affichez les résultats, par exemple, les chemins calculés
+        for (Chemin chemin : dijkstra.getChemins()) {
+            System.out.println(chemin);
+            //System.out.println(chemin.getPi()[345]);
+            //System.out.println(chemin.getPi()[10]);
+            //System.out.println(chemin.getPi()[8]);
+            //System.out.println(chemin.getPi()[14]);
+        }
+
+        for (Intersection inter : dijkstra.getDeliveryRequest()) {
+            System.out.println(inter);
+
+        }
 
         //System.out.println("encore fin");
         // Affichez les résultats, par exemple, les chemins inverses calculés
