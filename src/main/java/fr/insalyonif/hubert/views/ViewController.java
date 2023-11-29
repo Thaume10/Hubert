@@ -28,6 +28,7 @@ public class ViewController implements Initializable {
 
     private CityMap cityMap;
     private Dijkstra dij;
+    private DijkstraInverse dijInv;
     private int sizeGraph;
 
     private  WebEngine engine;
@@ -91,7 +92,8 @@ public class ViewController implements Initializable {
                 System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
                 listeDelivery.add(new DeliveryRequest((intersectionPlusProche)));
 
-                dij.dijkstra(intersectionPlusProche, cityMap, sizeGraph);
+                dij.runDijkstra(intersectionPlusProche, sizeGraph);
+                dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
                 cityMap.setChemins(dij.getChemins());
 
                 String markersJs = drawPaths(cityMap);
@@ -208,7 +210,7 @@ public class ViewController implements Initializable {
 
         sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         dij = new Dijkstra(sizeGraph, cityMap);
-
+        dijInv = new DijkstraInverse(sizeGraph,cityMap);
 
 
 
