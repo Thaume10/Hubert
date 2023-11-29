@@ -1,6 +1,10 @@
 package fr.insalyonif.hubert.model;
 
+
+
 import java.util.Arrays;
+import java.util.List;
+
 
 public class Chemin {
     private Intersection debut;
@@ -56,4 +60,5 @@ public class Chemin {
                 ", cout=" + cout +
                 '}';
     }
+
 }

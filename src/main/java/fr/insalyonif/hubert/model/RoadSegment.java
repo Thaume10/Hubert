@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 
+
+
 /**
  * Représente un segment de route dans une carte de ville.
  * Chaque segment est défini par une origine, une destination, un nom et une longueur.
