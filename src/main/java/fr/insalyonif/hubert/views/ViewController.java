@@ -64,6 +64,9 @@ public class ViewController implements Initializable {
         // Draw paths (chemins)
         int index=0;
         for (Chemin chemin : cityMap.getChemins()) {
+        //Chemin chemin = cityMap.getChemins().get(2);
+        System.out.println("Chemin 2 ne marche pas: "+chemin);
+        System.out.println("Chemin 2 ne marche pas: "+chemin.getPi()[345]);
             // Begin with the end intersection
             int currentIndex = chemin.getFin().getPos();
             int nextIndex = chemin.getPi()[currentIndex];
@@ -141,8 +144,28 @@ public class ViewController implements Initializable {
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
         DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
-        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+//        for(Intersection inter : dijkstra.getDeliveryRequest()){
+//            if(inter.getPos()!=8){
+//                dijkstra.runDijkstra(inter, sizeGraph);
+//            }
+//        }
+//        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+//        dijkstra.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+//        for(Intersection inter : dijkstra.getDeliveryRequest()){
+//            if(inter.getPos()!=10){
+//                dijkstra.runDijkstra(inter, sizeGraph);
+//            }
+//        }
+//        dijkstra.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
+//        for(Intersection inter : dijkstra.getDeliveryRequest()){
+//            if(inter.getPos()!=7){
+//                dijkstra.runDijkstra(inter, sizeGraph);
+//            }
+//        }
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
 
 //        for (Intersection intersection : cityMap.getIntersections()) {
 //            if(intersection.getPos()<100 && intersection.getPos()!=cityMap.getWareHouseLocation().getPos()){

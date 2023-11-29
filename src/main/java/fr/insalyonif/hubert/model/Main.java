@@ -10,7 +10,7 @@ public class Main {
 
         // Créez et initialisez votre CityMap
         CityMap cityMap = new CityMap();
-        cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/smallMap.xml");
+        cityMap.loadFromXML("src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml");
 
         // Obtenez la taille du graphe à partir de la CityMap
         int sizeGraph = cityMap.getIntersections().size();
@@ -18,8 +18,8 @@ public class Main {
         // Créez une instance de Dijkstra et exécutez l'algorithme
         Dijkstra dijkstra = new Dijkstra(sizeGraph, cityMap);
         //dijkstra.addDeliveryRequest(cityMap.getWareHouseLocation());
-        boolean test = dijkstra.runDijkstra(cityMap.findIntersectionByPos(7), sizeGraph);
-        System.out.println(test);
+
+        //System.out.println(test);
 //        List<RoadSegment> successors = cityMap.findIntersectionByPos(8).getSuccessors();
 //        for(RoadSegment successor : successors){
 //            System.out.println("succ"+successor);
@@ -42,12 +42,21 @@ public class Main {
         // Créez une instance de DijkstraInverse et exécutez l'algorithme
 
 
-//        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
-//        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(200), sizeGraph);
+        DijkstraInverse dijkstraInverse = new DijkstraInverse(sizeGraph, cityMap);
+        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(10), sizeGraph);
+        //dijkstra.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        //dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(8), sizeGraph);
+        dijkstra.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
+        dijkstraInverse.runDijkstra(cityMap.findIntersectionByPos(14), sizeGraph);
 
         // Affichez les résultats, par exemple, les chemins calculés
         for (Chemin chemin : dijkstra.getChemins()) {
             System.out.println(chemin);
+            //System.out.println(chemin.getPi()[345]);
+            //System.out.println(chemin.getPi()[10]);
+            //System.out.println(chemin.getPi()[8]);
+            System.out.println(chemin.getPi()[14]);
         }
 
         //System.out.println("encore fin");

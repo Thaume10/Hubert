@@ -8,9 +8,9 @@ import java.util.List;
 public abstract class AbstractDijkstra {
     private final int INFINITY = Integer.MAX_VALUE;
 
-    public static double[] distance;
-    public static int[] pi;
-    public static boolean[] visited;
+    public double[] distance;
+    public int[] pi;
+    public boolean[] visited;
 
     public String[] colors;
 
@@ -158,13 +158,15 @@ public abstract class AbstractDijkstra {
         }*
 
          */
-        int [] piCopy = new int[sizeGraph];
+
         for (Intersection deliveryRequest : deliveryRequest){
             if(deliveryRequest!=start){
+                int [] piCopy = new int[sizeGraph];
                 for (int i=0; i < sizeGraph; i++){
                     piCopy[i]= -1;
                 }
                 if(pi[deliveryRequest.getPos()]==-1){
+                    //this.deliveryRequest.remove(deliveryRequest);
                     return false;
                 }
                 piCopyConstructor(piCopy,start,deliveryRequest);
