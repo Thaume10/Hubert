@@ -56,12 +56,13 @@ public class Controller {
         this.listeDelivery = listeDelivery;
     }
 
-    public Controller() {
+    public Controller(String path) {
         cityMap = new CityMap();
         listeDelivery = new ArrayList<>();
 
         try {
-            String xmlMap = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml";
+            String xmlMap = path;
+            //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
             cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,42 +74,45 @@ public class Controller {
     }
 
     public boolean newDeliveryPoint(DeliveryIHMController deliveryIHM) {
-        Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
+        if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
+            Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
 
-        // Afficher les résultats
-        System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
-        System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
-
-
-        boolean b1 = dij.runDijkstra(intersectionPlusProche, sizeGraph);
-        boolean b2 = dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
-        //Si un des deux false alors pop up BOOL1 && BOOL2
-        if (b1 && b2) {
-            DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche));
-            listeDelivery.add(deli);
-            Graph g = new CompleteGraph(dij.getChemins(), listeDelivery, cityMap);
+            // Afficher les résultats
+            System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
+            System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
 
 
-            TSP tsp = new TSP1();
-            tsp.searchSolution(20000, g);
-            System.out.print("Solution of cost " + tsp.getSolutionCost());
-            for (int i = 0; i < listeDelivery.size(); i++)
-                System.out.print(tsp.getSolution(i) + " ");
-            System.out.println("0");
-            List<Chemin> bestChemin = tsp.bestCheminGlobal(dij.getChemins());
+            boolean b1 = dij.runDijkstra(intersectionPlusProche, sizeGraph);
+            boolean b2 = dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
+            //Si un des deux false alors pop up BOOL1 && BOOL2
+            if (b1 && b2) {
+                DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche));
+                listeDelivery.add(deli);
+                Graph g = new CompleteGraph(dij.getChemins(), listeDelivery, cityMap);
 
-            System.out.println("Meilleur chemin global :");
-            for (Chemin chemin : bestChemin) {
-                System.out.println(chemin);
-                //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+
+                TSP tsp = new TSP1();
+                tsp.searchSolution(20000, g);
+                System.out.print("Solution of cost " + tsp.getSolutionCost());
+                for (int i = 0; i < listeDelivery.size(); i++)
+                    System.out.print(tsp.getSolution(i) + " ");
+                System.out.println("0");
+                List<Chemin> bestChemin = tsp.bestCheminGlobal(dij.getChemins());
+
+                System.out.println("Meilleur chemin global :");
+                for (Chemin chemin : bestChemin) {
+                    System.out.println(chemin);
+                    //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+                }
+
+                cityMap.setChemins(bestChemin);
+                MAJDeliveryPointList();
+                return true;
+            } else {
+                return false;
             }
-
-            cityMap.setChemins(bestChemin);
-            MAJDeliveryPointList();
-            return true;
-        }else{
-            return false;
         }
+        return true;
     }
 
     private void MAJDeliveryPointList(){

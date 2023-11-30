@@ -4,12 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+
+import java.io.File;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import fr.insalyonif.hubert.model.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
@@ -92,6 +96,7 @@ public class ViewController implements Initializable {
 
                 // Afficher la nouvelle fenêtre
                 newStage.showAndWait();
+
                 if(controller.newDeliveryPoint(deliveryIHM)){
                     String markersJs = drawPaths(controller.getCityMap());
                     String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
@@ -221,14 +226,32 @@ public class ViewController implements Initializable {
         return hexComponent.length() == 1 ? "0" + hexComponent : hexComponent;
     }
 
+    @FXML
+    void handleLoadMap(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open XML Map File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            try {
+                // Load the selected XML map file
+                controller = new Controller(selectedFile.getAbsolutePath());
+
+                String markersJs = displayDeliveryPoints().toString();
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+
+                engine.loadContent(mapHtml);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Handle the exception (e.g., show an error message)
+            }
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         engine = webView.getEngine();
-        controller = new Controller();
 
-        String markersJs = displayDeliveryPoints().toString();
-        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-
-        engine.loadContent(mapHtml);
     }
 }
