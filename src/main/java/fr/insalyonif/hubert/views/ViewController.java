@@ -39,36 +39,43 @@ public class ViewController implements Initializable {
     private ArrayList<DeliveryRequest> listeDelivery;
 
     private static final String MAP_HTML_TEMPLATE = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Simple Map</title>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-            <style>
-                #map { width: 800px; height: 600px; }
-            </style>
-        </head>
-        <body>
-            <div id="map"></div>
-            <script>
-                var map = L.map('map').setView([45.755, 4.87], 15);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-                    attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
-                    maxZoom: 18
-                }).addTo(map);
-                var customIcon = L.icon({
-                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png',
-                    iconSize: [15, 20],
-                    iconAnchor: [12, 12],
-                });
-                %s
-            </script>
-        </body>
-        </html>
-        """;
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Simple Map</title>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <style>
+                    #map { width: 800px; height: 600px; }
+                </style>
+            </head>
+            <body>
+   
+                <div id="map"></div>
+                <script>
+                    
+                    var map = L.map('map').setView([45.755, 4.87], 15);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                        attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
+                        maxZoom: 18
+                    }).addTo(map);
+                    var customIcon = L.icon({
+                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png',
+                        iconSize: [15, 20],
+                        iconAnchor: [12, 12],
+                    });
+                    
+                    
+                    %s
+                    
+                    
+                    
+                </script>
+            </body>
+            </html>
+            """;
 
 
     @FXML
@@ -197,6 +204,7 @@ public class ViewController implements Initializable {
                 "var marker = L.marker([" + cityMap.getWareHouseLocation().getLatitude() + ", " +  cityMap.getWareHouseLocation().getLongitude() + "], {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 30]})}).addTo(map);"
                         + "marker.bindTooltip('%s').openTooltip();", iconUrl, "Warehouse"
         );
+        markersJs.append(markerJs);
         int i=0;
         for (DeliveryRequest deliveryRequest : listeDelivery) {
             markersJs.append(markerJs);
@@ -313,8 +321,9 @@ public class ViewController implements Initializable {
         // dij.runDijkstra(cityMap.getIntersections().get(10), sizeGraph);
         // dijInv.runDijkstra(cityMap.getIntersections().get(10), sizeGraph);
         // cityMap.setChemins(dijInv.getChemins());
-        
-        String mapHtml = MAP_HTML_TEMPLATE;
+
+        String markersJs = displayDeliveryPoints().toString();
+        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
         engine.loadContent(mapHtml);
     }
