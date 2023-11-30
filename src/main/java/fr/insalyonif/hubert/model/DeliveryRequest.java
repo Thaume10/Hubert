@@ -9,6 +9,7 @@ import java.time.Instant;
 public class DeliveryRequest {
     private Intersection deliveryLocation;
     private TimeWindow timeWindow;
+    private Instant deliveryTime;
 
     /**
      * Constructeur pour créer une nouvelle demande de livraison.
@@ -66,6 +67,26 @@ public class DeliveryRequest {
     public void setTimeWindow(TimeWindow timeWindow) {
         this.timeWindow = timeWindow;
     }
+
+    /**
+     * Retourne l'heure de livraison.
+     *
+     * @param timeWindow la nouvelle fenêtre temporelle.
+     */
+    public Instant getDeliveryTime() {
+        return this.deliveryTime;
+    }
+
+    /**
+     * Définit l'heure de livraison.
+     *
+     *
+     * @param timeWindow la nouvelle fenêtre temporelle.
+     */
+    public void setDeliveryTime(Instant time) {
+        this.deliveryTime = time;
+    }
+
 
     /**
      * Retourne une représentation en chaîne de caractères de la demande de livraison.

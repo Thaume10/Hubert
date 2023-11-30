@@ -5,6 +5,7 @@ import java.util.List;
 
 // Classe Main
 public class Main {
+    
     public static void main(String[] args) throws Exception {
         // Création d'intersections et de segments de route ici...
 
