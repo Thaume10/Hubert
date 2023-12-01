@@ -34,6 +34,9 @@ public abstract class AbstractDijkstra {
         this.visited = new boolean[sizeGraph];
         this.cityMap = cityMap;
 
+
+
+
         colors = new String[sizeGraph];
         Arrays.fill(colors, "white");
     }
