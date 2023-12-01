@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// Classe abstraite pour Dijkstra
+/**
+ * Classe abstraite pour implémenter l'algorithme de Dijkstra.
+ */
 public abstract class AbstractDijkstra {
     private final int INFINITY = Integer.MAX_VALUE;
 
@@ -14,16 +16,18 @@ public abstract class AbstractDijkstra {
 
     public String[] colors;
 
-//    public static ArrayList<Integer> white = new ArrayList<>();
-//    public static ArrayList<Integer> gray = new ArrayList<>();
-//    public static ArrayList<Integer> black = new ArrayList<>();
-
     public static ArrayList<Chemin> chemins = new ArrayList<>();
 
     public static ArrayList<Intersection> deliveryRequest = new ArrayList<>();
 
     protected CityMap cityMap;
 
+    /**
+     * Constructeur de la classe AbstractDijkstra.
+     *
+     * @param sizeGraph La taille du graphe.
+     * @param cityMap   La carte de la ville.
+     */
     public AbstractDijkstra(int sizeGraph, CityMap cityMap) {
         this.distance = new double[sizeGraph];
         this.pi = new int[sizeGraph];
@@ -32,21 +36,37 @@ public abstract class AbstractDijkstra {
 
         colors = new String[sizeGraph];
         Arrays.fill(colors, "white");
-
     }
 
-
-
+    /**
+     * Calcule la distance euclidienne entre deux intersections.
+     *
+     * @param a Intersection A.
+     * @param b Intersection B.
+     * @return La distance euclidienne entre les deux intersections.
+     */
     protected double calculateEuclideanDistance(Intersection a, Intersection b) {
         double deltaX = a.getLatitude() - b.getLatitude();
         double deltaY = a.getLongitude() - b.getLongitude();
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
+    /**
+     * Fonction heuristique pour l'algorithme A*.
+     *
+     * @param current L'intersection actuelle.
+     * @param goal    L'intersection objectif.
+     * @return La valeur heuristique entre l'intersection actuelle et l'objectif.
+     */
     protected double heuristic(Intersection current, Intersection goal) {
         return calculateEuclideanDistance(current, goal);
     }
 
+    /**
+     * Vérifie s'il y a un nœud gris dans le graphe.
+     *
+     * @return true s'il y a un nœud gris, sinon false.
+     */
     protected boolean hasGrayNode() {
         for (String color : colors) {
             if (color.equals("gray")) {
@@ -56,109 +76,60 @@ public abstract class AbstractDijkstra {
         return false;
     }
 
-
-
-//    protected boolean notAllBlack() {
-//        for (Intersection intersection : deliveryRequest) {
-//            if (!black.contains(intersection.getPos())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
+    /**
+     * Trouve le nœud gris avec la plus petite distance dans le graphe.
+     *
+     * @return L'intersection correspondant au nœud gris avec la plus petite distance.
+     */
     protected Intersection minGrayNode() {
         double min = INFINITY;
         Intersection minNode = null;
 
-//        for (Integer element : gray) {
-//            if (distance[cityMap.findIntersectionByPos(element).getPos()] < min) {
-//                min = distance[cityMap.findIntersectionByPos(element).getPos()];
-//                minNode = cityMap.findIntersectionByPos(element);
-//            }
-//        }
         for (int i = 0; i < colors.length; i++) {
             if (colors[i].equals("gray") && distance[i] < min) {
                 min = distance[i];
                 minNode = cityMap.findIntersectionByPos(i);
-                //System.out.println(minNode);
             }
         }
 
         return minNode;
     }
 
-
-
-    public boolean runDijkstra(Intersection start, int sizeGraph){
-        //white.clear();
-        if( !deliveryRequest.contains(start)){
+    /**
+     * Exécute l'algorithme de Dijkstra pour trouver les chemins les plus courts.
+     *
+     * @param start     L'intersection de départ.
+     * @param sizeGraph La taille du graphe.
+     * @return true si le point de départ peut atteindre tous les points de livraison, sinon false.
+     */
+    public boolean runDijkstra(Intersection start, int sizeGraph) {
+        if (!deliveryRequest.contains(start)) {
             deliveryRequest.add(start);
         }
 
-        //System.out.println(Arrays.toString(new ArrayList[]{deliveryRequest}));
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
             this.pi[i] = -1;
-            //white.add(i);
             colors[i] = "white";
         }
-        //black.clear();
-        //gray.clear();
-        distance[start.getPos()] = 0.0;
 
-        //white.remove(Integer.valueOf(start.getPos()));
-        //gray.add(start.getPos());
+        distance[start.getPos()] = 0.0;
         colors[start.getPos()] = "gray";
 
-        while (hasGrayNode() ) {
-            //System.out.println("test");
+        while (hasGrayNode()) {
             Intersection u = minGrayNode();
-            //white.remove(Integer.valueOf(u.getPos()));
-            //gray.remove(Integer.valueOf(u.getPos()));
-            //black.add(u.getPos());
-            //System.out.println("gray "+Arrays.toString(colors));
-            //System.out.println("d "+Arrays.toString(distance));
-            //System.out.println("pi "+Arrays.toString(pi));
-
 
             for (RoadSegment roadSegment : getNeighbors(u)) {
-
                 Intersection v = selectNode(roadSegment);
 
-
                 if (colors[v.getPos()].equals("white") || colors[v.getPos()].equals("gray")) {
-                    //System.out.println("test");
                     relax(u, v, roadSegment.getLength());
-                    //white.remove(Integer.valueOf(v.getPos()));
-                    //black.remove(Integer.valueOf(v.getPos()));
-                    //gray.add(v.getPos());
                     colors[v.getPos()] = "gray";
                 }
             }
             colors[u.getPos()] = "black";
-
         }
 
-
-        /*for (int i = 0; i < distance.length; i++) {
-            if (distance[i] != INFINITY && distance[i] != 0) {
-                //System.out.println("pi"+Arrays.toString(pi));
-                Intersection destination = cityMap.findIntersectionByPos(i);
-                //System.out.println("intersection"+destination);
-                if (deliveryRequest.contains(start) && deliveryRequest.contains(destination)) {
-
-                    int[] piCopy = Arrays.copyOf(this.pi, this.pi.length);
-                    Chemin chemin = createChemin(start, destination, piCopy, distance[i]);
-                    //Chemin chemin = new Chemin(start, destination, piCopy, distance[i]);
-                    chemins.add(chemin);
-                    //System.out.println(chemin);
-                }
-            }
-        }*
-
-         */
-        // Vérifiez si le point de départ peut atteindre tous les points de livraison
         boolean canReachAllDeliveryPoints = true;
         for (Intersection deliveryPoint : deliveryRequest) {
             if (distance[deliveryPoint.getPos()] == INFINITY) {
@@ -168,51 +139,58 @@ public abstract class AbstractDijkstra {
         }
 
         if (!canReachAllDeliveryPoints) {
-            // Retirez le point de départ des demandes de livraison
             deliveryRequest.remove(start);
-
-            // Supprimez les chemins qui partent du point de départ
             chemins.removeIf(chemin -> chemin.getDebut().equals(start));
             chemins.removeIf(chemin -> chemin.getFin().equals(start));
-
             return false;
         }
 
-        for (Intersection deliveryRequest : deliveryRequest){
-            if(deliveryRequest!=start){
-                int [] piCopy = new int[sizeGraph];
-                for (int i=0; i < sizeGraph; i++){
-                    piCopy[i]= -1;
+        for (Intersection deliveryRequest : deliveryRequest) {
+            if (deliveryRequest != start) {
+                int[] piCopy = new int[sizeGraph];
+                for (int i = 0; i < sizeGraph; i++) {
+                    piCopy[i] = -1;
                 }
-                if(pi[deliveryRequest.getPos()]==-1){
-                    //this.deliveryRequest.remove(deliveryRequest);
+                if (pi[deliveryRequest.getPos()] == -1) {
                     return false;
                 }
-                piCopyConstructor(piCopy,start,deliveryRequest);
-//
+                piCopyConstructor(piCopy, start, deliveryRequest);
                 Chemin chemin = createChemin(start, deliveryRequest, piCopy, distance[deliveryRequest.getPos()]);
-                //System.out.println(chemin);
                 chemins.add(chemin);
             }
         }
         return true;
-
-        //System.out.println("FinDijkstra");
     }
 
     protected abstract Iterable<RoadSegment> getNeighbors(Intersection intersection);
     protected abstract Intersection selectNode(RoadSegment roadSegment);
-
-    protected abstract Chemin createChemin(Intersection start, Intersection destination, int [] pi, double cout);
+    protected abstract Chemin createChemin(Intersection start, Intersection destination, int[] pi, double cout);
     protected abstract void relax(Intersection u, Intersection v, double weight);
 
+    /**
+     * Copie les prédécesseurs du chemin pour une demande de livraison spécifique.
+     *
+     * @param piCopy    Tableau de prédécesseurs à copier.
+     * @param start     Intersection de départ.
+     * @param delivery  Intersection de destination (demande de livraison).
+     */
+    protected abstract void piCopyConstructor(int[] piCopy, Intersection start, Intersection delivery);
+
+    /**
+     * Retourne la liste des chemins calculés par l'algorithme de Dijkstra.
+     *
+     * @return Une liste de chemins.
+     */
     public List<Chemin> getChemins() {
         return chemins;
     }
 
-    protected abstract void piCopyConstructor(int [] piCopy,Intersection start, Intersection delivery);
+    /**
+     * Retourne la liste des intersections faisant l'objet de demandes de livraison.
+     *
+     * @return Une liste d'intersections représentant les demandes de livraison.
+     */
     public List<Intersection> getDeliveryRequest() {
         return deliveryRequest;
     }
-
 }
