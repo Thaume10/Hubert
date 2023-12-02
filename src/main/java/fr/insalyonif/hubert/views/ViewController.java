@@ -16,6 +16,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 import java.io.IOException;
 import java.net.URL;
@@ -105,6 +106,7 @@ public class ViewController implements Initializable {
                     String markersJs = drawPaths(controller.getCityMap());
                     String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
                     engine.loadContent(mapHtml);
+                    this.setDeliveryRequestIHM(controller.getListeDelivery());
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("Point non accessible ");
@@ -253,12 +255,12 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void addDeliveryRequestIHM(DeliveryRequest delivery) {
-        listDelivery.add(delivery);
-    }
-
-    public void deleteDeliveryRequestIHM(DeliveryRequest delivery) {
-        listDelivery.remove(delivery);
+    public void setDeliveryRequestIHM(ArrayList<DeliveryRequest> delivery) {
+        listDelivery.clear();
+        /*for (DeliveryRequest demande : delivery) {
+            listDelivery.add(demande);
+        }*/
+        listDelivery.addAll(delivery);
     }
 
     @Override

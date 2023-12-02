@@ -95,9 +95,8 @@ public class DeliveryRequest {
      */
     @Override
     public String toString() {
-        return "DeliveryRequest{" +
-                "deliveryLocation=" + deliveryLocation +
-                ", timeWindow=" + timeWindow +
-                '}';
+        String deliveryTimeString = deliveryTime != null ? deliveryTime.toString() : "Non spécifié";
+        return "Delivery at intersection: " + deliveryLocation.getId() +
+                "\nScheduled for: " + deliveryTimeString;
     }
 }
