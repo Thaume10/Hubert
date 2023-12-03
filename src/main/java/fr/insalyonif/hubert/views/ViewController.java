@@ -81,34 +81,40 @@ public class ViewController implements Initializable {
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
         if(event.getSource()==delivery) {
-            try {
-                // Charger le fichier FXML de la nouvelle fenêtre
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/addDelivery.fxml"));
-                Parent root = (Parent) loader.load();
+            if(controller !=null) {
+                try {
+                    // Charger le fichier FXML de la nouvelle fenêtre
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/addDelivery.fxml"));
+                    Parent root = (Parent) loader.load();
 
 
-                // Créer une nouvelle fenêtre
-                Stage newStage = new Stage();
-                newStage.setTitle("add Delivery");
-                newStage.setScene(new Scene(root));
-                DeliveryIHMController deliveryIHM = loader.getController();
+                    // Créer une nouvelle fenêtre
+                    Stage newStage = new Stage();
+                    newStage.setTitle("add Delivery");
+                    newStage.setScene(new Scene(root));
+                    DeliveryIHMController deliveryIHM = loader.getController();
 
 
-                // Afficher la nouvelle fenêtre
-                newStage.showAndWait();
+                    // Afficher la nouvelle fenêtre
+                    newStage.showAndWait();
 
-                if(controller.newDeliveryPoint(deliveryIHM)){
-                    String markersJs = drawPaths(controller.getCityMap());
-                    String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-                    engine.loadContent(mapHtml);
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Point non accessible ");
-                    alert.showAndWait();
+                    if (controller.newDeliveryPoint(deliveryIHM)) {
+                        String markersJs = drawPaths(controller.getCityMap());
+                        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                        engine.loadContent(mapHtml);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Point non accessible ");
+                        alert.showAndWait();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            }else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Il faut d'abord choisir une MAP");
+                alert.showAndWait();
             }
 
         }

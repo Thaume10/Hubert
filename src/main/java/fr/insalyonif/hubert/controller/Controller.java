@@ -75,18 +75,19 @@ public class Controller {
 
     public boolean newDeliveryPoint(DeliveryIHMController deliveryIHM) {
         if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
+
             Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
 
             // Afficher les résultats
             System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
             System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
-
+            System.out.println(intersectionPlusProche);
 
             boolean b1 = dij.runDijkstra(intersectionPlusProche, sizeGraph);
             boolean b2 = dijInv.runDijkstra(intersectionPlusProche, sizeGraph);
             //Si un des deux false alors pop up BOOL1 && BOOL2
             if (b1 && b2) {
-                DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche));
+                DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
                 listeDelivery.add(deli);
                 Graph g = new CompleteGraph(dij.getChemins(), listeDelivery, cityMap);
 
