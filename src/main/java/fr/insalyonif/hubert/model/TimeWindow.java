@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Représente une fenêtre temporelle définie par un instant de début et un instant de fin.
@@ -63,8 +65,14 @@ public class TimeWindow {
      */
     @Override
     public String toString() {
-        return "startTime=" + startTime +
-                ", endTime=" + endTime ;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH").withZone(ZoneId.systemDefault());
+
+        // Formater les instants de début et de fin
+        String startTimeFormatted = formatter.format(startTime);
+        String endTimeFormatted = formatter.format(endTime);
+
+        // Retourner la représentation en chaîne de la fenêtre temporelle avec la mention spécifique
+        return "Passage entre " + startTimeFormatted + "h et " + endTimeFormatted+"h";
     }
 
     /**

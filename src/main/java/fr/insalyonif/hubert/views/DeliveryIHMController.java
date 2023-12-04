@@ -1,6 +1,7 @@
 package fr.insalyonif.hubert.views;
 
 import fr.insalyonif.hubert.model.CityMap;
+import fr.insalyonif.hubert.model.Courier;
 import fr.insalyonif.hubert.model.Intersection;
 import fr.insalyonif.hubert.model.TimeWindow;
 import javafx.collections.FXCollections;
@@ -19,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,6 +43,12 @@ public class DeliveryIHMController implements Initializable {
     @FXML
     private Button valider;
 
+    @FXML
+    private ComboBox<Courier> courier;
+
+
+    private ObservableList<Courier> listCourier;
+
     private  double latDouble;
     private double lngDouble;
 
@@ -58,9 +66,9 @@ public class DeliveryIHMController implements Initializable {
 
                 String selectedTimeWindow = (String) deliveryTime.getValue();
 
-                if (selectedTimeWindow != null) {
+                if (selectedTimeWindow != null && courier!=null) {
                     Instant currentInstant = Instant.now();
-                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(currentInstant, ZoneId.of("UTC"));
+                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(currentInstant, ZoneId.systemDefault());
                     LocalTime specificTime;
                     ZonedDateTime resultDateTime;
                     Instant startTime ;
@@ -107,7 +115,7 @@ public class DeliveryIHMController implements Initializable {
                 } else {
                     // Gérer le cas où aucun créneau horaire n'est sélectionné
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Veuillez sélectionner un créneau horaire");
+                    alert.setContentText("Il reste un champ vide :(");
                     alert.showAndWait();
                     return;  // Sortir de la méthode si aucun créneau horaire n'est sélectionné
                 }
@@ -138,6 +146,31 @@ public class DeliveryIHMController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         deliveryTime.setItems(timeWindows);
+        listCourier= FXCollections.observableArrayList();
+        courier.setConverter(new StringConverter<Courier>() {
+            @Override
+            public String toString(Courier c) {
+                if(c==null){
+                    return "";
+                }
+                return "Courrier "+c.getId();
+            }
+
+            @Override
+            public Courier fromString(String s) {
+                return null;
+            }
+        });
+
+    }
+
+    public Courier getCourier() {
+        return courier.getValue();
+    }
+
+    public void setListCourier(ObservableList<Courier> list){
+        listCourier=list;
+        courier.setItems(listCourier);
     }
 
 }
