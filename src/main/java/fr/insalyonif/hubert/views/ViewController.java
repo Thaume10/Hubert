@@ -16,6 +16,8 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.IOException;
@@ -267,6 +269,8 @@ public class ViewController implements Initializable {
         }
     }
 
+
+
     public void setDeliveryRequestIHM(ArrayList<DeliveryRequest> delivery) {
         listDelivery.clear();
         /*for (DeliveryRequest demande : delivery) {
@@ -281,4 +285,23 @@ public class ViewController implements Initializable {
         listDelivery = FXCollections.observableArrayList();
         listViewDelivery.setItems(listDelivery);
     }
+
+    @FXML
+    void handleSaveMap(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save CityMap File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        File selectedFile = fileChooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            try {
+                controller.saveCityMapToFile(selectedFile.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle the exception (e.g., show an error message)
+            }
+        }
+    }
+
+
 }

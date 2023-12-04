@@ -6,5 +6,9 @@ public class Courier {
     public Courier(int id) {
         this.id=id;
     }
- }
+
+    public int getId() {
+        return id;
+    }
+}
 

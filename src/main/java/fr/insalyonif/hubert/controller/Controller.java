@@ -1,11 +1,17 @@
 package fr.insalyonif.hubert.controller;
 import fr.insalyonif.hubert.views.DeliveryIHMController;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
 import fr.insalyonif.hubert.model.*;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.stage.FileChooser;
 
 public class Controller {
     private CityMap cityMap;
@@ -177,6 +183,38 @@ public class Controller {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return earthRadius * c; // Distance en kilomètres
+    }
+
+
+
+    public void saveCityMapToFile(String filePath) throws IOException {
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            // Save the CityMap data to the file
+            // You can customize this based on your CityMap data structure and attributes
+            writer.println("<?xml version="+"1.0"+" encoding="+"UTF-8"+" standalone="+"no"+"?>");
+            writer.println("<map>");
+            writer.println("    <warehouse address=\"" + cityMap.getWareHouseLocation().getId() + "\" />");
+
+            for (DeliveryTour deliveryTour : this.listeDelivery) {
+                writer.println("    <deliveryTour courier=\"" + deliveryTour.getCourier().getId() + "\" startTime="+ deliveryTour.getStartTime()+ "\" endTime="+ deliveryTour.getEndTime() +"\">");
+//                writer.println("        <courier id=\"" +  + "\" />");
+                for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()){
+                    writer.println("        <deliveryRequest deliveryTime=\""+ deliveryRequest.getDeliveryTime() +"\" >");
+                    writer.println("            <deliveryLocation latitude=\"" + deliveryRequest.getDeliveryLocation().getLatitude() +"\"" +" longitude=\"" + deliveryRequest.getDeliveryLocation().getLongitude() +"\"" + " id=\"" + deliveryRequest.getDeliveryLocation().getLongitude() +"\"/>");
+                    writer.println("            <timeWindow startTime=\"" + deliveryRequest.getTimeWindow().getStartTime() +"\"" +" endTime=\"" + deliveryRequest.getTimeWindow().getEndTime() + "\" />");
+                    writer.println("        </deliveryRequest>");
+                }
+                for (Chemin paths : deliveryTour.getPaths()){
+                    writer.println("        <paths debut=\"" + paths.getDebut().getId() + "\" fin=\""+ paths.getFin().getId() + "\" pi=\""+ Arrays.toString(paths.getPi())+ "\" cout=\"" + paths.getCout() + "\" />");
+                }
+                writer.println("    </deliveryTour>");
+            }
+//            "\" latitude=\"" + intersection.getLatitude() +
+//                    "\" longitude=\"" + intersection.getLongitude() + "\" />");
+
+            writer.println("</map>");
+        }
     }
 
 }
