@@ -103,11 +103,11 @@ public class ViewController implements Initializable {
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                if(controller.newDeliveryPoint(deliveryIHM)){
+                if(controller.newDeliveryPoint(deliveryIHM,0)){
                     String markersJs = drawPaths(controller.getCityMap());
                     String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
                     engine.loadContent(mapHtml);
-                    this.setDeliveryRequestIHM(controller.getListeDelivery());
+                    this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("Point non accessible ");
@@ -143,7 +143,7 @@ public class ViewController implements Initializable {
         );
         markersJs.append(markerJs);
         int i=0;
-        for (DeliveryRequest deliveryRequest : controller.getListeDelivery()) {
+        for (DeliveryRequest deliveryRequest : controller.getListeDelivery().get(0).getRequests()) {
             markersJs.append(markerJs);
             iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
             i++;
@@ -163,8 +163,8 @@ public class ViewController implements Initializable {
     private String drawPaths(CityMap cityMap) {
         StringBuilder markersJs = displayDeliveryPoints();
         int index=0;
-        for (int i = cityMap.getChemins().size() - 1; i >= 0; i--) {
-            Chemin chemin = cityMap.getChemins().get(i);
+        for (int i = controller.getListeDelivery().get(0).getPaths().size() - 1; i >= 0; i--) {
+            Chemin chemin = controller.getListeDelivery().get(0).getPaths().get(i);
             // Begin with the end intersection
             int currentIndex = chemin.getFin().getPos();
             int nextIndex = chemin.getPi()[currentIndex];

@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 public class CityMap {
     private List<Intersection> intersections;
     private Intersection wareHouseLocation;
-    private List<Chemin> chemins; // List to store Chemin objects
+    //private List<Chemin> chemins; // List to store Chemin objects
 
     /**
      * Constructeur par défaut qui initialise la liste des intersections.
@@ -29,15 +29,16 @@ public class CityMap {
     public CityMap() {
         this.intersections = new ArrayList<>();
     }
-      // Getter for chemins
-      public List<Chemin> getChemins() {
-        return chemins;
-    }
+    
+    //   // Getter for chemins
+    //   public List<Chemin> getChemins() {
+    //     return chemins;
+    // }
 
-      // Getter for chemins
-      public void setChemins(List<Chemin>paths ) {
-        chemins=paths;
-    }
+    //   // Getter for chemins
+    //   public void setChemins(List<Chemin>paths ) {
+    //     chemins=paths;
+    // }
 
     /**
      * Retourne la liste des intersections de la ville.

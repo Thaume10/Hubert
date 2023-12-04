@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.insalyonif.hubert.model.Dijkstra.deliveryRequest;
+import  fr.insalyonif.hubert.model.*;
 
 public class CompleteGraph implements Graph {
 	private static final int MAX_COST = 40;
