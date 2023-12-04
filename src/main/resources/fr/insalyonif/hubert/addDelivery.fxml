@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.DeliveryIHMController">
+    <children>
+        <Text layoutX="45.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h3" text="New Delivery" />
+        <Text layoutX="45.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LAT" />
+        <TextField fx:id="lat" layoutX="89.0" layoutY="110.0" prefHeight="29.0" prefWidth="174.0" />
+        <TextField fx:id="lng" layoutX="368.0" layoutY="111.0" prefHeight="29.0" prefWidth="174.0" />
+        <Text layoutX="324.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LNG" />
+        <Button fx:id="valider" layoutX="497.0" layoutY="335.0" mnemonicParsing="false" onAction="#validerButton" prefHeight="37.0" prefWidth="75.0" styleClass="btn-info" text="Valider" />
+      <Text layoutX="45.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delirevy time " />
+      <ComboBox fx:id="deliveryTime" layoutX="176.0" layoutY="185.0" prefWidth="150.0" styleClass="lbl-info" />
+    </children>
+</AnchorPane>

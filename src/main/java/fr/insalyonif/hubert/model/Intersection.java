@@ -1,5 +1,7 @@
 package fr.insalyonif.hubert.model;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * un identifiant unique et une position. Elle peut également avoir des segments de route
  * qui la précèdent et la suivent.
  */
-public class Intersection {
+public class Intersection implements Comparable<Intersection>{
     private double latitude;
     private double longitude;
     private List<RoadSegment> predecessors;
@@ -161,10 +163,16 @@ public class Intersection {
         return "Intersection{" +
                 "latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", predecessors=" + predecessors +
-                ", successors=" + successors +
                 ", id=" + id +
                 ", pos=" + pos +
                 '}';
     }
+
+    @Override
+    public int compareTo(Intersection other) {
+        // Implement comparison logic based on your requirements.
+        // For example, you can compare based on the intersection's position.
+        return Integer.compare(this.getPos(), other.getPos());
+    }
+
 }
