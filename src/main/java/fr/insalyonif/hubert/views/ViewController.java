@@ -29,6 +29,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
+
 public class ViewController implements Initializable {
     @FXML
     private WebView webView;
@@ -85,12 +86,12 @@ public class ViewController implements Initializable {
                     %s
                     
                     function onMapClick(e) {
-                         // Supprimer l'ancien marqueur s'il existe
+                         // Supprime l'ancien marqueur s'il existe
                          if (clickMarker) {
                              map.removeLayer(clickMarker);
                          }
                      
-                         // Créer un nouveau marqueur à l'emplacement cliqué
+                         // Crée un nouveau marqueur à l'emplacement cliqué
                          clickMarker = L.marker(e.latlng, {
                              icon: L.icon({
                                  iconUrl: 'https://cdn-icons-png.flaticon.com/512/149/149059.png',
@@ -98,17 +99,20 @@ public class ViewController implements Initializable {
                                 iconAnchor: [15, 30],
                              })
                          }).addTo(map);
-                     
-                         // Appel à une fonction JavaFX pour envoyer les coordonnées
-                         javaConnector.receiveCoordinates(e.latlng.lat, e.latlng.lng);
-                     }
-        
+                         
+                         // Envoi à l'application les coordonnées cliqués
+                         window.javaApp.handleMapClick(e.latlng.lat, e.latlng.lng);
+                    }
+                    
                     map.on('click', onMapClick);
                 </script>
             </body>
             </html>
             """;
 
+    public WebEngine getEngine() {
+        return engine;
+    }
 
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
@@ -134,16 +138,21 @@ public class ViewController implements Initializable {
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                if(controller.newDeliveryPoint(deliveryIHM,0)){
-                    String markersJs = drawPaths(controller.getCityMap());
-                    String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-                    engine.loadContent(mapHtml);
-                    this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Point non accessible ");
-                    alert.showAndWait();
-                }
+                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,0);
+                    if(traceNewDeliveryPoint == 0){
+                        String markersJs = drawPaths(controller.getCityMap());
+                        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                        engine.loadContent(mapHtml);
+                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+                    } else if(traceNewDeliveryPoint == 1){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Point non accessible");
+                        alert.showAndWait();
+                    } else if(traceNewDeliveryPoint == 2){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Point déjà présent dans la liste");
+                        alert.showAndWait();
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -177,7 +186,7 @@ public class ViewController implements Initializable {
             markerJs = String.format(
                     "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " +  deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
                             + "marker.bindTooltip('Nb: %d').openTooltip();",
-                     //deliveryRequest.getDeliveryLocation().getId()
+                    //deliveryRequest.getDeliveryLocation().getId()
                     iconUrl,i
             );
 
@@ -188,10 +197,6 @@ public class ViewController implements Initializable {
 
 
     private String drawPaths(CityMap cityMap) {
-        if (cityMap == null || cityMap.getChemins() == null) {
-            // Gérer le cas où cityMap ou getChemins() est null
-            return "";
-        }
         StringBuilder markersJs = displayDeliveryPoints();
         int index=0;
         for (int i = controller.getListeDelivery().get(0).getPaths().size() - 1; i >= 0; i--) {
@@ -305,11 +310,9 @@ public class ViewController implements Initializable {
         this.lastClickedLng = lng;
     }
 
-    public class JavaConnector {
-        public void receiveCoordinates(double lat, double lng) {
-            setLastClickedCoordinates(lat, lng);
-            //System.out.println("Latitude: " + lat + ", Longitude: " + lng); //debug
-        }
+    public void handleMapClick(double lat, double lng) {
+        setLastClickedCoordinates(lat, lng);
+        //System.out.println("Latitude: " + lat + ", Longitude: " + lng);
     }
 
     @Override
@@ -318,12 +321,17 @@ public class ViewController implements Initializable {
         listDelivery = FXCollections.observableArrayList();
         listViewDelivery.setItems(listDelivery);
 
-        // Ajout de l'interface Java pour la communication avec JavaScript
-        engine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == Worker.State.SUCCEEDED) {
-                JSObject jsobj = (JSObject) engine.executeScript("window");
-                jsobj.setMember("javaConnector", new JavaConnector());
+        // Lien entre le Javascript et Java
+        engine.setJavaScriptEnabled(true);
+        engine.getLoadWorker().stateProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                if (Worker.State.SUCCEEDED.equals(newValue)) {
+                    JSObject window = (JSObject) engine.executeScript("window");
+                    window.setMember("javaApp", this);
+                }
             }
-        });
+        );
     }
+
+
 }
