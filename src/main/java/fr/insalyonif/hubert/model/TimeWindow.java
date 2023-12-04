@@ -63,10 +63,8 @@ public class TimeWindow {
      */
     @Override
     public String toString() {
-        return "TimeWindow{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
-                '}';
+        return "startTime=" + startTime +
+                ", endTime=" + endTime ;
     }
 
     /**

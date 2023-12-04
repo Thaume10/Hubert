@@ -96,7 +96,9 @@ public class DeliveryRequest {
     @Override
     public String toString() {
         String deliveryTimeString = deliveryTime != null ? deliveryTime.toString() : "Non spécifié";
+        String timeWindowString = timeWindow != null ? timeWindow.toString() : "Non spécifié";
         return "Delivery at intersection: " + deliveryLocation.getId() +
-                "\nScheduled for: " + deliveryTimeString;
+                "\nScheduled for: " + deliveryTimeString+
+                "\n"+timeWindowString;
     }
 }

@@ -18,12 +18,8 @@ import javafx.scene.web.WebView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import fr.insalyonif.hubert.model.*;
