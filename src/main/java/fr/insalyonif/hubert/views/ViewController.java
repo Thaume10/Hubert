@@ -92,6 +92,7 @@ public class ViewController implements Initializable {
     @FXML
     void addNewCourrier(ActionEvent event){
         controller.newDeliveryTour();
+        setCourierIHM(controller.getListeDelivery());
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Successfully added ! :)");
         alert.showAndWait();
@@ -120,7 +121,9 @@ public class ViewController implements Initializable {
                     String markersJs = drawPaths(controller.getCityMap());
                     String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
                     engine.loadContent(mapHtml);
-                    this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+                    
+                    
+                    //this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("Point non accessible ");
@@ -138,16 +141,6 @@ public class ViewController implements Initializable {
 
         }
     }
-
-
-
-    @FXML
-    void handleSelectCourier(ActionEvent event){
-        controller.newDeliveryTour();
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Successfully added ! :)");
-        alert.showAndWait();
-    }       
 
 
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
@@ -257,6 +250,22 @@ public class ViewController implements Initializable {
         return hexComponent.length() == 1 ? "0" + hexComponent : hexComponent;
     }
 
+
+    void handleCourierSelection(Courier newCourier){
+
+        // Filter the delivery tours for the selected courier
+        DeliveryTour selectedTour = controller.getListeDelivery().stream()
+        .filter(tour -> tour.getCourier().equals(newCourier))
+        .findFirst()
+        .orElse(null);
+
+        if (selectedTour != null) {
+            setDeliveryRequestIHM(selectedTour.getRequests());
+
+
+            }
+         }   
+
     @FXML
     void handleLoadMap(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -294,9 +303,7 @@ public class ViewController implements Initializable {
         listCourier.clear();
         for (DeliveryTour deliveryTour : deliveryTours) {
             listCourier.add(deliveryTour.getCourier());
-        }
-
-        
+        }      
     }
 
 
@@ -322,6 +329,13 @@ public class ViewController implements Initializable {
            }
        });
         courier.setItems(listCourier);
+
+        courier.valueProperty().addListener((observable, oldValue, newCourier) -> {
+            // newValue is the newly selected Courier object
+            if (newCourier != null) {
+                handleCourierSelection(newCourier);
+            }
+        });
 
     }
 }
