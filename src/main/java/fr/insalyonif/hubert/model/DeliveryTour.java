@@ -1,18 +1,45 @@
 package fr.insalyonif.hubert.model;
 
 import java.time.Instant;
-
 import java.util.List;
-
+import java.util.ArrayList;
 public class DeliveryTour {
     private Courier courier;
-    private List<DeliveryRequest> requests;
+    private ArrayList<DeliveryRequest> requests;
+    private List<Chemin> paths;
     private Instant startTime;
     private Instant endTime;
+    private Dijkstra dij; 
+    private DijkstraInverse dijInv;
 
-     // Getter for courier
+
+    public DeliveryTour() {
+        requests= new ArrayList<>();
+    }
+
+    // Getter for courier
      public Courier getCourier() {
         return courier;
+    }
+
+    // Setter for courier
+    public void setDijkstra(Dijkstra dij) {
+        this.dij = dij;
+    }
+
+     // Getter for courier
+     public Dijkstra getDijkstra() {
+        return this.dij;
+    }
+
+    // Setter for courier
+    public void setDijkstraInverse(DijkstraInverse dijInv) {
+        this.dijInv = dijInv;
+    }
+
+     // Getter for courier
+     public DijkstraInverse getDijkstraInverse() {
+        return this.dijInv;
     }
 
     // Setter for courier
@@ -21,13 +48,23 @@ public class DeliveryTour {
     }
 
     // Getter for requests
-    public List<DeliveryRequest> getRequests() {
+    public ArrayList<DeliveryRequest> getRequests() {
         return requests;
     }
 
     // Setter for requests
-    public void setRequests(List<DeliveryRequest> requests) {
+    public void setRequests(ArrayList<DeliveryRequest> requests) {
         this.requests = requests;
+    }
+
+     // Getter for requests
+    public List<Chemin> getPaths() {
+        return paths;
+    }
+
+    // Setter for requests
+    public void setPaths(List<Chemin> paths) {
+        this.paths = paths;
     }
 
     // Getter for startTime
@@ -49,7 +86,5 @@ public class DeliveryTour {
     public void setEndTime(Instant endTime) {
         this.endTime = endTime;
     }
-
-
 
 }
