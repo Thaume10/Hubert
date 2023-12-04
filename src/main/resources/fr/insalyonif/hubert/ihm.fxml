@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1201.0" styleClass="back" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.ViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1201.0" styleClass="back" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.ViewController">
 
 
     <children>
@@ -17,7 +18,6 @@
                </children></AnchorPane>
         </content>
       </ScrollPane>
-      <ChoiceBox fx:id="courier" layoutX="864.0" layoutY="102.0" prefWidth="150.0" styleClass="lbl-info" />
       <Pane layoutX="29.0" layoutY="14.0" prefHeight="72.0" prefWidth="1150.0" styleClass="panel-info">
          <children>
             <Button fx:id="newMap" layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="New Map" />
@@ -32,5 +32,6 @@
          </children>
       </Pane>
       <WebView id="webView" fx:id="webView" layoutX="47.0" layoutY="146.0" prefHeight="576.0" prefWidth="633.0" />
+      <ComboBox fx:id="courier" layoutX="864.0" layoutY="105.0" prefWidth="150.0" styleClass="lbl-info" />
    </children>
 </Pane>

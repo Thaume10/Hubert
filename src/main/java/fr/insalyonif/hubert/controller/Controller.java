@@ -67,6 +67,8 @@ public class Controller {
         defaultDeliveryTour.setDijkstraInverse(dijInv);
         listeDelivery.add(defaultDeliveryTour);
 
+        
+
     }
 
     public void newDeliveryTour(){

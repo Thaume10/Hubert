@@ -11,10 +11,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import javafx.util.StringConverter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,6 +35,14 @@ public class ViewController implements Initializable {
 
     @FXML
     private Button delivery;
+
+
+    @FXML
+    private ComboBox<Courier> courier;
+
+
+    private ObservableList<Courier> listCourier;
+    
 
     @FXML
     private ListView<DeliveryRequest> listViewDelivery;
@@ -72,10 +82,7 @@ public class ViewController implements Initializable {
                         iconAnchor: [12, 12],
                     });
                     
-                    
                     %s
-                    
-                    
                     
                 </script>
             </body>
@@ -134,7 +141,13 @@ public class ViewController implements Initializable {
 
 
 
-
+    @FXML
+    void handleSelectCourier(ActionEvent event){
+        controller.newDeliveryTour();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Successfully added ! :)");
+        alert.showAndWait();
+    }       
 
 
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
@@ -256,6 +269,8 @@ public class ViewController implements Initializable {
                 // Load the selected XML map file
                 controller = new Controller(selectedFile.getAbsolutePath());
 
+                setCourierIHM(controller.getListeDelivery());
+                
                 String markersJs = displayDeliveryPoints().toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
@@ -275,10 +290,25 @@ public class ViewController implements Initializable {
         listDelivery.addAll(delivery);
     }
 
+    public void setCourierIHM(ArrayList<DeliveryTour> deliveryTours) {
+        listCourier.clear();
+        for (DeliveryTour deliveryTour : deliveryTours) {
+            listCourier.add(deliveryTour.getCourier());
+        }
+
+        
+    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         engine = webView.getEngine();
         listDelivery = FXCollections.observableArrayList();
         listViewDelivery.setItems(listDelivery);
+
+        listCourier= FXCollections.observableArrayList();
+       
+        courier.setItems(listCourier);
+
     }
 }

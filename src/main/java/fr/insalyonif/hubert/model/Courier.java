@@ -6,5 +6,13 @@ public class Courier {
     public Courier(int id) {
         this.id=id;
     }
- }
+
+    public int getId(){
+        return this.id;
+    }
+
+    public String toString(){
+        return "Courier "+this.id;
+    }
+}
 
