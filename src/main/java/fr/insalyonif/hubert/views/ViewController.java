@@ -2,6 +2,7 @@ package fr.insalyonif.hubert.views;
 import fr.insalyonif.hubert.controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,13 +19,10 @@ import javafx.scene.web.WebView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
+import netscape.javascript.JSObject;
 
 import fr.insalyonif.hubert.model.*;
 import javafx.stage.FileChooser;
@@ -39,13 +37,20 @@ public class ViewController implements Initializable {
     private Button delivery;
 
     @FXML
+    private Button validate_delivery;
+
+    @FXML
     private ListView<DeliveryRequest> listViewDelivery;
 
     private ObservableList<DeliveryRequest> listDelivery;
 
     private  WebEngine engine;
 
-   private Controller controller;
+    private Controller controller;
+
+    private double lastClickedLat = 0.0;
+
+    private double lastClickedLng = 0.0;
 
     private static final String MAP_HTML_TEMPLATE = """
             <!DOCTYPE html>
@@ -64,7 +69,7 @@ public class ViewController implements Initializable {
    
                 <div id="map"></div>
                 <script>
-                    
+                    var clickMarker;
                     var map = L.map('map').setView([45.755, 4.87], 15);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                         attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
@@ -73,14 +78,32 @@ public class ViewController implements Initializable {
                     var customIcon = L.icon({
                         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png',
                         iconSize: [15, 20],
-                        iconAnchor: [12, 12],
+                        iconAnchor: [7.5, 20],
                     });
                     
                     
                     %s
                     
-                    
-                    
+                    function onMapClick(e) {
+                         // Supprimer l'ancien marqueur s'il existe
+                         if (clickMarker) {
+                             map.removeLayer(clickMarker);
+                         }
+                     
+                         // Créer un nouveau marqueur à l'emplacement cliqué
+                         clickMarker = L.marker(e.latlng, {
+                             icon: L.icon({
+                                 iconUrl: 'https://cdn-icons-png.flaticon.com/512/149/149059.png',
+                                 iconSize: [30, 30],
+                                iconAnchor: [15, 30],
+                             })
+                         }).addTo(map);
+                     
+                         // Appel à une fonction JavaFX pour envoyer les coordonnées
+                         javaConnector.receiveCoordinates(e.latlng.lat, e.latlng.lng);
+                     }
+        
+                    map.on('click', onMapClick);
                 </script>
             </body>
             </html>
@@ -89,7 +112,7 @@ public class ViewController implements Initializable {
 
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
-        if(event.getSource()==delivery) {
+        if(event.getSource()==delivery || event.getSource()==validate_delivery) {
             if(controller !=null) {
                 try {
                     // Charger le fichier FXML de la nouvelle fenêtre
@@ -102,6 +125,10 @@ public class ViewController implements Initializable {
                     newStage.setTitle("add Delivery");
                     newStage.setScene(new Scene(root));
                     DeliveryIHMController deliveryIHM = loader.getController();
+                    if(event.getSource()==validate_delivery){
+                        deliveryIHM.setLat(lastClickedLat);
+                        deliveryIHM.setLng(lastClickedLng);
+                    }
 
 
                     // Afficher la nouvelle fenêtre
@@ -129,10 +156,6 @@ public class ViewController implements Initializable {
 
         }
     }
-
-
-
-
 
 
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
@@ -165,6 +188,10 @@ public class ViewController implements Initializable {
 
 
     private String drawPaths(CityMap cityMap) {
+        if (cityMap == null || cityMap.getChemins() == null) {
+            // Gérer le cas où cityMap ou getChemins() est null
+            return "";
+        }
         StringBuilder markersJs = displayDeliveryPoints();
         int index=0;
         for (int i = cityMap.getChemins().size() - 1; i >= 0; i--) {
@@ -273,10 +300,30 @@ public class ViewController implements Initializable {
         listDelivery.addAll(delivery);
     }
 
+    public void setLastClickedCoordinates(double lat, double lng) {
+        this.lastClickedLat = lat;
+        this.lastClickedLng = lng;
+    }
+
+    public class JavaConnector {
+        public void receiveCoordinates(double lat, double lng) {
+            setLastClickedCoordinates(lat, lng);
+            //System.out.println("Latitude: " + lat + ", Longitude: " + lng); //debug
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         engine = webView.getEngine();
         listDelivery = FXCollections.observableArrayList();
         listViewDelivery.setItems(listDelivery);
+
+        // Ajout de l'interface Java pour la communication avec JavaScript
+        engine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                JSObject jsobj = (JSObject) engine.executeScript("window");
+                jsobj.setMember("javaConnector", new JavaConnector());
+            }
+        });
     }
 }
