@@ -307,7 +307,20 @@ public class ViewController implements Initializable {
         listViewDelivery.setItems(listDelivery);
 
         listCourier= FXCollections.observableArrayList();
-       
+       courier.setConverter(new StringConverter<Courier>() {
+           @Override
+           public String toString(Courier c) {
+               if(c==null){
+                   return "";
+               }
+               return "Courrier "+c.getId();
+           }
+
+           @Override
+           public Courier fromString(String s) {
+               return null;
+           }
+       });
         courier.setItems(listCourier);
 
     }
