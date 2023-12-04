@@ -9,9 +9,7 @@ import fr.insalyonif.hubert.model.*;
 
 public class Controller {
     private CityMap cityMap;
-    private Dijkstra dij;
 
-    private DijkstraInverse dijInv;
     private int sizeGraph;
 
     private ArrayList<DeliveryTour> listeDelivery;
@@ -24,21 +22,7 @@ public class Controller {
         this.cityMap = cityMap;
     }
 
-    public Dijkstra getDij() {
-        return dij;
-    }
 
-    public void setDij(Dijkstra dij) {
-        this.dij = dij;
-    }
-
-    public DijkstraInverse getDijInv() {
-        return dijInv;
-    }
-
-    public void setDijInv(DijkstraInverse dijInv) {
-        this.dijInv = dijInv;
-    }
 
     public int getSizeGraph() {
         return sizeGraph;
@@ -77,13 +61,24 @@ public class Controller {
     
 
         sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
-        dij = new Dijkstra(sizeGraph, cityMap);
+        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
         defaultDeliveryTour.setDijkstra(dij);
-        dijInv = new DijkstraInverse(sizeGraph,cityMap);
+        DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
         defaultDeliveryTour.setDijkstraInverse(dijInv);
-
         listeDelivery.add(defaultDeliveryTour);
 
+    }
+
+    public void newDeliveryTour(){
+        Courier c = new Courier(listeDelivery.size());
+        DeliveryTour defaultDeliveryTour= new DeliveryTour();
+        defaultDeliveryTour.setCourier(c);
+        sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
+        Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
+        defaultDeliveryTour.setDijkstra(dij);
+        DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
+        defaultDeliveryTour.setDijkstraInverse(dijInv);
+        listeDelivery.add(defaultDeliveryTour);
     }
 
     public boolean newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {

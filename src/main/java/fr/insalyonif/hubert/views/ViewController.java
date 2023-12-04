@@ -82,7 +82,13 @@ public class ViewController implements Initializable {
             </html>
             """;
 
-
+    @FXML
+    void addNewCourrier(ActionEvent event){
+        controller.newDeliveryTour();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Successfully added ! :)");
+        alert.showAndWait();
+    }
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
         if(event.getSource()==delivery) {
