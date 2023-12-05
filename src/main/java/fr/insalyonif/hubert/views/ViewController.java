@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -18,6 +19,8 @@ import javafx.scene.web.WebView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.IOException;
@@ -44,6 +47,10 @@ public class ViewController implements Initializable {
     private  WebEngine engine;
 
    private Controller controller;
+
+    public Controller getcontroller() {
+        return controller;
+    }
 
     private static final String MAP_HTML_TEMPLATE = """
             <!DOCTYPE html>
@@ -258,6 +265,51 @@ public class ViewController implements Initializable {
                 // Load the selected XML map file
                 controller = new Controller(selectedFile.getAbsolutePath());
 
+                controller.setGlobalDate(LocalDate.now());
+
+
+                String markersJs = displayDeliveryPoints().toString();
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+
+                engine.loadContent(mapHtml);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Handle the exception (e.g., show an error message)
+            }
+        }
+    }
+
+    void loadMap(LocalDate datePicker, String selectedFilePath ) {
+
+                // Load the selected XML map file
+                controller = new Controller(selectedFilePath);
+
+                controller.setGlobalDate(datePicker);
+
+
+                String markersJs = displayDeliveryPoints().toString();
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+
+                engine.loadContent(mapHtml);
+    }
+
+    @FXML
+    void handleImportMap(ActionEvent event) {
+        // Save le fichier existant
+        handleSaveMap(event);
+
+        // Importer les données du xml
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open XML Map File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            try {
+                // Load the selected XML map file
+                controller = new Controller(selectedFile.getAbsolutePath());
+
+
                 String markersJs = displayDeliveryPoints().toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
@@ -288,20 +340,63 @@ public class ViewController implements Initializable {
 
     @FXML
     void handleSaveMap(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save CityMap File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-        File selectedFile = fileChooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
 
-        if (selectedFile != null) {
-            try {
-                controller.saveCityMapToFile(selectedFile.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Handle the exception (e.g., show an error message)
+        //System.out.println(controller.getListeDelivery().get(0).getStartTime());
+        // Construction du nom de fichier
+
+        String fileName = String.format("Deliveries_%s_%s.xml",
+                controller.getGlobalDate(), controller.getFileName());
+
+        String currentFilePath = getClass().getResource("ViewController.class").getPath();
+        //String test = getClass().getResource("archives").getPath();
+        System.out.println(currentFilePath);
+        //System.out.println(test);
+
+        // Chemin complet pour le fichier dans le dossier Downloads
+        //TO DO mettre le bon path
+        String filePath = String.format("%s%s%s%s%s",
+                System.getProperty("user.home"),
+                File.separator,
+                "Downloads",
+                File.separator,
+                fileName);
+
+        // Création du fichier
+        File file = new File(filePath);
+
+        // Écriture dans le fichier
+        try (FileWriter fileWriter = new FileWriter(file);
+             PrintWriter printWriter = new PrintWriter(fileWriter)) {
+
+            // Vérifier si le fichier existe
+            if (file.exists()) {
+                // Si le fichier existe, effacer son contenu
+                new PrintWriter(file).close();
             }
+
+            // Sauvegarde le contenu de la carte de la ville dans le fichier
+            boolean saved = controller.saveCityMapToFile(file.getAbsolutePath());
+
+            if (saved) {
+                // If saved successfully, show the success dialog
+                //FXMLLoader loader = new FXMLLoader(getClass().getResource("successSave.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/successSave.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Success");
+                stage.setScene(new Scene(root));
+                stage.show();
+            }
+
+            System.out.println("Fichier enregistré avec succès à : " + file.getAbsolutePath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer les exceptions liées à l'écriture du fichier
         }
     }
+
+
 
 
 }

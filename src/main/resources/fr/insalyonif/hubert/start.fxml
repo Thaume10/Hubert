@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="fr.insalyonif.hubert.views.StartController"
+            prefHeight="1200.0" prefWidth="800.0">
+
+    <children>
+        <Label text="Start" layoutX="10.0" layoutY="10.0"/>
+        <Button text="See all Deliveries" layoutX="10.0" layoutY="40.0" onAction="#handleSeeAllDeliveries"/>
+        <Button text="Create new Deliveries" layoutX="150.0" layoutY="40.0" onAction="#handleCreateNewDeliveries"/>
+        <!-- Additional controls, initially invisible -->
+        <DatePicker fx:id="datePicker" layoutX="10.0" layoutY="80.0" visible="false"/>
+        <Button fx:id="fileLoader" text="Load File" layoutX="200.0" layoutY="80.0" visible="false" onAction="#handleLoadFile"/>
+        <!-- New button for starting -->
+        <Button fx:id="start" text="Start deliveries" layoutX="350.0" layoutY="80.0" visible="false" onAction="#handleStart"/>
+        <Label fx:id="message" layoutX="10.0" layoutY="120.0" wrapText="true"/>
+    </children>
+
+</AnchorPane>

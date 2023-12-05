@@ -13,12 +13,33 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.stage.FileChooser;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.time.LocalDate;
+
 public class Controller {
     private CityMap cityMap;
 
     private int sizeGraph;
 
     private ArrayList<DeliveryTour> listeDelivery;
+
+    private static LocalDate globalDate;
+
+    public static LocalDate getGlobalDate() {
+        return globalDate;
+    }
+
+    public static void setGlobalDate(LocalDate globalDate) {
+        Controller.globalDate = globalDate;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    private String fileName;
 
     public CityMap getCityMap() {
         return cityMap;
@@ -59,7 +80,14 @@ public class Controller {
       
         try {
             String xmlMap = path;
+            Path filePath = Paths.get(xmlMap);
             //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
+            fileName = filePath.getFileName().toString();
+            int extensionIndex = fileName.lastIndexOf('.');
+            if (extensionIndex > 0) {
+                fileName = fileName.substring(0, extensionIndex);
+            }
+
             cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,17 +215,17 @@ public class Controller {
 
 
 
-    public void saveCityMapToFile(String filePath) throws IOException {
+    public boolean saveCityMapToFile(String filePath) throws IOException {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             // Save the CityMap data to the file
             // You can customize this based on your CityMap data structure and attributes
-            writer.println("<?xml version="+"1.0"+" encoding="+"UTF-8"+" standalone="+"no"+"?>");
-            writer.println("<map>");
+            writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.println("<map fileName=\"" + fileName + "\""+ " globalDate=\""+ globalDate + "\" >");
             writer.println("    <warehouse address=\"" + cityMap.getWareHouseLocation().getId() + "\" />");
 
             for (DeliveryTour deliveryTour : this.listeDelivery) {
-                writer.println("    <deliveryTour courier=\"" + deliveryTour.getCourier().getId() + "\" startTime="+ deliveryTour.getStartTime()+ "\" endTime="+ deliveryTour.getEndTime() +"\">");
+                writer.println("    <deliveryTour courier=\"" + deliveryTour.getCourier().getId() + "\" startTime=\""+ deliveryTour.getStartTime()+ "\" endTime=\""+ deliveryTour.getEndTime() +"\">");
 //                writer.println("        <courier id=\"" +  + "\" />");
                 for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()){
                     writer.println("        <deliveryRequest deliveryTime=\""+ deliveryRequest.getDeliveryTime() +"\" >");
@@ -214,7 +242,14 @@ public class Controller {
 //                    "\" longitude=\"" + intersection.getLongitude() + "\" />");
 
             writer.println("</map>");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Return false if an IOException occurs
         }
+
     }
+
+
 
 }
