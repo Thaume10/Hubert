@@ -100,10 +100,14 @@ public class Controller {
             
             //Si un des deux false alors pop up BOOL1 && BOOL2
             if (b1 && b2) {
+                deliveryTour.clearCheminsDij();
+                deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+                deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
                 DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
                 deliveryTour.getRequests().add(deli);
-                System.out.println(deliveryTour.getDijkstra().getChemins());
-                Graph g = new CompleteGraph(deliveryTour.getDijkstra().getChemins(), deliveryTour.getRequests(), cityMap);
+                System.out.println(deliveryTour.getCheminDij());
+                System.out.println(deliveryTour.getRequests());
+                Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
 
 
                 TSP tsp = new TSP1();
@@ -112,7 +116,7 @@ public class Controller {
                 for (int i = 0; i < listeDelivery.size(); i++)
                     System.out.print(tsp.getSolution(i) + " ");
                 System.out.println("0");
-                List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getDijkstra().getChemins());
+                List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
 
                 System.out.println("Meilleur chemin global :");
                 for (Chemin chemin : bestChemin) {

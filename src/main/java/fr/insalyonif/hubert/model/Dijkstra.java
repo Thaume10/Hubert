@@ -16,9 +16,9 @@ public class Dijkstra extends AbstractDijkstra {
     public Dijkstra(int sizeGraph, CityMap cityMap) {
         super(sizeGraph, cityMap);
         // Ajoute le point de départ (entrepôt) aux demandes de livraison.
-        chemins = new ArrayList<>();
-        deliveryRequest = new ArrayList<>();
-        deliveryRequest.add(cityMap.getWareHouseLocation());
+
+
+
     }
 
     /**

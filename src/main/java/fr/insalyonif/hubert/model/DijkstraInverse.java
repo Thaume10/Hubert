@@ -16,6 +16,7 @@ public class DijkstraInverse extends AbstractDijkstra {
      */
     public DijkstraInverse(int sizeGraph, CityMap cityMap) {
         super(sizeGraph, cityMap);
+
     }
 
     /**

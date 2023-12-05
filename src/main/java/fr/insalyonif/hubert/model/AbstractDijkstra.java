@@ -16,9 +16,9 @@ public abstract class AbstractDijkstra {
 
     public String[] colors;
 
-    public static ArrayList<Chemin> chemins ;
+    private ArrayList<Chemin> chemins ;
 
-    public static ArrayList<Intersection> deliveryRequest ;
+    public ArrayList<Intersection> deliveryRequest ;
 
     protected CityMap cityMap;
 
@@ -33,6 +33,10 @@ public abstract class AbstractDijkstra {
         this.pi = new int[sizeGraph];
         this.visited = new boolean[sizeGraph];
         this.cityMap = cityMap;
+        this.chemins = new ArrayList<Chemin>();
+        deliveryRequest = new ArrayList<Intersection>();
+        deliveryRequest.add(cityMap.getWareHouseLocation());
+
 
 
 
@@ -109,6 +113,7 @@ public abstract class AbstractDijkstra {
         if (!deliveryRequest.contains(start)) {
             deliveryRequest.add(start);
         }
+        System.out.println("caca" + deliveryRequest);
 
         for (int i = 0; i < sizeGraph; i++) {
             distance[i] = INFINITY;
@@ -184,7 +189,7 @@ public abstract class AbstractDijkstra {
      *
      * @return Une liste de chemins.
      */
-    public List<Chemin> getChemins() {
+    public ArrayList<Chemin> getChemins() {
         return chemins;
     }
 

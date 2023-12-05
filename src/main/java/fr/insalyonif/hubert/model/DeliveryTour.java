@@ -9,12 +9,16 @@ public class DeliveryTour {
     private List<Chemin> paths;
     private Instant startTime;
     private Instant endTime;
-    private Dijkstra dij; 
+    private Dijkstra dij;
+
+    private ArrayList<Chemin> cheminDij;
+
     private DijkstraInverse dijInv;
 
 
     public DeliveryTour() {
         requests= new ArrayList<>();
+        cheminDij = new ArrayList<Chemin>();
     }
 
     // Getter for courier
@@ -45,6 +49,16 @@ public class DeliveryTour {
     // Setter for courier
     public void setCourier(Courier courier) {
         this.courier = courier;
+    }
+
+    public void majCheminsDij(ArrayList<Chemin> chemins) {
+        cheminDij.addAll(chemins);
+    }
+    public void clearCheminsDij() {
+        cheminDij.clear();
+    }
+    public ArrayList<Chemin> getCheminDij() {
+        return cheminDij;
     }
 
     // Getter for requests
