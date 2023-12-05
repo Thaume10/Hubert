@@ -86,7 +86,7 @@ public class Controller {
     public boolean newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
         DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
         if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
-
+            System.out.println("id deliberytour"+idDeliveryTour);
             Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
 
             // Afficher les résultats
@@ -102,7 +102,7 @@ public class Controller {
             if (b1 && b2) {
                 DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
                 deliveryTour.getRequests().add(deli);
-
+                System.out.println(deliveryTour.getDijkstra().getChemins());
                 Graph g = new CompleteGraph(deliveryTour.getDijkstra().getChemins(), deliveryTour.getRequests(), cityMap);
 
 

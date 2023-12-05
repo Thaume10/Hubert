@@ -40,11 +40,14 @@ public class CompleteGraph implements Graph {
 			positionToIndex.put(intersections.get(i-1).getDeliveryLocation().getPos(), i);
 		}
 
+		for (Map.Entry<Integer, Integer> entry : positionToIndex.entrySet()) {
+				System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
 
+		}
 		// Remplir la matrice de coût avec les valeurs correctes
 		for (Chemin chemin : chemins) {
 			System.out.println(chemin);
-			System.out.println(positionToIndex.get(chemin.getDebut().getPos()));
+			System.out.println(chemin.getDebut().getPos());
 			System.out.println(positionToIndex.get(chemin.getFin().getPos()));
 			int debutIndex = positionToIndex.get(chemin.getDebut().getPos());
 			int finIndex = positionToIndex.get(chemin.getFin().getPos());

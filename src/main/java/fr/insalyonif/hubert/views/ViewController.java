@@ -245,9 +245,9 @@ public class ViewController implements Initializable {
         Random random = new Random();
 
         // Génération de trois composants de couleur (R, G, B)
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
+        int red = random.nextInt(200) + 55;   // Entre 55 et 255 pour des couleurs plus vives
+        int green = random.nextInt(200) + 55; // Entre 55 et 255 pour des couleurs plus vives
+        int blue = random.nextInt(200) + 55;
 
         // Conversion des composants de couleur en format hexadécimal
         String hexRed = Integer.toHexString(red);

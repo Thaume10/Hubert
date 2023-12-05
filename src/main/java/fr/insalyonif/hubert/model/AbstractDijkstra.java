@@ -16,9 +16,9 @@ public abstract class AbstractDijkstra {
 
     public String[] colors;
 
-    public static ArrayList<Chemin> chemins = new ArrayList<>();
+    public static ArrayList<Chemin> chemins ;
 
-    public static ArrayList<Intersection> deliveryRequest = new ArrayList<>();
+    public static ArrayList<Intersection> deliveryRequest ;
 
     protected CityMap cityMap;
 
