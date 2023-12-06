@@ -75,50 +75,22 @@ public class DeliveryIHMController implements Initializable {
 
                 if (selectedTimeWindow != null && courier.getValue() != null) {
                     isValiderClicked = true;
-                    Instant currentInstant = Instant.now();
-                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(currentInstant, ZoneId.systemDefault());
-                    LocalTime specificTime;
-                    ZonedDateTime resultDateTime;
                     int startTime ;
                     int endTime ;
                     switch (selectedTimeWindow.toString()) {
                         case "Passage entre 8h et 9h":
-                            /*specificTime = LocalTime.of(8, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(9, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();*/
                             startTime=8;
                             endTime=9;
                             break;
                         case "Passage entre 9h et 10h":
-                            /*specificTime = LocalTime.of(9, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(10, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();*/
                             startTime=9;
                             endTime=10;
                             break;
                         case "Passage entre 10h et 11h":
-                            /*pecificTime = LocalTime.of(10,0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(11, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();*/
                             startTime=10;
                             endTime=11;
                             break;
                         case "Passage entre 11h et 12h":
-                            /*specificTime = LocalTime.of(11, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(12, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();*/
                             startTime=11;
                             endTime=12;
                             break;

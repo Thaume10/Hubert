@@ -140,44 +140,32 @@ public class Controller {
                     ArrayList <Integer> pos11 = new ArrayList<>();
 
 
-                    Instant startTime = deliveryTour.getRequests().get(0).getTimeWindow().getStartTime();
-                    LocalDate startDate = startTime.atZone(ZoneId.systemDefault()).toLocalDate(); // Convertir l'Instant en LocalDate
+                    int startTime = deliveryTour.getRequests().get(0).getTimeWindow().getStartTime();
 
-                    Instant huit = LocalDateTime.of(startDate, LocalTime.of(8, 1))
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant();
-                    Instant neuf = LocalDateTime.of(startDate, LocalTime.of(9, 1))
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant();
-                    Instant dix = LocalDateTime.of(startDate, LocalTime.of(10, 1))
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant();
-                    Instant onze = LocalDateTime.of(startDate, LocalTime.of(11, 1))
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant();
+
 
                     for (int i=0; i < deliveryTour.getRequests().size(); i++) {
                         DeliveryRequest request = deliveryTour.getRequests().get(i);
-                        System.out.println(huit);
+
                         System.out.println(request.getTimeWindow().getStartTime());
 
-                        if (request.getTimeWindow().isInTimeWindow(huit)){
+                        if (request.getTimeWindow().isInTimeWindow(8)){
                             System.out.println("8");
                             requests8.add(request);
                             pos8.add(i+1);
 
                         }
-                        if (request.getTimeWindow().isInTimeWindow(neuf)){
+                        if (request.getTimeWindow().isInTimeWindow(9)){
                             System.out.println("9");
                             requests9.add(request);
                             pos9.add(i+1);
                         }
-                        if (request.getTimeWindow().isInTimeWindow(dix)){
+                        if (request.getTimeWindow().isInTimeWindow(10)){
                             System.out.println("10");
                             requests10.add(request);
                             pos10.add(i+1);
                         }
-                        if (request.getTimeWindow().isInTimeWindow(onze)){
+                        if (request.getTimeWindow().isInTimeWindow(11)){
                             System.out.println("11");
                             requests11.add(request);
                             pos11.add(i+1);

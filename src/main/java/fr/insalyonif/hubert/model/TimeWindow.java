@@ -85,6 +85,6 @@ public class TimeWindow {
      * @return true si l'instant est à l'intérieur de la fenêtre temporelle, false sinon.
      */
     public boolean isInTimeWindow(int time){
-        return (time<endTime && time>startTime);
+        return (time<endTime && time>=startTime);
     }
 }
