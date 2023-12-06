@@ -202,8 +202,54 @@ public class Dynamique {
         mem[i][s] = min;
         return min;
     }
+    public List<Integer> findOptimusPath(int start, int n, Graph g, double[][] mem) {
+        List<Integer> optimalPath = new ArrayList<>();
+        reconstructOptimusPath(start, createSet(n), n, g, mem, optimalPath);
+//        optimalPath.add(0,start);
+        return optimalPath;
+    }
 
+    private void reconstructOptimusPath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
+        if (isEmpty(s)) {
+            path.add(0, i);
+            return;
+        }
 
+        for (int j = 1; j < n; j++) {
+            if (isIn(j, s)) {
+                double remainingCost = round((mem[i][s] - g.getCost(i, j)) * 1e7) / 1e7;
+                double futureCost = round((optimusWay(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
+//                System.out.println(remainingCost);
+//                System.out.println(computeD(j, removeElement(s, j), n, g, mem));
+                if (abs(remainingCost - futureCost) < 0.000000001) {
+                    path.add(0, i);
+                    reconstructPath(j, removeElement(s, j), n, g, mem, path);
+                    break;
+                }
+            }
+        }
+    }
+    public static double optimusWay(int debut, int s, int n, Graph g, double[][] mem) {
+        if (mem[debut][s] > 0) {
+            return mem[debut][s];
+        }
+
+        if (isEmpty(s)) {
+            mem[debut][n+1] = g.getCost(debut, n+1);
+            return g.getCost(debut, n+1);
+        }
+
+        double min = Double.MAX_VALUE;
+        for (int j = 1; j < n; j++) {
+            if (isIn(j, s)) {
+                double d = computeD(j, removeElement(s, j), n, g, mem);
+                if (g.getCost(debut, j) + d < min) min = g.getCost(debut, j) + d;
+            }
+        }
+
+        mem[debut][s] = min;
+        return min;
+    }
 
     /*public static double computeD_ite(int s, int n, Graph g, double[][] mem) {
         for (int e = 0; e <= s; e++) {
