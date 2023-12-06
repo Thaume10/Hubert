@@ -1,6 +1,7 @@
 package fr.insalyonif.hubert.controller;
 import fr.insalyonif.hubert.views.DeliveryIHMController;
 
+import java.time.*;
 import java.util.*;
 
 import fr.insalyonif.hubert.model.*;
@@ -131,6 +132,50 @@ public class Controller {
                     double[][] memD = new double[n][s + 1];
                     for (int i = 0; i < n; i++) {
                         Arrays.fill(memD[i], 0);
+                    }
+
+                    ArrayList <DeliveryRequest> requests8 = new ArrayList<>();
+                    ArrayList <DeliveryRequest> requests9 = new ArrayList<>();
+                    ArrayList <DeliveryRequest> requests10 = new ArrayList<>();
+                    ArrayList <DeliveryRequest> requests11 = new ArrayList<>();
+
+
+                    Instant startTime = deliveryTour.getRequests().get(0).getTimeWindow().getStartTime();
+                    LocalDate startDate = startTime.atZone(ZoneId.systemDefault()).toLocalDate(); // Convertir l'Instant en LocalDate
+
+                    Instant huit = LocalDateTime.of(startDate, LocalTime.of(8, 1))
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant();
+                    Instant neuf = LocalDateTime.of(startDate, LocalTime.of(9, 1))
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant();
+                    Instant dix = LocalDateTime.of(startDate, LocalTime.of(10, 1))
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant();
+                    Instant onze = LocalDateTime.of(startDate, LocalTime.of(11, 1))
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant();
+
+                    for (DeliveryRequest request : deliveryTour.getRequests()) {
+                        System.out.println(huit);
+                        System.out.println(request.getTimeWindow().getStartTime());
+
+                        if (request.getTimeWindow().isInTimeWindow(huit)){
+                            System.out.println("8");
+                            requests8.add(request);
+                        }
+                        if (request.getTimeWindow().isInTimeWindow(neuf)){
+                            System.out.println("9");
+                            requests9.add(request);
+                        }
+                        if (request.getTimeWindow().isInTimeWindow(dix)){
+                            System.out.println("10");
+                            requests10.add(request);
+                        }
+                        if (request.getTimeWindow().isInTimeWindow(onze)){
+                            System.out.println("11");
+                            requests11.add(request);
+                        }
                     }
 
 
