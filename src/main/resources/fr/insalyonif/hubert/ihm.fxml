@@ -10,30 +10,30 @@
 
 
     <children>
-      <ScrollPane layoutX="724.0" layoutY="147.0" prefHeight="643.0" prefWidth="429.0">
+      <ScrollPane layoutX="705.0" layoutY="164.0" prefHeight="600.0" prefWidth="450.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="411.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="569.0" prefWidth="411.0">
                <children>
-                  <ListView fx:id="listViewDelivery" prefHeight="571.0" prefWidth="412.0" />
+                  <ListView fx:id="listViewDelivery" layoutY="7.0" prefHeight="600.0" prefWidth="450.0" />
                </children></AnchorPane>
         </content>
       </ScrollPane>
-      <Pane layoutX="29.0" layoutY="14.0" prefHeight="72.0" prefWidth="1150.0" styleClass="panel-info">
+      <Pane prefHeight="87.0" prefWidth="1201.0" style="-fx-background-color: #77B5FE;" styleClass="panel-info">
          <children>
-            <Button fx:id="newMap" layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="New Map" />
-            <Button layoutX="255.0" layoutY="21.0" mnemonicParsing="false" onAction="#addNewCourrier" styleClass="btn-primary" text="New courrier" />
-            <Button fx:id="delivery" layoutX="124.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="btn-primary" text="New Delivery" />
-             <Button fx:id="import" layoutX="400" layoutY="21.0" mnemonicParsing="false"  styleClass="btn-primary" text="Import Tours of a day" />
-            <ImageView fitHeight="50.0" fitWidth="133.0" layoutX="1073.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <Button fx:id="newMap" layoutX="32.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="Load New Map" />
+             <Button fx:id="import" layoutX="158.0" layoutY="28.0" mnemonicParsing="false" styleClass="btn-primary" text="Import existing DeliveryTour" />
+            <ImageView fitHeight="75.0" fitWidth="100.0" layoutX="558.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@logo.png" />
                </image>
             </ImageView>
-            <Button layoutX="948.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleSaveMap" styleClass="btn-primary" text="Save File" />
+            <Button layoutX="959.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleSaveMap" styleClass="btn-primary" text="Save current Delivery Tour" />
          </children>
       </Pane>
-      <WebView id="webView" fx:id="webView" layoutX="47.0" layoutY="146.0" prefHeight="576.0" prefWidth="633.0" />
-      <Button fx:id="validate_delivery" layoutX="569.0" layoutY="101.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="alert-success" text="Validate point" />
-      <ComboBox fx:id="courier" layoutX="864.0" layoutY="105.0" prefWidth="150.0" styleClass="lbl-info" />
+      <WebView id="webView" fx:id="webView" layoutX="58.0" layoutY="164.0" prefWidth="600.0" />
+      <Button fx:id="validate_delivery" layoutX="519.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="alert-success" text="Validate point" />
+      <ComboBox fx:id="courier" layoutX="900.0" layoutY="112.0" prefWidth="150.0" style="-fx-background-color: #77B5FE;" />
+      <Button fx:id="delivery" layoutX="369.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="alert-success" text="Add Point Manually" />
+      <Button layoutX="782.0" layoutY="112.0" mnemonicParsing="false" onAction="#addNewCourrier" style="-fx-background-color: #77B5FE;" text="New courrier" />
    </children>
 </Pane>
