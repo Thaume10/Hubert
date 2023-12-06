@@ -370,7 +370,7 @@ public class ViewController implements Initializable {
 
                 // Load the selected XML map file
                 controller = new Controller(selectedFilePath);
-
+                setCourierIHM(controller.getListeDelivery());
                 controller.setGlobalDate(datePicker);
 
 
@@ -573,6 +573,7 @@ public class ViewController implements Initializable {
         String markersJs = drawPaths(controller.getCityMap(), null);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
         engine.loadContent(mapHtml);
+        setCourierIHM(controller.getListeDelivery());
         this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
         this.setDeliveryRequestIHM(controller.getListeDelivery().get(1).getRequests());
 

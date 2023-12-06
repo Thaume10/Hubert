@@ -113,6 +113,34 @@ public class Controller {
 
     }
 
+    public Controller(String path, boolean load) {
+        //initialize class variables
+        cityMap = new CityMap();
+        listeDelivery = new ArrayList<>();
+
+
+
+        try {
+            String xmlMap = path;
+            Path filePath = Paths.get(xmlMap);
+            //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
+            fileName = filePath.getFileName().toString();
+            int extensionIndex = fileName.lastIndexOf('.');
+            if (extensionIndex > 0) {
+                fileName = fileName.substring(0, extensionIndex);
+            }
+
+            cityMap.loadFromXML(xmlMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+    }
+
     public void newDeliveryTour(){
         Courier c = new Courier(listeDelivery.size());
         DeliveryTour defaultDeliveryTour= new DeliveryTour();
@@ -322,13 +350,14 @@ public class Controller {
             Courier c = new Courier((int) Long.parseLong(deliveryTourElement.getAttribute("courier")));
             DeliveryTour defaultDeliveryTour= new DeliveryTour();
             defaultDeliveryTour.setCourier(c);
-            sizeGraph = cityMap.getIntersections().size();
             sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
             Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
             defaultDeliveryTour.setDijkstra(dij);
             DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
             defaultDeliveryTour.setDijkstraInverse(dijInv);
             listeDelivery.add(defaultDeliveryTour);
+
+            System.out.println(c);
 
 
 
@@ -343,7 +372,7 @@ public class Controller {
                 //Get Intersection
                 //long idInter = Long.parseLong(deliveryLocation.getAttribute("id"));
                 double idInter = Double.parseDouble(deliveryLocation.getAttribute("id"));
-                System.out.println(idInter );
+                System.out.println("idInter "+idInter );
 
 
                 Intersection intersectionPlusProche = cityMap.findIntersectionByID((long) idInter);
@@ -384,9 +413,9 @@ public class Controller {
                 }
             }
 
-            for (Chemin chemin : listeDelivery.get(i).getPaths()) {
-                System.out.println(" get 0 = "+ chemin);
-            }
+//            for (Chemin chemin : listeDelivery.get(i).getPaths()) {
+//                System.out.println(" get 0 = "+ chemin);
+//            }
         }
     }
 
