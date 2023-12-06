@@ -96,6 +96,16 @@ public class StartController {
 
 
             Element map = (Element) doc.getElementsByTagName("map").item(0);
+
+            //TO DO : si map est null alors erreur
+            if (map == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Ce fichier ne correspond pas :(");
+                alert.showAndWait();
+                return;
+            }
+
+
             String fileName = map.getAttribute("fileName");
             LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
 
