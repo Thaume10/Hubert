@@ -22,16 +22,16 @@ class TimeWindowTest {
         onze = Instant.parse("2023-11-27T11:00:00Z");
 
         // Initialisation de la fenêtre de temps pour le test
-        test = new TimeWindow(neuf, onze); // Supposons que la fenêtre de temps soit de 9h à 11h
+        test = new TimeWindow(9, 11); // Supposons que la fenêtre de temps soit de 9h à 11h
     }
 
     @Test
     void isInTimeWindow() {
         // Test si un instant est dans la fenêtre de temps
-        assertTrue(test.isInTimeWindow(dix), "Dix heures devrait être dans la fenêtre de temps");
+        assertTrue(test.isInTimeWindow(10), "Dix heures devrait être dans la fenêtre de temps");
 
         // Test si un instant est en dehors de la fenêtre de temps
-        assertFalse(test.isInTimeWindow(huit), "Huit heures ne devrait pas être dans la fenêtre de temps");
-        assertFalse(test.isInTimeWindow(onze), "Onze heures ne devrait pas être dans la fenêtre de temps");
+        assertFalse(test.isInTimeWindow(8), "Huit heures ne devrait pas être dans la fenêtre de temps");
+        assertFalse(test.isInTimeWindow(11), "Onze heures ne devrait pas être dans la fenêtre de temps");
     }
 }

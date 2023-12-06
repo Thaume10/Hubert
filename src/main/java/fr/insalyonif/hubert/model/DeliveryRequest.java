@@ -29,7 +29,7 @@ public class DeliveryRequest {
      */
     public DeliveryRequest(Intersection deliveryLocation) {
         this.deliveryLocation = deliveryLocation;
-        this.timeWindow = new TimeWindow(Instant.parse("2023-11-27T08:00:00Z"),Instant.parse("2023-11-27T09:00:00Z"));
+        this.timeWindow = new TimeWindow(0,0);
     }
 
     /**

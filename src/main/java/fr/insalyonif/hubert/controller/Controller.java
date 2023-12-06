@@ -14,6 +14,8 @@ public class Controller {
 
     private ArrayList<DeliveryTour> listeDelivery;
 
+    public ArrayList<TimeWindow> timeWindowList= setTimeWindowList();
+
     public CityMap getCityMap() {
         return cityMap;
     }
@@ -99,7 +101,7 @@ public class Controller {
             for (DeliveryRequest request : deliveryTour.getRequests()) {
                 if (request.getDeliveryLocation().equals(intersectionPlusProche)) {
                     System.out.println("equal intersection");
-                    if(request.getTimeWindow().getEndTime().toString().equals(deliveryIHM.getTimeWindow().getEndTime().toString())){
+                    if(request.getTimeWindow().getEndTime() == deliveryIHM.getTimeWindow().getEndTime()){
                         System.out.println("equal timewindow");
                         intersectionExist = true;
                         break;
@@ -203,22 +205,45 @@ public class Controller {
         return earthRadius * c; // Distance en kilomètres
     }
 
-    private Courier findBestCourier(DeliveryRequest deliveryRequest){
-        int maxRequests = 0;
+    public Object[] findBestCourier(){
+        int min = 9999;
         Courier bestCourier = null;
+        TimeWindow timeWindow =null;
         for(DeliveryTour deliveryTour : listeDelivery){
-            int cpt =0;
-            for(DeliveryRequest deliveryRequest1 : deliveryTour.getRequests()){
-                if(deliveryRequest.getTimeWindow().equals(deliveryRequest1.getTimeWindow())){
-                    cpt++;
+
+            for(TimeWindow timeWindow1 : timeWindowList){
+                int cpt =0;
+                if(timeWindowPossible(timeWindow1)){
+
+                    for(DeliveryRequest deliveryRequest1 : deliveryTour.getRequests()){
+                        if(deliveryRequest1.getTimeWindow().getStartTime() == timeWindow1.getStartTime()){
+                            System.out.println("nb delivery "+ cpt);
+                            cpt++;
+                        }
+                    }
+                }
+                if(cpt!=0 && cpt<min){
+                    min = cpt;
+                    bestCourier=deliveryTour.getCourier();
+                    timeWindow = timeWindow1;
                 }
             }
-            if(cpt>maxRequests && cpt<10){
-                maxRequests = cpt;
-                bestCourier=deliveryTour.getCourier();
-            }
         }
-        return bestCourier;
+        System.out.println("Best Courier "+ bestCourier);
+        System.out.println("Best Timwindow "+ timeWindow);
+        return new Object[]{bestCourier, timeWindow};
+    }
+    public ArrayList<TimeWindow> setTimeWindowList(){
+        ArrayList<TimeWindow> timeWindows= new ArrayList<>();
+        for(int i=8; i<12;i++){
+            timeWindows.add(new TimeWindow(i,i+1));
+        }
+        return timeWindows;
+    }
+
+    public boolean timeWindowPossible(TimeWindow timeWindow){
+        //A implementer pour vérifier que la time window peut encore recevoir des nouvelles délivery
+        return true;
     }
 
 

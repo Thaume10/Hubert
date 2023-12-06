@@ -24,6 +24,8 @@ import java.util.Random;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
+
 import netscape.javascript.JSObject;
 
 import fr.insalyonif.hubert.model.*;
@@ -152,9 +154,18 @@ public class ViewController implements Initializable {
                     newStage.setTitle("add Delivery");
                     newStage.setScene(new Scene(root));
                     DeliveryIHMController deliveryIHM = loader.getController();
+                    Object[] objects = controller.findBestCourier();
+                    deliveryIHM.setInitialCourier((Courier) objects[0]);
+                    deliveryIHM.setInitialTimeWindow((TimeWindow) objects[1]);
+
                     if(event.getSource()==validate_delivery){
                         deliveryIHM.setLat(lastClickedLat);
                         deliveryIHM.setLng(lastClickedLng);
+                        Courier defaultCourier = (Courier) controller.findBestCourier()[0];
+                        TimeWindow defaultTimeWindow =(TimeWindow) controller.findBestCourier()[1];
+
+                        courier.setValue(defaultCourier);
+
                     }
                     deliveryIHM.setListCourier(listCourier);
 
