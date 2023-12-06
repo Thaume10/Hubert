@@ -352,30 +352,39 @@ public class ViewController implements Initializable {
          }
 
     @FXML
-    void handleLoadMap(ActionEvent event) {
+    void handleLoadMap(ActionEvent event) throws IOException {
         handleSaveMap(event);
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open XML Map File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("Open XML Map File");
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+//        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+//
+//        if (selectedFile != null) {
+//            try {
+//                // Load the selected XML map file
+//                controller = new Controller(selectedFile.getAbsolutePath());
+//                setCourierIHM(controller.getListeDelivery());
+//                controller.setGlobalDate(LocalDate.now());
+//                listDelivery.clear();
+//
+//                String markersJs = displayDeliveryPoints(null).toString();
+//                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+//
+//                engine.loadContent(mapHtml);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                // Handle the exception (e.g., show an error message)
+//            }
+//        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/newMap.fxml"));
+        Parent root = (Parent) loader.load();
 
-        if (selectedFile != null) {
-            try {
-                // Load the selected XML map file
-                controller = new Controller(selectedFile.getAbsolutePath());
-                setCourierIHM(controller.getListeDelivery());
-                controller.setGlobalDate(LocalDate.now());
-                listDelivery.clear();
 
-                String markersJs = displayDeliveryPoints(null).toString();
-                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-
-                engine.loadContent(mapHtml);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Handle the exception (e.g., show an error message)
-            }
-        }
+        // Créer une nouvelle fenêtre
+        Stage newStage = new Stage();
+        newStage.setTitle("New Map");
+        newStage.setScene(new Scene(root));
+        newStage.showAndWait();
     }
 
     void loadMap(LocalDate datePicker, String selectedFilePath ) {
