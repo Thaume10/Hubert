@@ -153,6 +153,7 @@ public class StartController {
         datePicker.setVisible(true);
         fileLoader.setVisible(true);
         start.setVisible(true);
+        message.setVisible(true);
     }
 
     @FXML
