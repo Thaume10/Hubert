@@ -2,6 +2,7 @@ package fr.insalyonif.hubert.views;
 import fr.insalyonif.hubert.controller.Controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,10 +24,12 @@ import java.util.Random;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import netscape.javascript.JSObject;
 
 import fr.insalyonif.hubert.model.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 
 
 public class ViewController implements Initializable {
@@ -42,7 +45,10 @@ public class ViewController implements Initializable {
 
 
     private ObservableList<Courier> listCourier;
-    
+
+
+    @FXML
+    private Button validate_delivery;
 
     @FXML
     private ListView<DeliveryRequest> listViewDelivery;
@@ -51,7 +57,11 @@ public class ViewController implements Initializable {
 
     private  WebEngine engine;
 
-   private Controller controller;
+    private Controller controller;
+
+    private double lastClickedLat = 0.0;
+
+    private double lastClickedLng = 0.0;
 
     private static final String MAP_HTML_TEMPLATE = """
             <!DOCTYPE html>
@@ -70,8 +80,8 @@ public class ViewController implements Initializable {
    
                 <div id="map"></div>
                 <script>
-                    
-                    var map = L.map('map').setView([45.74979, 4.88272], 14);
+                    var clickMarker;
+                    var map = L.map('map').setView([45.755, 4.87], 15);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                         attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
                         maxZoom: 18
@@ -79,15 +89,39 @@ public class ViewController implements Initializable {
                     var customIcon = L.icon({
                         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png',
                         iconSize: [15, 20],
-                        iconAnchor: [12, 12],
+                        iconAnchor: [7.5, 20],
                     });
                     
                     %s
                     
+                    function onMapClick(e) {
+                         // Supprime l'ancien marqueur s'il existe
+                         if (clickMarker) {
+                             map.removeLayer(clickMarker);
+                         }
+                     
+                         // Crée un nouveau marqueur à l'emplacement cliqué
+                         clickMarker = L.marker(e.latlng, {
+                             icon: L.icon({
+                                 iconUrl: 'https://cdn-icons-png.flaticon.com/512/149/149059.png',
+                                 iconSize: [30, 30],
+                                iconAnchor: [15, 30],
+                             })
+                         }).addTo(map);
+                         
+                         // Envoi à l'application les coordonnées cliqués
+                         window.javaApp.handleMapClick(e.latlng.lat, e.latlng.lng);
+                    }
+                    
+                    map.on('click', onMapClick);
                 </script>
             </body>
             </html>
             """;
+
+    public WebEngine getEngine() {
+        return engine;
+    }
 
     @FXML
     void addNewCourrier(ActionEvent event){
@@ -105,7 +139,7 @@ public class ViewController implements Initializable {
     }
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
-        if(event.getSource()==delivery) {
+        if(event.getSource()==delivery || event.getSource()==validate_delivery) {
             if(controller !=null) {
                 try {
                     // Charger le fichier FXML de la nouvelle fenêtre
@@ -118,23 +152,31 @@ public class ViewController implements Initializable {
                     newStage.setTitle("add Delivery");
                     newStage.setScene(new Scene(root));
                     DeliveryIHMController deliveryIHM = loader.getController();
+                    if(event.getSource()==validate_delivery){
+                        deliveryIHM.setLat(lastClickedLat);
+                        deliveryIHM.setLng(lastClickedLng);
+                    }
                     deliveryIHM.setListCourier(listCourier);
 
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                if(controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId())){
-                    String markersJs = drawPaths(controller.getCityMap(),null);
-                    String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-                    engine.loadContent(mapHtml);
-                    
-                    courier.setValue(deliveryIHM.getCourier());
-                    this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Point non accessible ");
-                    alert.showAndWait();
-                }
+                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,0);
+                    if(traceNewDeliveryPoint == 0){
+                        String markersJs = drawPaths(controller.getCityMap());
+                        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                        engine.loadContent(mapHtml);
+                        courier.setValue(deliveryIHM.getCourier());
+                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+                    } else if(traceNewDeliveryPoint == 1){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Point non accessible");
+                        alert.showAndWait();
+                    } else if(traceNewDeliveryPoint == 2){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Point déjà présent dans la liste");
+                        alert.showAndWait();
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -285,7 +327,7 @@ public class ViewController implements Initializable {
             engine.loadContent(mapHtml);
 
             }
-         }   
+         }
 
     @FXML
     void handleLoadMap(ActionEvent event) {
@@ -300,7 +342,7 @@ public class ViewController implements Initializable {
                 controller = new Controller(selectedFile.getAbsolutePath());
 
                 setCourierIHM(controller.getListeDelivery());
-                
+
                 String markersJs = displayDeliveryPoints(null).toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
@@ -330,14 +372,35 @@ public class ViewController implements Initializable {
     }
 
 
+    public void setLastClickedCoordinates(double lat, double lng) {
+        this.lastClickedLat = lat;
+        this.lastClickedLng = lng;
+    }
+
+    public void handleMapClick(double lat, double lng) {
+        setLastClickedCoordinates(lat, lng);
+        //System.out.println("Latitude: " + lat + ", Longitude: " + lng);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         engine = webView.getEngine();
         listDelivery = FXCollections.observableArrayList();
         listViewDelivery.setItems(listDelivery);
 
+        // Lien entre le Javascript et Java
+        engine.setJavaScriptEnabled(true);
+        engine.getLoadWorker().stateProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                if (Worker.State.SUCCEEDED.equals(newValue)) {
+                    JSObject window = (JSObject) engine.executeScript("window");
+                    window.setMember("javaApp", this);
+                }
+            }
+        );
+
         listCourier= FXCollections.observableArrayList();
-       courier.setConverter(new StringConverter<Courier>() {
+        courier.setConverter(new StringConverter<Courier>() {
            @Override
            public String toString(Courier c) {
                if(c==null){
@@ -350,7 +413,7 @@ public class ViewController implements Initializable {
            public Courier fromString(String s) {
                return null;
            }
-       });
+        });
         courier.setItems(listCourier);
 
         courier.valueProperty().addListener((observable, oldValue, newCourier) -> {

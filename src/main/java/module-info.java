@@ -8,6 +8,7 @@ module fr.insalyonif.hubert {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.xml;
+    requires jdk.jsobject;
 
     opens fr.insalyonif.hubert to javafx.fxml;
     exports fr.insalyonif.hubert.controller;

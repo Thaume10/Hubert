@@ -65,9 +65,10 @@ public class Controller {
         defaultDeliveryTour.setDijkstra(dij);
         DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
         defaultDeliveryTour.setDijkstraInverse(dijInv);
+
         listeDelivery.add(defaultDeliveryTour);
 
-        
+
 
     }
 
@@ -83,10 +84,10 @@ public class Controller {
         listeDelivery.add(defaultDeliveryTour);
     }
 
-    public boolean newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
+    public int newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
         DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
         if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
-            System.out.println("id deliberytour"+idDeliveryTour);
+
             Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
 
             // Afficher les résultats
@@ -94,20 +95,33 @@ public class Controller {
             System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
             System.out.println(intersectionPlusProche);
 
-            boolean b1 = deliveryTour.getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
-            boolean b2 = deliveryTour.getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
+            boolean intersectionExist = false;
+            for (DeliveryRequest request : deliveryTour.getRequests()) {
+                if (request.getDeliveryLocation().equals(intersectionPlusProche)) {
+                    System.out.println("equal intersection");
+                    if(request.getTimeWindow().getEndTime().toString().equals(deliveryIHM.getTimeWindow().getEndTime().toString())){
+                        System.out.println("equal timewindow");
+                        intersectionExist = true;
+                        break;
+                    }
+                }
+            }
 
-            
-            //Si un des deux false alors pop up BOOL1 && BOOL2
-            if (b1 && b2) {
-                deliveryTour.clearCheminsDij();
-                deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
-                deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
-                DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
-                deliveryTour.getRequests().add(deli);
-                System.out.println(deliveryTour.getCheminDij());
-                System.out.println(deliveryTour.getRequests());
-                Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
+            if (!intersectionExist) {
+
+                boolean b1 = deliveryTour.getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
+                boolean b2 = deliveryTour.getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
+
+                //Si un des deux false alors pop up BOOL1 && BOOL2
+                if (b1 && b2) {
+                    deliveryTour.clearCheminsDij();
+                    deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+                    deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
+                    DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
+                    deliveryTour.getRequests().add(deli);
+                    //System.out.println(deliveryTour.getCheminDij());
+                    //System.out.println(deliveryTour.getRequests());
+                    Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
 
 
                 TSP tsp = new TSP1();
@@ -118,20 +132,24 @@ public class Controller {
                 System.out.println("0");
                 List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
 
-                System.out.println("Meilleur chemin global :");
-                for (Chemin chemin : bestChemin) {
-                    System.out.println(chemin);
-                    //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
-                }
+                    System.out.println("Meilleur chemin global :");
+                    for (Chemin chemin : bestChemin) {
+                        System.out.println(chemin);
+                        //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+                    }
 
-                deliveryTour.setPaths(bestChemin);
-                MAJDeliveryPointList(idDeliveryTour);
-                return true;
+                    deliveryTour.setPaths(bestChemin);
+                    MAJDeliveryPointList(idDeliveryTour);
+                    return 0; //0 for success
+                } else {
+                    return 1; //Error -> Non accessible
+                }
             } else {
-                return false;
+                //System.out.println("L'intersection est déjà présente dans les demandes de livraison.");
+                return 2; //Error -> Point déjà présent
             }
         }
-        return true;
+        return 0;
     }
 
     private void MAJDeliveryPointList(int idDeliveryTour){

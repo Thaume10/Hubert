@@ -8,21 +8,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.*;
 import java.util.ResourceBundle;
@@ -141,6 +135,14 @@ public class DeliveryIHMController implements Initializable {
 
     public TimeWindow getTimeWindow() {
         return timeWindow;
+    }
+
+    public void setLat(double lat) {
+        this.lat.setText(String.valueOf(lat));
+    }
+
+    public void setLng(double lng) {
+        this.lng.setText(String.valueOf(lng));
     }
 
     @Override
