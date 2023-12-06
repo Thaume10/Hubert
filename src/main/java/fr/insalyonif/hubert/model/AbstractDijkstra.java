@@ -45,6 +45,10 @@ public abstract class AbstractDijkstra {
         Arrays.fill(colors, "white");
     }
 
+    public void cleanDij(){
+        chemins.clear();
+    }
+
     /**
      * Calcule la distance euclidienne entre deux intersections.
      *

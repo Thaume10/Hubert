@@ -16,7 +16,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-
+import java.awt.Color;
 import javafx.util.StringConverter;
 import java.io.File;
 import java.util.ArrayList;
@@ -194,6 +194,7 @@ public class ViewController implements Initializable {
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
 
     private StringBuilder displayDeliveryPoints(DeliveryRequest target) {
+        Courier courrierComboBox =courier.getValue();
         StringBuilder markersJs = new StringBuilder();
         String iconUrl   = "https://cdn-icons-png.flaticon.com/512/124/124434.png";
         //https://api.iconify.design/mdi/map-marker.svg?color=%23ffae42
@@ -206,25 +207,27 @@ public class ViewController implements Initializable {
         for( DeliveryTour deliveryTour : controller.getListeDelivery()) {
             int i=0;
             for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()) {
-                markersJs.append(markerJs);
-                if(target!=null && deliveryRequest.getDeliveryLocation().getId()==target.getDeliveryLocation().getId()){
-                    iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
-                    i++;
-                    markerJs = String.format(
-                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 40]})}).addTo(map);"
-                                    + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
-                            //deliveryRequest.getDeliveryLocation().getId()
-                            iconUrl, i
-                    );
-                }else {
-                    iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
-                    i++;
-                    markerJs = String.format(
-                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
-                                    + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
-                            //deliveryRequest.getDeliveryLocation().getId()
-                            iconUrl, i
-                    );
+                if (courrierComboBox!=null && deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+                    markersJs.append(markerJs);
+                    if (target != null && deliveryRequest.getDeliveryLocation().getId() == target.getDeliveryLocation().getId()) {
+                        iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
+                        i++;
+                        markerJs = String.format(
+                                "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 40]})}).addTo(map);"
+                                        + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
+                                //deliveryRequest.getDeliveryLocation().getId()
+                                iconUrl, i
+                        );
+                    } else {
+                        iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
+                        i++;
+                        markerJs = String.format(
+                                "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
+                                        + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
+                                //deliveryRequest.getDeliveryLocation().getId()
+                                iconUrl, i
+                        );
+                    }
                 }
 
                 markersJs.append(markerJs);
@@ -240,6 +243,7 @@ public class ViewController implements Initializable {
             courrierComboBox = controller.getListeDelivery().get(0).getCourier();
         }
         StringBuilder markersJs = displayDeliveryPoints(deliveryRequest);
+        String polylineJsCouleur="";
         for(DeliveryTour deliveryTour : controller.getListeDelivery()) {
             if(deliveryTour.getPaths()!=null) {
                 for (int i = deliveryTour.getPaths().size() - 1; i >= 0; i--) {
@@ -266,49 +270,53 @@ public class ViewController implements Initializable {
                     // End with the start intersection
                     polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
                     polylineCoords.append("]");
-                    String polylineJs;
-                    if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
-                        polylineJs = "L.polyline(" + polylineCoords + ", {color: '" + generateRandomColor() + "'}).addTo(map);";
-                    } else {
-                        polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
-                    }
 
-                    markersJs.append(polylineJs);
-                    System.out.println(polylineJs);
-                    System.out.println("Chemin index " + i);
+                    if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateRandomColor() + "'}).addTo(map);";
+                    } else {
+                        String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
+                        markersJs.append(polylineJs);
+                    }
                 }
             }
         }
+        markersJs.append(polylineJsCouleur);
         return markersJs.toString();
     }
 
     public static String generateRandomColor() {
-        // Générateur de nombres aléatoires
-        Random random = new Random();
+        java.util.Random random = new java.util.Random();
 
         // Génération de trois composants de couleur (R, G, B)
-        int red = random.nextInt(200) + 55;   // Entre 55 et 255 pour des couleurs plus vives
-        int green = random.nextInt(200) + 55; // Entre 55 et 255 pour des couleurs plus vives
-        int blue = random.nextInt(200) + 55;
+        float[] hsb = new float[3];
+        do {
+            float hue = random.nextFloat();
+            float saturation = 1.0f; // Saturation maximale pour des couleurs vives
+            float brightness = 1.0f; // Luminosité maximale pour des couleurs vives
+            Color.RGBtoHSB(Color.getHSBColor(hue, saturation, brightness).getRed(),
+                    Color.getHSBColor(hue, saturation, brightness).getGreen(),
+                    Color.getHSBColor(hue, saturation, brightness).getBlue(), hsb);
+        } while (hsb[2] < 0.6); // Assurez-vous que la luminosité est suffisamment élevée
 
         // Conversion des composants de couleur en format hexadécimal
-        String hexRed = Integer.toHexString(red);
-        String hexGreen = Integer.toHexString(green);
-        String hexBlue = Integer.toHexString(blue);
+        int rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+        String hexColor = Integer.toHexString(rgb & 0xffffff);
 
-        // Assurez-vous que chaque composant a deux chiffres hexadécimaux
-        hexRed = padZero(hexRed);
-        hexGreen = padZero(hexGreen);
-        hexBlue = padZero(hexBlue);
+        // Assurez-vous que chaque composant a six chiffres hexadécimaux
+        hexColor = padZero(hexColor, 6);
 
-        // Concaténation des composants pour obtenir la couleur complète
-        String hexColor = "#" + hexRed + hexGreen + hexBlue;
+        // Préfixe avec #
+        hexColor = "#" + hexColor;
 
-        return hexColor.toUpperCase(); // Retourne la couleur en majuscules
+        return hexColor.toUpperCase();
     }
 
-    private static String padZero(String hexComponent) {
-        return hexComponent.length() == 1 ? "0" + hexComponent : hexComponent;
+    private static String padZero(String s, int length) {
+        StringBuilder padded = new StringBuilder(s);
+        while (padded.length() < length) {
+            padded.insert(0, "0");
+        }
+        return padded.toString();
     }
 
 
