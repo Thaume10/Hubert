@@ -48,6 +48,8 @@ public class DeliveryIHMController implements Initializable {
 
     private TimeWindow timeWindow;
 
+    private boolean isValiderClicked = false;
+
 
     @FXML
     void validerButton(ActionEvent event) {
@@ -60,7 +62,8 @@ public class DeliveryIHMController implements Initializable {
 
                 String selectedTimeWindow = (String) deliveryTime.getValue();
 
-                if (selectedTimeWindow != null && courier!=null) {
+                if (selectedTimeWindow != null && courier.getValue() != null) {
+                    isValiderClicked = true;
                     Instant currentInstant = Instant.now();
                     ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(currentInstant, ZoneId.systemDefault());
                     LocalTime specificTime;
@@ -109,7 +112,7 @@ public class DeliveryIHMController implements Initializable {
                 } else {
                     // Gérer le cas où aucun créneau horaire n'est sélectionné
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Il reste un champ vide :(");
+                    alert.setContentText("Il reste un champ vide 😢");
                     alert.showAndWait();
                     return;  // Sortir de la méthode si aucun créneau horaire n'est sélectionné
                 }
@@ -123,6 +126,10 @@ public class DeliveryIHMController implements Initializable {
 
 
         }
+    }
+
+    public boolean isValiderClicked() {
+        return isValiderClicked;
     }
 
     public double getLatDouble() {

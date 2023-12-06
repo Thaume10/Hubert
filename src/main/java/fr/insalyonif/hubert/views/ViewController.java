@@ -158,10 +158,11 @@ public class ViewController implements Initializable {
                     }
                     deliveryIHM.setListCourier(listCourier);
 
+
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                    if (deliveryIHM.getCourier() != null) {
+                    if (deliveryIHM.isValiderClicked()) {
                         int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
                         if(traceNewDeliveryPoint == 0){
                             String markersJs = drawPaths(controller.getCityMap(), null);
