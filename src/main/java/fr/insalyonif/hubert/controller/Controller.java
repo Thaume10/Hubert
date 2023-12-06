@@ -561,9 +561,11 @@ public class Controller {
 
 
                 if(b1 && b2) {
-                    Instant startTime = Instant.parse(timeWindow.getAttribute("startTime"));
-                    Instant endTime = Instant.parse(timeWindow.getAttribute("endTime"));
+                    System.out.println(timeWindow.getAttribute("startTime"));
+                    int startTime = Integer.parseInt(timeWindow.getAttribute("startTime"));
+                    int endTime = Integer.parseInt(timeWindow.getAttribute("endTime"));
                     TimeWindow timeWindowToCreate = new TimeWindow(startTime,endTime);
+
 
                     listeDelivery.get(i).clearCheminsDij();
                     listeDelivery.get(i).majCheminsDij(listeDelivery.get(i).getDijkstra().getChemins());
