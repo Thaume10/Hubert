@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-
+import java.awt.Color;
 import javafx.util.StringConverter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,6 +27,8 @@ import java.util.Random;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
+
 import netscape.javascript.JSObject;
 
 import fr.insalyonif.hubert.model.*;
@@ -99,7 +101,7 @@ public class ViewController implements Initializable {
                 <div id="map"></div>
                 <script>
                     var clickMarker;
-                    var map = L.map('map').setView([45.755, 4.87], 15);
+                    var map = L.map('map').setView([45.74979, 4.87972], 14);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                         attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
                         maxZoom: 18
@@ -170,30 +172,42 @@ public class ViewController implements Initializable {
                     newStage.setTitle("add Delivery");
                     newStage.setScene(new Scene(root));
                     DeliveryIHMController deliveryIHM = loader.getController();
+                    Object[] objects = controller.findBestCourier();
+                    deliveryIHM.setInitialCourier((Courier) objects[0]);
+                    deliveryIHM.setInitialTimeWindow((TimeWindow) objects[1]);
+
                     if(event.getSource()==validate_delivery){
                         deliveryIHM.setLat(lastClickedLat);
                         deliveryIHM.setLng(lastClickedLng);
+                        Courier defaultCourier = (Courier) controller.findBestCourier()[0];
+                        TimeWindow defaultTimeWindow =(TimeWindow) controller.findBestCourier()[1];
+
+                        courier.setValue(defaultCourier);
+
                     }
                     deliveryIHM.setListCourier(listCourier);
+
 
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
-                    if(traceNewDeliveryPoint == 0){
-                        String markersJs = drawPaths(controller.getCityMap(), null);
-                        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-                        engine.loadContent(mapHtml);
-                        courier.setValue(deliveryIHM.getCourier());
-                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
-                    } else if(traceNewDeliveryPoint == 1){
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("Point non accessible");
-                        alert.showAndWait();
-                    } else if(traceNewDeliveryPoint == 2){
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("Point déjà présent dans la liste");
-                        alert.showAndWait();
+                    if (deliveryIHM.isValiderClicked()) {
+                        int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
+                        if(traceNewDeliveryPoint == 0){
+                            String markersJs = drawPaths(controller.getCityMap(), null);
+                            String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                            engine.loadContent(mapHtml);
+                            courier.setValue(deliveryIHM.getCourier());
+                            this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
+                        } else if(traceNewDeliveryPoint == 1){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("Point non accessible");
+                            alert.showAndWait();
+                        } else if(traceNewDeliveryPoint == 2){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("Point déjà présent dans la liste");
+                            alert.showAndWait();
+                        }
                     }
 
                 } catch (IOException e) {
@@ -218,6 +232,7 @@ public class ViewController implements Initializable {
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
 
     private StringBuilder displayDeliveryPoints(DeliveryRequest target) {
+        Courier courrierComboBox =courier.getValue();
         StringBuilder markersJs = new StringBuilder();
         String iconUrl   = "https://cdn-icons-png.flaticon.com/512/124/124434.png";
         //https://api.iconify.design/mdi/map-marker.svg?color=%23ffae42
@@ -230,25 +245,27 @@ public class ViewController implements Initializable {
         for( DeliveryTour deliveryTour : controller.getListeDelivery()) {
             int i=0;
             for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()) {
-                markersJs.append(markerJs);
-                if(target!=null && deliveryRequest.getDeliveryLocation().getId()==target.getDeliveryLocation().getId()){
-                    iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
-                    i++;
-                    markerJs = String.format(
-                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 40]})}).addTo(map);"
-                                    + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
-                            //deliveryRequest.getDeliveryLocation().getId()
-                            iconUrl, i
-                    );
-                }else {
-                    iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
-                    i++;
-                    markerJs = String.format(
-                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
-                                    + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
-                            //deliveryRequest.getDeliveryLocation().getId()
-                            iconUrl, i
-                    );
+                if (courrierComboBox!=null && deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+                    markersJs.append(markerJs);
+                    if (target != null && deliveryRequest.getDeliveryLocation().getId() == target.getDeliveryLocation().getId()) {
+                        iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
+                        i++;
+                        markerJs = String.format(
+                                "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 40]})}).addTo(map);"
+                                        + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
+                                //deliveryRequest.getDeliveryLocation().getId()
+                                iconUrl, i
+                        );
+                    } else {
+                        iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
+                        i++;
+                        markerJs = String.format(
+                                "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [15, 20], iconAnchor: [8, 20]})}).addTo(map);"
+                                        + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
+                                //deliveryRequest.getDeliveryLocation().getId()
+                                iconUrl, i
+                        );
+                    }
                 }
 
                 markersJs.append(markerJs);
@@ -264,7 +281,10 @@ public class ViewController implements Initializable {
             courrierComboBox = controller.getListeDelivery().get(0).getCourier();
         }
         StringBuilder markersJs = displayDeliveryPoints(deliveryRequest);
+        String polylineJsCouleur="";
+        int index=0;
         for(DeliveryTour deliveryTour : controller.getListeDelivery()) {
+            index++;
             if(deliveryTour.getPaths()!=null) {
                 for (int i = deliveryTour.getPaths().size() - 1; i >= 0; i--) {
                     Chemin chemin = deliveryTour.getPaths().get(i);
@@ -290,49 +310,43 @@ public class ViewController implements Initializable {
                     // End with the start intersection
                     polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
                     polylineCoords.append("]");
-                    String polylineJs;
-                    if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
-                        polylineJs = "L.polyline(" + polylineCoords + ", {color: '" + generateRandomColor() + "'}).addTo(map);";
-                    } else {
-                        polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
-                    }
 
-                    markersJs.append(polylineJs);
-                    System.out.println(polylineJs);
-                    System.out.println("Chemin index " + i);
+                    if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                    } else {
+                        String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
+                        markersJs.append(polylineJs);
+                    }
                 }
             }
         }
+        markersJs.append(polylineJsCouleur);
         return markersJs.toString();
     }
 
-    public static String generateRandomColor() {
-        // Générateur de nombres aléatoires
-        Random random = new Random();
-
-        // Génération de trois composants de couleur (R, G, B)
-        int red = random.nextInt(200) + 55;   // Entre 55 et 255 pour des couleurs plus vives
-        int green = random.nextInt(200) + 55; // Entre 55 et 255 pour des couleurs plus vives
-        int blue = random.nextInt(200) + 55;
-
-        // Conversion des composants de couleur en format hexadécimal
-        String hexRed = Integer.toHexString(red);
-        String hexGreen = Integer.toHexString(green);
-        String hexBlue = Integer.toHexString(blue);
-
-        // Assurez-vous que chaque composant a deux chiffres hexadécimaux
-        hexRed = padZero(hexRed);
-        hexGreen = padZero(hexGreen);
-        hexBlue = padZero(hexBlue);
-
-        // Concaténation des composants pour obtenir la couleur complète
-        String hexColor = "#" + hexRed + hexGreen + hexBlue;
-
-        return hexColor.toUpperCase(); // Retourne la couleur en majuscules
+    public static String generateColor(int i, int j,int maxJ) {
+        Color baseColor = getColorByIndex(i);
+        Color adjustedColor = adjustBrightness(baseColor, j,maxJ);
+        return colorToHex(adjustedColor);
     }
 
-    private static String padZero(String hexComponent) {
-        return hexComponent.length() == 1 ? "0" + hexComponent : hexComponent;
+    public static Color getColorByIndex(int index) {
+        Color[] colors = {Color.ORANGE, Color.GREEN, Color.BLUE, Color.RED,Color.YELLOW};
+        return colors[index % colors.length];
+    }
+
+    public static Color adjustBrightness(Color color, int j, int maxJ) {
+        float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+
+        // Adjust brightness based on the value of j and maxJ
+        float brightnessFactor = 0.5f + 0.5f * ((float) j / maxJ);
+        hsb[2] = Math.min(hsb[2] * brightnessFactor, 1.0f);
+
+        return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+    }
+
+    public static String colorToHex(Color color) {
+        return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
     }
 
 
@@ -596,7 +610,7 @@ public class ViewController implements Initializable {
 
     private void handleDeliverySelection(DeliveryRequest selectedDelivery) {
         if (engine != null) {
-            String centerMapScript = String.format("map.setView([%f, %f], 14);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.009);
+            String centerMapScript = String.format("map.setView([%f, %f], 14);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.004);
             int index=0;
             for(int i=0;i<centerMapScript.length();i++){
                 if(centerMapScript.charAt(i)==','){
@@ -606,7 +620,7 @@ public class ViewController implements Initializable {
                     }
                 }
             }
-            String markersJs = drawPaths(controller.getCityMap(),selectedDelivery)+centerMapScript;
+            String markersJs = drawPaths(controller.getCityMap(),selectedDelivery);
             String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
             System.out.println("LLAAAA"+mapHtml);
             engine.loadContent(mapHtml);

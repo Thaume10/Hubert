@@ -27,6 +27,7 @@
                   <Image url="@logo.png" />
                </image>
             </ImageView>
+            <Button layoutX="380.0" layoutY="21.0" mnemonicParsing="false" onAction="#addNewCourrier" styleClass="btn-primary" text="Delete Courrier" />
             <Button layoutX="959.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleSaveMap" styleClass="btn-primary" text="Save current Delivery Tour" />
          </children>
       </Pane>
