@@ -247,7 +247,9 @@ public class ViewController implements Initializable {
         }
         StringBuilder markersJs = displayDeliveryPoints(deliveryRequest);
         String polylineJsCouleur="";
+        int index=0;
         for(DeliveryTour deliveryTour : controller.getListeDelivery()) {
+            index++;
             if(deliveryTour.getPaths()!=null) {
                 for (int i = deliveryTour.getPaths().size() - 1; i >= 0; i--) {
                     Chemin chemin = deliveryTour.getPaths().get(i);
@@ -275,7 +277,7 @@ public class ViewController implements Initializable {
                     polylineCoords.append("]");
 
                     if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
-                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateRandomColor() + "'}).addTo(map);";
+                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
                     } else {
                         String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
                         markersJs.append(polylineJs);
@@ -287,39 +289,29 @@ public class ViewController implements Initializable {
         return markersJs.toString();
     }
 
-    public static String generateRandomColor() {
-        java.util.Random random = new java.util.Random();
-
-        // Génération de trois composants de couleur (R, G, B)
-        float[] hsb = new float[3];
-        do {
-            float hue = random.nextFloat();
-            float saturation = 1.0f; // Saturation maximale pour des couleurs vives
-            float brightness = 1.0f; // Luminosité maximale pour des couleurs vives
-            Color.RGBtoHSB(Color.getHSBColor(hue, saturation, brightness).getRed(),
-                    Color.getHSBColor(hue, saturation, brightness).getGreen(),
-                    Color.getHSBColor(hue, saturation, brightness).getBlue(), hsb);
-        } while (hsb[2] < 0.6); // Assurez-vous que la luminosité est suffisamment élevée
-
-        // Conversion des composants de couleur en format hexadécimal
-        int rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-        String hexColor = Integer.toHexString(rgb & 0xffffff);
-
-        // Assurez-vous que chaque composant a six chiffres hexadécimaux
-        hexColor = padZero(hexColor, 6);
-
-        // Préfixe avec #
-        hexColor = "#" + hexColor;
-
-        return hexColor.toUpperCase();
+    public static String generateColor(int i, int j,int maxJ) {
+        Color baseColor = getColorByIndex(i);
+        Color adjustedColor = adjustBrightness(baseColor, j,maxJ);
+        return colorToHex(adjustedColor);
     }
 
-    private static String padZero(String s, int length) {
-        StringBuilder padded = new StringBuilder(s);
-        while (padded.length() < length) {
-            padded.insert(0, "0");
-        }
-        return padded.toString();
+    public static Color getColorByIndex(int index) {
+        Color[] colors = {Color.ORANGE, Color.GREEN, Color.BLUE, Color.RED,Color.YELLOW};
+        return colors[index % colors.length];
+    }
+
+    public static Color adjustBrightness(Color color, int j, int maxJ) {
+        float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+
+        // Adjust brightness based on the value of j and maxJ
+        float brightnessFactor = 0.5f + 0.5f * ((float) j / maxJ);
+        hsb[2] = Math.min(hsb[2] * brightnessFactor, 1.0f);
+
+        return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+    }
+
+    public static String colorToHex(Color color) {
+        return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
     }
 
 
