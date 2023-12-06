@@ -10,11 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
@@ -55,7 +51,13 @@ public class ViewController implements Initializable {
     private ComboBox<Courier> courier;
 
     @FXML
-    private Button import1;
+    private Button import1; //Bouton pour importer un fichier existant
+
+    @FXML
+    private Label dateLabel;  //Date du fichier à afficher
+
+    @FXML
+    private Label fileNameLabel; //Date du fichier à afficher
 
 
     private ObservableList<Courier> listCourier;
@@ -394,6 +396,12 @@ public class ViewController implements Initializable {
                 setCourierIHM(controller.getListeDelivery());
                 controller.setGlobalDate(datePicker);
                 System.out.println("passe");
+                dateLabel.setText(String.valueOf(datePicker));
+
+                int lastIndex = selectedFilePath.lastIndexOf('/');
+                // Extraire la partie après le dernier '/'
+                String dernierMorceau = selectedFilePath.substring(lastIndex + 1);
+                fileNameLabel.setText(dernierMorceau);
 
 
                 String markersJs = displayDeliveryPoints(null).toString();
@@ -548,6 +556,8 @@ public class ViewController implements Initializable {
         );
 
         listCourier= FXCollections.observableArrayList();
+
+
         courier.setConverter(new StringConverter<Courier>() {
            @Override
            public String toString(Courier c) {

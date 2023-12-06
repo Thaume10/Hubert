@@ -20,5 +20,9 @@
             <deliveryLocation latitude="45.755867" longitude="4.8951344" id="191134501"/>
             <timeWindow startTime="2023-12-06T09:00:00Z" endTime="2023-12-06T10:00:00Z" />
         </deliveryRequest>
+        <deliveryRequest deliveryTime="null" >
+            <deliveryLocation latitude="45.75941" longitude="4.86923" id="208769112"/>
+            <timeWindow startTime="2023-12-06T09:00:00Z" endTime="2023-12-06T10:00:00Z" />
+        </deliveryRequest>
     </deliveryTour>
 </map>
