@@ -401,16 +401,17 @@ public class ViewController implements Initializable {
     }
 
     public void displayAllTheDeliveryPoints(){
-//        String markersJs = drawPaths(controller.getCityMap());
-//        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-//        engine.loadContent(mapHtml);
-//        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+        String markersJs = drawPaths(controller.getCityMap());
+        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+        engine.loadContent(mapHtml);
+        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+        this.setDeliveryRequestIHM(controller.getListeDelivery().get(1).getRequests());
 
-        for(DeliveryTour delivery : controller.getListeDelivery()){
-            for(DeliveryRequest request : delivery.getRequests()){
-                 System.out.println("Ici "+request.getDeliveryLocation());
-            }
-        }
+//        for(DeliveryTour delivery : controller.getListeDelivery()){
+//            for(Chemin request : delivery.getPaths()){
+//                 System.out.println("Ici "+request);
+//            }
+//        }
     }
 
 

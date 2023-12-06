@@ -257,9 +257,7 @@ public class Controller {
                     writer.println("            <timeWindow startTime=\"" + deliveryRequest.getTimeWindow().getStartTime() +"\"" +" endTime=\"" + deliveryRequest.getTimeWindow().getEndTime() + "\" />");
                     writer.println("        </deliveryRequest>");
                 }
-                for (Chemin paths : deliveryTour.getPaths()){
-                    writer.println("        <paths debut=\"" + paths.getDebut().getId() + "\" fin=\""+ paths.getFin().getId() + "\" pi=\""+ Arrays.toString(paths.getPi())+ "\" cout=\"" + paths.getCout() + "\" />");
-                }
+
                 writer.println("    </deliveryTour>");
             }
 //            "\" latitude=\"" + intersection.getLatitude() +
@@ -308,6 +306,8 @@ public class Controller {
             defaultDeliveryTour.setDijkstraInverse(dijInv);
             listeDelivery.add(defaultDeliveryTour);
 
+
+
             //Add the delivery requests
             NodeList deliveryRequestList = deliveryTourElement.getElementsByTagName("deliveryRequest");
             for (int j = 0; j < deliveryRequestList.getLength(); j++) {
@@ -325,11 +325,10 @@ public class Controller {
                 Intersection intersectionPlusProche = cityMap.findIntersectionByID((long) idInter);
                 System.out.println(intersectionPlusProche );
 
-                boolean b1 = defaultDeliveryTour.getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
-                boolean b2 = defaultDeliveryTour.getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
-//                for (Chemin chemin : defaultDeliveryTour.getDijkstra().getChemins()) {
-//                    System.out.println(chemin);
-//                }
+                boolean b1 = listeDelivery.get(i).getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
+                boolean b2 = listeDelivery.get(i).getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
+
+
 
                 if(b1 && b2) {
                     Instant startTime = Instant.parse(timeWindow.getAttribute("startTime"));
@@ -337,9 +336,9 @@ public class Controller {
                     TimeWindow timeWindowToCreate = new TimeWindow(startTime,endTime);
 
                     DeliveryRequest deli = new DeliveryRequest(intersectionPlusProche,timeWindowToCreate);
-                    defaultDeliveryTour.getRequests().add(deli);
+                    listeDelivery.get(i).getRequests().add(deli);
 
-                    Graph g = new CompleteGraph(defaultDeliveryTour.getDijkstra().getChemins(), defaultDeliveryTour.getRequests(), cityMap);
+                    Graph g = new CompleteGraph(listeDelivery.get(i).getDijkstra().getChemins(), listeDelivery.get(i).getRequests(), cityMap);
 
 
                     TSP tsp = new TSP1();
@@ -348,7 +347,7 @@ public class Controller {
 //                    for (int k = 0; k < listeDelivery.size(); k++)
 //                        System.out.print(tsp.getSolution(k) + " ");
 //                    System.out.println("0");
-                    List<Chemin> bestChemin = tsp.bestCheminGlobal(defaultDeliveryTour.getDijkstra().getChemins());
+                    List<Chemin> bestChemin = tsp.bestCheminGlobal(listeDelivery.get(i).getDijkstra().getChemins());
 
                     System.out.println("Meilleur chemin global :");
                     for (Chemin chemin : bestChemin) {
@@ -356,9 +355,13 @@ public class Controller {
                         //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
                     }
 
-                    defaultDeliveryTour.setPaths(bestChemin);
-                    MAJDeliveryPointListbis(defaultDeliveryTour);
+                    listeDelivery.get(i).setPaths(bestChemin);
+                    MAJDeliveryPointList(i);
                 }
+            }
+
+            for (Chemin chemin : listeDelivery.get(i).getPaths()) {
+                System.out.println(" get 0 = "+ chemin);
             }
         }
     }
