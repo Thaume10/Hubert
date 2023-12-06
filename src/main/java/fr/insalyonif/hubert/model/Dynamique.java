@@ -15,9 +15,6 @@ public class Dynamique {
         }*/
     }
 
-
-    private static int iseed = 1; // Seed used for initializing the pseudo-random number generator
-
     private static boolean isIn(int e, int s) {
         // Precondition: 1 <= e <= 32
         // Postrelation: return true if e belongs to s
@@ -57,59 +54,6 @@ public class Dynamique {
         }
     }
 
-    /*private static int nextRand(int n) {
-        // Postcondition: return an integer value in [0,n-1], according to a pseudo-random sequence
-        int i = 16807 * (iseed % 127773) - 2836 * (iseed / 127773);
-        if (i > 0) iseed = i;
-        else iseed = 2147483647 + i;
-        return iseed % n;
-    }*/
-
-    /*public static int[][] createCost(int n) {
-        // return a symmetrical cost matrix such that, for each i,j in [0,n-1], cost[i][j] = cost of arc (i,j)
-        int[] x = new int[n];
-        int[] y = new int[n];
-        int max = 1000;
-        int[][] cost = new int[n][n];
-
-        for (int i = 0; i < n; i++) {
-            x[i] = nextRand(max);
-            y[i] = nextRand(max);
-        }
-
-        for (int i = 0; i < n; i++) {
-            cost[i][i] = max * max;
-            for (int j = i + 1; j < n; j++) {
-                cost[i][j] = (int) Math.sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
-                cost[j][i] = cost[i][j];
-            }
-        }
-        return cost;
-    }*/
-
-    /*    private static int computeD(int i, int s, int n, int[][] cost, int[][] mem) {
-            // Preconditions: isIn(i,s) = false and isIn(0,s) = false
-            // Postrelation: return the cost of the smallest path that starts from i, visits each vertex of s exactly once, and ends on 0
-            if (mem[i][s] > 0) {
-                return mem[i][s];
-            }
-
-            if (isEmpty(s)) {
-                mem[i][0] = cost[i][0];
-                return cost[i][0];
-            }
-
-            int min = Integer.MAX_VALUE;
-            for (int j = 1; j < n; j++) {
-                if (isIn(j, s)) {
-                    int d = computeD(j, removeElement(s, j), n, cost, mem);
-                    if (cost[i][j] + d < min) min = cost[i][j] + d;
-                }
-            }
-
-            mem[i][s] = min;
-            return min;
-        }*/
     public Chemin getCheminBy(List<Chemin> chemins, int debut, int fin) {
         for (Chemin chemin : chemins) {
             if (chemin.getDebut().getPos() == debut && chemin.getFin().getPos() == fin) {
@@ -153,14 +97,13 @@ public class Dynamique {
 
         return bestChemin;
     }
-    public List<Integer> findOptimalPath(int start, int n, Graph g, double[][] mem) {
+    public List<Integer> classicPath(int start, int n, Graph g, double[][] mem) {
         List<Integer> optimalPath = new ArrayList<>();
-        reconstructPath(start, createSet(n), n, g, mem, optimalPath);
-//        optimalPath.add(0,start);
+        classicCreatePath(start, createSet(n), n, g, mem, optimalPath);
         return optimalPath;
     }
 
-    private void reconstructPath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
+    private void classicCreatePath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
         if (isEmpty(s)) {
             path.add(0, i);
             return;
@@ -169,19 +112,17 @@ public class Dynamique {
         for (int j = 1; j < n; j++) {
             if (isIn(j, s)) {
                 double remainingCost = round((mem[i][s] - g.getCost(i, j)) * 1e7) / 1e7;
-                double futureCost = round((computeD(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
-//                System.out.println(remainingCost);
-//                System.out.println(computeD(j, removeElement(s, j), n, g, mem));
+                double futureCost = round((classicDynamic(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
                 if (abs(remainingCost - futureCost) < 0.000000001) {
                     path.add(0, i);
-                    reconstructPath(j, removeElement(s, j), n, g, mem, path);
+                    classicCreatePath(j, removeElement(s, j), n, g, mem, path);
                     break;
                 }
             }
         }
     }
 
-    public static double computeD(int i, int s, int n, Graph g, double[][] mem) {
+    public static double classicDynamic(int i, int s, int n, Graph g, double[][] mem) {
         if (mem[i][s] > 0) {
             return mem[i][s];
         }
@@ -194,7 +135,7 @@ public class Dynamique {
         double min = Double.MAX_VALUE;
         for (int j = 1; j < n; j++) {
             if (isIn(j, s)) {
-                double d = computeD(j, removeElement(s, j), n, g, mem);
+                double d = classicDynamic(j, removeElement(s, j), n, g, mem);
                 if (g.getCost(i, j) + d < min) min = g.getCost(i, j) + d;
             }
         }
@@ -202,14 +143,14 @@ public class Dynamique {
         mem[i][s] = min;
         return min;
     }
-    public List<Integer> findOptimusPath(int start, int n, Graph g, double[][] mem) {
+    public List<Integer> adaptivePath(int start, int n, Graph g, double[][] mem) {
         List<Integer> optimalPath = new ArrayList<>();
-        reconstructOptimusPath(start, createSet(n), n, g, mem, optimalPath);
+        adaptiveCreatePath(start, createSet(n), n, g, mem, optimalPath);
 //        optimalPath.add(0,start);
         return optimalPath;
     }
 
-    private void reconstructOptimusPath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
+    private void adaptiveCreatePath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
         if (isEmpty(s)) {
             path.add(0, i);
             return;
@@ -218,18 +159,16 @@ public class Dynamique {
         for (int j = 1; j < n; j++) {
             if (isIn(j, s)) {
                 double remainingCost = round((mem[i][s] - g.getCost(i, j)) * 1e7) / 1e7;
-                double futureCost = round((optimusWay(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
-//                System.out.println(remainingCost);
-//                System.out.println(computeD(j, removeElement(s, j), n, g, mem));
+                double futureCost = round((adaptiveDynamic(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
                 if (abs(remainingCost - futureCost) < 0.000000001) {
                     path.add(0, i);
-                    reconstructPath(j, removeElement(s, j), n, g, mem, path);
+                    classicCreatePath(j, removeElement(s, j), n, g, mem, path);
                     break;
                 }
             }
         }
     }
-    public static double optimusWay(int debut, int s, int n, Graph g, double[][] mem) {
+    public static double adaptiveDynamic(int debut, int s, int n, Graph g, double[][] mem) {
         if (mem[debut][s] > 0) {
             return mem[debut][s];
         }
@@ -242,7 +181,7 @@ public class Dynamique {
         double min = Double.MAX_VALUE;
         for (int j = 1; j < n; j++) {
             if (isIn(j, s)) {
-                double d = computeD(j, removeElement(s, j), n, g, mem);
+                double d = classicDynamic(j, removeElement(s, j), n, g, mem);
                 if (g.getCost(debut, j) + d < min) min = g.getCost(debut, j) + d;
             }
         }
@@ -250,38 +189,6 @@ public class Dynamique {
         mem[debut][s] = min;
         return min;
     }
-
-    /*public static double computeD_ite(int s, int n, Graph g, double[][] mem) {
-        for (int e = 0; e <= s; e++) {
-            for (int i = 0; i < n; i++) {
-                if (e == 0) {
-                    mem[i][0] = g.getCost(i,0);
-                } else {
-                    mem[i][e] = Double.MAX_VALUE;
-                    for (int j = 1; j < n; j++) {
-                    printSet(e);
-                    System.out.println("," + i + " , " + j);
-                        if (isIn(j, e)) {
-                            if (g.getCost(i,j) + mem[j][e - j] < mem[i][e]) {
-                                mem[i][e] = g.getCost(i,j) + mem[j][e - j];
-                            }
-                        }
-                    }
-                }
-
-
-            }
-        }
-        for (int i = 0; i < 16 ; i++){
-            printSet(i);
-            System.out.println(" : " + mem[0][i]);
-        }
-        return mem[0][createSet(n)];
-    }*/
-
-
-
-
 
 
 }

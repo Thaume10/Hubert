@@ -47,9 +47,9 @@ public class CompleteGraph implements Graph {
 		// Remplir la matrice de coût avec les valeurs correctes
 		for (Chemin chemin : chemins) {
 			if ((positionToIndex.get(chemin.getDebut().getPos()) != null) && (positionToIndex.get(chemin.getFin().getPos()) != null)){
-				System.out.println(chemin);
-				System.out.println(chemin.getDebut().getPos());
-				System.out.println(positionToIndex.get(chemin.getFin().getPos()));
+//				System.out.println(chemin);
+//				System.out.println(chemin.getDebut().getPos());
+//				System.out.println(positionToIndex.get(chemin.getFin().getPos()));
 				int debutIndex = positionToIndex.get(chemin.getDebut().getPos());
 				int finIndex = positionToIndex.get(chemin.getFin().getPos());
 				double cout = chemin.getCout();
