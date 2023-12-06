@@ -22,6 +22,8 @@ import javafx.util.StringConverter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -527,10 +529,14 @@ public class ViewController implements Initializable {
 
         // Chemin complet pour le fichier dans le dossier Downloads
         //TO DO mettre le bon path
-        String filePath = String.format("%s%s%s%s%s",
-                System.getProperty("user.home"),
-                File.separator,
-                "Downloads",
+        Path cheminFichierEnCours = Paths.get(ViewController.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        Path dossierDuFichier = cheminFichierEnCours.getParent();
+        Path cheminArchives = dossierDuFichier.resolve("../archives");
+        Path cheminFinal = cheminArchives.normalize();
+        String cheminFinalEnString = cheminFinal.toString();
+
+        String filePath = String.format("%s%s%s",
+                cheminFinalEnString,
                 File.separator,
                 fileName);
 

@@ -14,6 +14,12 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -74,30 +80,50 @@ public class StartController {
         // If a file is selected, store its path
         if (selectedFile != null) {
             selectedFilePath = selectedFile.getAbsolutePath();
-            System.out.println("Selected File: " + selectedFilePath);
+            File xmlFile = new File(selectedFilePath);
+
+            // Initialisation du constructeur de documents XML
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            // Parsing du document XML
+            Document doc = dBuilder.parse(xmlFile);
+
+            // Normalisation du document XML pour éliminer les espaces blancs inutiles
+            doc.getDocumentElement().normalize();
+            System.out.println("loadArchiveFile");
+
+
+            Element map = (Element) doc.getElementsByTagName("map").item(0);
+            String fileName = map.getAttribute("fileName");
+            LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
+
+
+            System.out.println("fileName File: " + fileName);
+            System.out.println("fileDate File: " + fileDate);
 
             // Use Path to extract file name and extension
-            Path path = Paths.get(selectedFilePath);
-            String fileName = path.getFileName().toString(); // Extracts the file name
+            //Path path = Paths.get(selectedFilePath);
+            //String fileName = path.getFileName().toString(); // Extracts the file name
 
-            String[] fileNameParts = fileName.split("_");
-            String lastWord = fileNameParts[fileNameParts.length - 1];
+            //String[] fileNameParts = fileName.split("_");
+            //String lastWord = fileNameParts[fileNameParts.length - 1];
 
             String stratPath = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/";
-            String pathMap = stratPath + lastWord;
+            String pathMap = stratPath + fileName + ".xml";
             System.out.println("Path of the map: " + pathMap);
 
 
             // Extract date from the file name
-            String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+            //String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
+            //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
 
             // Extract the date substring from the file name
-            String dateString = fileName.substring(11, 21); // Adjust indices based on the actual position of the date in the file name
+            //String dateString = fileName.substring(11, 21); // Adjust indices based on the actual position of the date in the file name
 
             // Parse the date string to LocalDate
-            LocalDate fileDate = LocalDate.parse(dateString, dateFormatter);
-            System.out.println("File Date: " + fileDate);
+            //LocalDate fileDate = LocalDate.parse(dateString, dateFormatter);
+            //System.out.println("File Date: " + fileDate);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));
             Parent root = loader.load();
