@@ -99,8 +99,6 @@ public class Controller {
 
             boolean intersectionExist = false;
             for (DeliveryRequest request : deliveryTour.getRequests()) {
-                System.out.println("r ="+request.getTimeWindow().getEndTime());
-                System.out.println("c ="+deliveryIHM.getTimeWindow().getEndTime());
                 if (request.getDeliveryLocation().equals(intersectionPlusProche)) {
                     System.out.println("equal intersection");
                     if(request.getTimeWindow().getEndTime().toString().equals(deliveryIHM.getTimeWindow().getEndTime().toString())){
