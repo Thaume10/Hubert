@@ -21,7 +21,7 @@
       <Pane prefHeight="87.0" prefWidth="1201.0" style="-fx-background-color: #77B5FE;" styleClass="panel-info">
          <children>
             <Button fx:id="newMap" layoutX="32.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="Load New Map" />
-             <Button fx:id="import" layoutX="158.0" layoutY="28.0" mnemonicParsing="false" styleClass="btn-primary" text="Import existing DeliveryTour" />
+             <Button fx:id="import1" layoutX="158.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleImportMap" styleClass="btn-primary" text="Import existing DeliveryTour" />
             <ImageView fitHeight="75.0" fitWidth="100.0" layoutX="558.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@logo.png" />

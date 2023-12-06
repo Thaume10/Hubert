@@ -36,7 +36,11 @@ import netscape.javascript.JSObject;
 import fr.insalyonif.hubert.model.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class ViewController implements Initializable {
@@ -49,6 +53,9 @@ public class ViewController implements Initializable {
 
     @FXML
     private ComboBox<Courier> courier;
+
+    @FXML
+    private Button import1;
 
 
     private ObservableList<Courier> listCourier;
@@ -69,6 +76,8 @@ public class ViewController implements Initializable {
     private double lastClickedLat = 0.0;
 
     private double lastClickedLng = 0.0;
+
+    private String selectedFilePath;
 
     private static final String MAP_HTML_TEMPLATE = """
             <!DOCTYPE html>
@@ -344,6 +353,7 @@ public class ViewController implements Initializable {
 
     @FXML
     void handleLoadMap(ActionEvent event) {
+        handleSaveMap(event);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open XML Map File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
@@ -374,7 +384,7 @@ public class ViewController implements Initializable {
                 controller = new Controller(selectedFilePath);
                 setCourierIHM(controller.getListeDelivery());
                 controller.setGlobalDate(datePicker);
-                //listDelivery.clear();
+                System.out.println("passe");
 
 
                 String markersJs = displayDeliveryPoints(null).toString();
@@ -386,31 +396,93 @@ public class ViewController implements Initializable {
 
 
     @FXML
-    void handleImportMap(ActionEvent event) {
+    void handleImportMap(ActionEvent event) throws Exception {
         // Save le fichier existant
         handleSaveMap(event);
 
+        //selectedFilePath = "";
+        //listDelivery.clear();
+
         // Importer les données du xml
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open XML Map File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+        fileChooser.setTitle("Open Resource File");
 
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //getClass().getResource("/fr/insalyonif/hubert/successSave.fxml")
+
+
+        // Show open file dialog
+        Stage stage = (Stage) import1.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        // If a file is selected, store its path
         if (selectedFile != null) {
-            try {
-                // Load the selected XML map file
-                controller = new Controller(selectedFile.getAbsolutePath());
+            selectedFilePath = selectedFile.getAbsolutePath();
+            File xmlFile = new File(selectedFilePath);
+
+            // Initialisation du constructeur de documents XML
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            // Parsing du document XML
+            Document doc = dBuilder.parse(xmlFile);
+
+            // Normalisation du document XML pour éliminer les espaces blancs inutiles
+            doc.getDocumentElement().normalize();
+            System.out.println("loadArchiveFile");
 
 
-                String markersJs = displayDeliveryPoints(null).toString();
-                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+            Element map = (Element) doc.getElementsByTagName("map").item(0);
+            String fileName = map.getAttribute("fileName");
+            LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
 
-                engine.loadContent(mapHtml);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Handle the exception (e.g., show an error message)
-            }
+
+            System.out.println("fileName File: " + fileName);
+            System.out.println("fileDate File: " + fileDate);
+
+            // Use Path to extract file name and extension
+            //Path path = Paths.get(selectedFilePath);
+            //String fileName = path.getFileName().toString(); // Extracts the file name
+
+            //String[] fileNameParts = fileName.split("_");
+            //String lastWord = fileNameParts[fileNameParts.length - 1];
+
+            String stratPath = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/";
+            String pathMap = stratPath + fileName + ".xml";
+            System.out.println("Path of the map: " + pathMap);
+
+
+            // Extract date from the file name
+            //String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
+            //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            // Extract the date substring from the file name
+            //String dateString = fileName.substring(11, 21); // Adjust indices based on the actual position of the date in the file name
+
+            // Parse the date string to LocalDate
+            //LocalDate fileDate = LocalDate.parse(dateString, dateFormatter);
+            //System.out.println("File Date: " + fileDate);
+
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));
+//            Parent root = loader.load();
+//
+//            // Afficher la nouvelle scène
+//            Scene scene = new Scene(root);
+//            Stage stage1 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            stage1.setScene(scene);
+
+            //ViewController viewController = loader.getController();
+            loadMap(fileDate, pathMap);
+            importAllTheDeliveriesIntoController(selectedFilePath);
+            displayAllTheDeliveryPoints();
+
+            stage.show();
         }
+
+
     }
 
     public void setDeliveryRequestIHM(ArrayList<DeliveryRequest> delivery) {

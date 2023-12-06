@@ -61,7 +61,7 @@ public class StartController {
     }
 
     @FXML
-    private void handleSeeAllDeliveries(ActionEvent event) throws Exception {
+    public void handleSeeAllDeliveries(ActionEvent event) throws Exception {
         // TO DO choisir le fichier à reprendre
         // Create a FileChooser
         FileChooser fileChooser = new FileChooser();
