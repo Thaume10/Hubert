@@ -156,7 +156,7 @@ public class Dynamique {
     public List<Integer> findOptimalPath(int start, int n, Graph g, double[][] mem) {
         List<Integer> optimalPath = new ArrayList<>();
         reconstructPath(start, createSet(n), n, g, mem, optimalPath);
-        optimalPath.add(0,start);
+//        optimalPath.add(0,start);
         return optimalPath;
     }
 
