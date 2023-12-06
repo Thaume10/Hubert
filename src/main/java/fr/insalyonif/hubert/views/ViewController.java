@@ -142,7 +142,9 @@ public class ViewController implements Initializable {
     }
 
 
-
+    public void importAllTheDeliveriesIntoController(String pathname) throws Exception {
+        controller.loadArchiveFile(pathname);
+    }
 
 
 
@@ -293,6 +295,8 @@ public class ViewController implements Initializable {
                 engine.loadContent(mapHtml);
     }
 
+
+
     @FXML
     void handleImportMap(ActionEvent event) {
         // Save le fichier existant
@@ -396,7 +400,18 @@ public class ViewController implements Initializable {
         }
     }
 
+    public void displayAllTheDeliveryPoints(){
+//        String markersJs = drawPaths(controller.getCityMap());
+//        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+//        engine.loadContent(mapHtml);
+//        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
 
+        for(DeliveryTour delivery : controller.getListeDelivery()){
+            for(DeliveryRequest request : delivery.getRequests()){
+                 System.out.println("Ici "+request.getDeliveryLocation());
+            }
+        }
+    }
 
 
 }

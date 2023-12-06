@@ -14,6 +14,10 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +44,9 @@ public class StartController {
     @FXML
     private Button start;
 
+    @FXML
+    private Button allDeliveries;
+
     // Variable to store the selected file path
     private String selectedFilePath;
 
@@ -47,33 +54,69 @@ public class StartController {
     }
 
     @FXML
-    private void handleSeeAllDeliveries(ActionEvent event) {
+    private void handleSeeAllDeliveries(ActionEvent event) throws Exception {
         // TO DO choisir le fichier à reprendre
-        // Créer un sélecteur de dossier
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Research Folder");
+        // Create a FileChooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
 
-        // Afficher le sélecteur de dossier
-        File selectedDirectory = directoryChooser.showDialog(null);
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
 
-        if (selectedDirectory != null) {
-            // Récupérer la liste des fichiers dans le dossier
-            File[] files = selectedDirectory.listFiles();
+        //getClass().getResource("/fr/insalyonif/hubert/successSave.fxml")
 
-            if (files != null && files.length > 0) {
-                // Afficher les noms des fichiers dans la console (ou dans une étiquette, etc.)
-                List<File> fileList = Arrays.asList(files);
-                fileList.forEach(file -> System.out.println("File Name: " + file.getName()));
 
-                // Vous pouvez également afficher les noms des fichiers dans une étiquette
-                StringBuilder fileNames = new StringBuilder("Files in 'research' folder:\n");
-                fileList.forEach(file -> fileNames.append(file.getName()).append("\n"));
-                messageLabel.setText(fileNames.toString());
-            } else {
-                messageLabel.setText("No files found in the 'research' folder.");
-            }
+        // Show open file dialog
+        Stage stage = (Stage) allDeliveries.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        // If a file is selected, store its path
+        if (selectedFile != null) {
+            selectedFilePath = selectedFile.getAbsolutePath();
+            System.out.println("Selected File: " + selectedFilePath);
+
+            // Use Path to extract file name and extension
+            Path path = Paths.get(selectedFilePath);
+            String fileName = path.getFileName().toString(); // Extracts the file name
+
+            String[] fileNameParts = fileName.split("_");
+            String lastWord = fileNameParts[fileNameParts.length - 1];
+
+            String stratPath = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/";
+            String pathMap = stratPath + lastWord;
+            System.out.println("Path of the map: " + pathMap);
+
+
+            // Extract date from the file name
+            String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            // Extract the date substring from the file name
+            String dateString = fileName.substring(11, 21); // Adjust indices based on the actual position of the date in the file name
+
+            // Parse the date string to LocalDate
+            LocalDate fileDate = LocalDate.parse(dateString, dateFormatter);
+            System.out.println("File Date: " + fileDate);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));
+            Parent root = loader.load();
+
+            // Afficher la nouvelle scène
+            Scene scene = new Scene(root);
+            Stage stage1 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage1.setScene(scene);
+
+            ViewController viewController = loader.getController();
+            viewController.loadMap(fileDate, pathMap);
+            viewController.importAllTheDeliveriesIntoController(selectedFilePath);
+            viewController.displayAllTheDeliveryPoints();
+
+            stage.show();
         }
     }
+
+
 
     @FXML
     private void handleCreateNewDeliveries(ActionEvent event) {

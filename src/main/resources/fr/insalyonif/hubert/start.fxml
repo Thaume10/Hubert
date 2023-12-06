@@ -12,7 +12,7 @@
 
     <children>
         <Label text="Start" layoutX="10.0" layoutY="10.0"/>
-        <Button text="See all Deliveries" layoutX="10.0" layoutY="40.0" onAction="#handleSeeAllDeliveries"/>
+        <Button fx:id="allDeliveries" text="Choose Deliveries in archive" layoutX="10.0" layoutY="40.0" onAction="#handleSeeAllDeliveries"/>
         <Button text="Create new Deliveries" layoutX="150.0" layoutY="40.0" onAction="#handleCreateNewDeliveries"/>
         <!-- Additional controls, initially invisible -->
         <DatePicker fx:id="datePicker" layoutX="10.0" layoutY="80.0" visible="false"/>
