@@ -520,29 +520,18 @@ public class ViewController implements Initializable {
         //System.out.println(controller.getListeDelivery().get(0).getStartTime());
         // Construction du nom de fichier
 
-        String fileName = String.format("Deliveries_%s_%s.xml",
-                controller.getGlobalDate(), controller.getFileName());
+        
+        String fileName = String.format("Deliveries_%s_%s.xml", controller.getGlobalDate(), controller.getFileName());
 
-        String currentFilePath = getClass().getResource("ViewController.class").getPath();
-        //String test = getClass().getResource("archives").getPath();
-        System.out.println(currentFilePath);
-        //System.out.println(test);
+        // Get the current working directory
+        String workingDir = System.getProperty("user.dir");
+        
+        // Construct the file path
+        Path filePath = Paths.get(workingDir, "archives", fileName);
 
-        // Chemin complet pour le fichier dans le dossier Downloads
-        //TO DO mettre le bon path
-        Path cheminFichierEnCours = Paths.get(ViewController.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        Path dossierDuFichier = cheminFichierEnCours.getParent();
-        Path cheminArchives = dossierDuFichier.resolve("../archives");
-        Path cheminFinal = cheminArchives.normalize();
-        String cheminFinalEnString = cheminFinal.toString();
-
-        String filePath = String.format("%s%s%s",
-                cheminFinalEnString,
-                File.separator,
-                fileName);
-
-        // Création du fichier
-        File file = new File(filePath);
+        // Create the file
+        File file = new File(filePath.toString());
+        
 
         // Écriture dans le fichier
         try (FileWriter fileWriter = new FileWriter(file);
