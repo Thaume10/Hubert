@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -173,10 +174,24 @@ public class StartController {
         Stage stage = (Stage) datePicker.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
 
-        // If a file is selected, store its path
+       // Check if a file is selected
         if (selectedFile != null) {
             selectedFilePath = selectedFile.getAbsolutePath();
             System.out.println("Selected File: " + selectedFilePath);
+
+            // Show a success popup
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("File Loaded");
+            alert.setHeaderText(null);
+            alert.setContentText("File loaded successfully: " + selectedFilePath);
+            alert.showAndWait();
+        } else {
+            // Show an error popup if no file is selected
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("File Loading Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("No file was selected.");
+            alert.showAndWait();
         }
     }
 

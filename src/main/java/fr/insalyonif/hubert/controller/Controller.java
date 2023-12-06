@@ -210,23 +210,6 @@ public class Controller {
         });
     }
 
-    private void MAJDeliveryPointListbis(DeliveryTour deliveryTour){
-        //DeliveryTour deliveryTour = listeDelivery.get(idDeliveryTour);
-        List<Chemin> chemins =deliveryTour.getPaths();
-        Map<Intersection, Integer> intersectionIndexMap = new HashMap<>();
-        for (int i = 0; i < chemins.size(); i++) {
-            Chemin chemin = chemins.get(i);
-            intersectionIndexMap.put(chemin.getFin(), i);
-        }
-
-        // Trier la liste de points de livraison en fonction de l'ordre des intersections dans les chemins
-        deliveryTour.getRequests().sort((dp1, dp2) -> {
-            int index1 = intersectionIndexMap.get(dp1.getDeliveryLocation());
-            int index2 = intersectionIndexMap.get(dp2.getDeliveryLocation());
-            return Integer.compare(index1, index2);
-        });
-    }
-
     public static Intersection trouverIntersectionPlusProche(double lat, double lng, List<Intersection> intersections) {
         if (intersections == null || intersections.isEmpty()) {
             return null; // La liste d'intersections est vide
