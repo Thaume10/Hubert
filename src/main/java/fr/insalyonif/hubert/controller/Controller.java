@@ -203,4 +203,24 @@ public class Controller {
         return earthRadius * c; // Distance en kilomètres
     }
 
+    private Courier findBestCourier(DeliveryRequest deliveryRequest){
+        int maxRequests = 0;
+        Courier bestCourier = null;
+        for(DeliveryTour deliveryTour : listeDelivery){
+            int cpt =0;
+            for(DeliveryRequest deliveryRequest1 : deliveryTour.getRequests()){
+                if(deliveryRequest.getTimeWindow().equals(deliveryRequest1.getTimeWindow())){
+                    cpt++;
+                }
+            }
+            if(cpt>maxRequests && cpt<10){
+                maxRequests = cpt;
+                bestCourier=deliveryTour.getCourier();
+            }
+        }
+        return bestCourier;
+    }
+
+
+
 }
