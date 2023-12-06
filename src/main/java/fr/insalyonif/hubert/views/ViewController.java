@@ -441,7 +441,7 @@ public class ViewController implements Initializable {
 
     private void handleDeliverySelection(DeliveryRequest selectedDelivery) {
         if (engine != null) {
-            String centerMapScript = String.format("map.setView([%f, %f], 14);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.009);
+            String centerMapScript = String.format("map.setView([%f, %f], 16);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.002);
             int index=0;
             for(int i=0;i<centerMapScript.length();i++){
                 if(centerMapScript.charAt(i)==','){
