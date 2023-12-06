@@ -113,34 +113,6 @@ public class Controller {
 
     }
 
-    public Controller(String path, boolean load) {
-        //initialize class variables
-        cityMap = new CityMap();
-        listeDelivery = new ArrayList<>();
-
-
-
-        try {
-            String xmlMap = path;
-            Path filePath = Paths.get(xmlMap);
-            //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
-            fileName = filePath.getFileName().toString();
-            int extensionIndex = fileName.lastIndexOf('.');
-            if (extensionIndex > 0) {
-                fileName = fileName.substring(0, extensionIndex);
-            }
-
-            cityMap.loadFromXML(xmlMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-
-
-    }
-
     public void newDeliveryTour(){
         Courier c = new Courier(listeDelivery.size());
         DeliveryTour defaultDeliveryTour= new DeliveryTour();
@@ -326,6 +298,8 @@ public class Controller {
 
     public void loadArchiveFile(String path) throws Exception {
         // Création d'une instance de File pour le fichier XML
+        listeDelivery.clear();
+
         File xmlFile = new File(path);
 
         // Initialisation du constructeur de documents XML
@@ -358,6 +332,9 @@ public class Controller {
             listeDelivery.add(defaultDeliveryTour);
 
             System.out.println(c);
+            for (Chemin chemin : dij.getChemins()) {
+                System.out.println(" get 0 = "+ chemin);
+            }
 
 
 
@@ -388,10 +365,18 @@ public class Controller {
                     Instant endTime = Instant.parse(timeWindow.getAttribute("endTime"));
                     TimeWindow timeWindowToCreate = new TimeWindow(startTime,endTime);
 
+                    listeDelivery.get(i).clearCheminsDij();
+                    listeDelivery.get(i).majCheminsDij(listeDelivery.get(i).getDijkstra().getChemins());
+                    listeDelivery.get(i).majCheminsDij(listeDelivery.get(i).getDijkstraInverse().getChemins());
+
+
+
                     DeliveryRequest deli = new DeliveryRequest(intersectionPlusProche,timeWindowToCreate);
                     listeDelivery.get(i).getRequests().add(deli);
 
-                    Graph g = new CompleteGraph(listeDelivery.get(i).getDijkstra().getChemins(), listeDelivery.get(i).getRequests(), cityMap);
+
+
+                    Graph g = new CompleteGraph(listeDelivery.get(i).getCheminDij(), listeDelivery.get(i).getRequests(), cityMap);
 
 
                     TSP tsp = new TSP1();
@@ -400,7 +385,7 @@ public class Controller {
 //                    for (int k = 0; k < listeDelivery.size(); k++)
 //                        System.out.print(tsp.getSolution(k) + " ");
 //                    System.out.println("0");
-                    List<Chemin> bestChemin = tsp.bestCheminGlobal(listeDelivery.get(i).getDijkstra().getChemins());
+                    List<Chemin> bestChemin = tsp.bestCheminGlobal(listeDelivery.get(i).getCheminDij());
 
                     System.out.println("Meilleur chemin global :");
                     for (Chemin chemin : bestChemin) {
