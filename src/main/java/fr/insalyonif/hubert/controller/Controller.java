@@ -126,270 +126,9 @@ public class Controller {
 
 
 
-
-                    ArrayList <DeliveryRequest> requests8 = new ArrayList<>();
-                    ArrayList <DeliveryRequest> requests9 = new ArrayList<>();
-                    ArrayList <DeliveryRequest> requests10 = new ArrayList<>();
-                    ArrayList <DeliveryRequest> requests11 = new ArrayList<>();
-
-                    ArrayList <Integer> pos8 = new ArrayList<>();
-                    ArrayList <Integer> pos9 = new ArrayList<>();
-                    ArrayList <Integer> pos10 = new ArrayList<>();
-                    ArrayList <Integer> pos11 = new ArrayList<>();
-
-
-
-
-                    for (int i=0; i < deliveryTour.getRequests().size(); i++) {
-                        DeliveryRequest request = deliveryTour.getRequests().get(i);
-
-                        System.out.println(request.getTimeWindow().getStartTime());
-
-                        if (request.getTimeWindow().isInTimeWindow(8)){
-                            System.out.println("8");
-                            requests8.add(request);
-                            pos8.add(i+1);
-
-                        }
-                        if (request.getTimeWindow().isInTimeWindow(9)){
-                            System.out.println("9");
-                            requests9.add(request);
-                            pos9.add(i+1);
-                        }
-                        if (request.getTimeWindow().isInTimeWindow(10)){
-                            System.out.println("10");
-                            requests10.add(request);
-                            pos10.add(i+1);
-                        }
-                        if (request.getTimeWindow().isInTimeWindow(11)){
-                            System.out.println("11");
-                            requests11.add(request);
-                            pos11.add(i+1);
-                        }
-                    }
-
-                    double d = 0;
-                    List<Integer> optimalPath = new ArrayList<>();
-                    optimalPath.add(0,0);
-                    Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
-                    Dynamique dynamique = new Dynamique(g);
-                    int nextStart = 0;
-                    ArrayList<DeliveryRequest> nextrequests = new ArrayList<>();
-                    ArrayList<DeliveryRequest> rTemp = new ArrayList<>();
-//                    huit
-
-                    if (!requests8.isEmpty()){
-                        List<Integer> optimalPath8 = new ArrayList<>();
-                        double d8 = Double.MAX_VALUE;
-                        rTemp.addAll(requests8);
-                        if (!requests9.isEmpty()){
-                            nextrequests.addAll(requests9);
-                        }else if (!requests10.isEmpty()) {
-                            nextrequests.addAll(requests10);
-                        }else if (!requests11.isEmpty()) {
-                            nextrequests.addAll(requests11);
-                        }else {nextrequests = null;}
-                        if (nextrequests != null){
-                            for (int request = 0; request < nextrequests.size(); request++) {
-                                rTemp.remove(0);
-                                rTemp.add(nextrequests.get(request));
-                                Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                                Dynamique dynamique8 = new Dynamique(g8);
-                                int n = g8.getNbVertices();
-                                int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
-
-                                double[][] memD = new double[n][s + 1];
-                                for (int i = 0; i < n; i++) {
-                                    Arrays.fill(memD[i], 0);
-                                }
-
-                                if (adaptiveDynamic(nextStart, s, n, g8, memD)< d8){
-                                    d8 = adaptiveDynamic(nextStart, s, n, g8, memD);
-                                    optimalPath8 = dynamique8.adaptivePath(nextStart, n, g8, memD);
-                                    optimalPath8.remove(optimalPath8.size() - 1);
-                                    nextStart = request;
-                                }
-                            }
-                        } else {
-
-                            Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                            Dynamique dynamique8 = new Dynamique(g8);
-                            int n = g8.getNbVertices();
-                            int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
-
-                            double[][] memD = new double[n][s + 1];
-                            for (int i = 0; i < n; i++) {
-                                Arrays.fill(memD[i], 0);
-                            }
-                            d8 = classicDynamic(nextStart, s, n, g8, memD);
-                            optimalPath8 = dynamique8.classicPath(nextStart, n, g8, memD);
-                        }
-                        d+=d8;
-                        System.out.printf("Length of the smallest hamiltonian circuit8 = %f\n", d8);
-                        System.out.printf("Optimal Hamiltonian Circuit Path8: %s\n", optimalPath8);
-                        System.out.printf("Pos: %s\n", pos8);
-                        for (Integer i : optimalPath8) {
-                            if (i != 0){
-                                optimalPath.add(pos8.get(i-1));
-                            }
-
-                        }
-                    }
-
-
-                    if (!requests9.isEmpty()){
-                        List<Integer> optimalPath9 = new ArrayList<>();
-                        double d9 = Double.MAX_VALUE;
-                        rTemp.clear();
-                        rTemp.addAll(requests9);
-                        if (!requests10.isEmpty()) {
-                            nextrequests.clear();
-                            nextrequests.addAll(requests10);
-                        }else if (!requests11.isEmpty()) {
-                            nextrequests.clear();
-                            nextrequests.addAll(requests11);
-                        }else {nextrequests = null;}
-                        if (nextrequests != null){
-                            for (int request = 0; request < nextrequests.size(); request++) {
-                                rTemp.remove(0);
-                                rTemp.add(nextrequests.get(request));
-                                Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                                Dynamique dynamique9 = new Dynamique(g9);
-                                int n = g9.getNbVertices();
-                                int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
-
-                                double[][] memD = new double[n][s + 1];
-                                for (int i = 0; i < n; i++) {
-                                    Arrays.fill(memD[i], 0);
-                                }
-
-                                if (adaptiveDynamic(nextStart, s, n, g9, memD)< d9){
-                                    d9 = adaptiveDynamic(nextStart, s, n, g9, memD);
-                                    optimalPath9 = dynamique9.adaptivePath(nextStart, n, g9, memD);
-                                    optimalPath9.remove(optimalPath9.size() - 1);
-                                    nextStart = request;
-                                }
-                            }
-                        } else {
-
-                            Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                            Dynamique dynamique9 = new Dynamique(g9);
-                            int n = g9.getNbVertices();
-                            int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
-
-                            double[][] memD = new double[n][s + 1];
-                            for (int i = 0; i < n; i++) {
-                                Arrays.fill(memD[i], 0);
-                            }
-                            d9 = classicDynamic(nextStart, s, n, g9, memD);
-                            optimalPath9 = dynamique9.classicPath(nextStart, n, g9, memD);
-                        }
-                        d+=d9;
-                        System.out.printf("Length of the smallest hamiltonian circuit9 = %f\n", d9);
-                        System.out.printf("Optimal Hamiltonian Circuit Path9: %s\n", optimalPath9);
-                        System.out.printf("Pos: %s\n", pos9);
-                        for (Integer i : optimalPath9) {
-                            if (i != 0){
-                                optimalPath.add(pos9.get(i-1));
-                            }
-
-                        }
-                    }
-
-                    if (!requests10.isEmpty()){
-                        List<Integer> optimalPath10 = new ArrayList<>();
-                        double d10 = Double.MAX_VALUE;
-                        rTemp.clear();
-                        rTemp.addAll(requests10);
-                        if (!requests11.isEmpty()) {
-                            nextrequests.clear();
-                            nextrequests.addAll(requests11);
-                        }else {nextrequests = null;}
-                        if (nextrequests != null){
-                            for (int request = 0; request < nextrequests.size(); request++) {
-                                rTemp.remove(0);
-                                rTemp.add(nextrequests.get(request));
-                                Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                                Dynamique dynamique10 = new Dynamique(g10);
-                                int n = g10.getNbVertices();
-                                int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
-
-                                double[][] memD = new double[n][s + 1];
-                                for (int i = 0; i < n; i++) {
-                                    Arrays.fill(memD[i], 0);
-                                }
-
-                                if (adaptiveDynamic(nextStart, s, n, g10, memD)< d10){
-                                    d10 = adaptiveDynamic(nextStart, s, n, g10, memD);
-                                    optimalPath10 = dynamique10.adaptivePath(nextStart, n, g10, memD);
-                                    optimalPath10.remove(optimalPath10.size() - 1);
-                                    nextStart = request;
-                                }
-                            }
-                        } else {
-
-                            Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                            Dynamique dynamique10 = new Dynamique(g10);
-                            int n = g10.getNbVertices();
-                            int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
-
-                            double[][] memD = new double[n][s + 1];
-                            for (int i = 0; i < n; i++) {
-                                Arrays.fill(memD[i], 0);
-                            }
-                            d10 = classicDynamic(nextStart, s, n, g10, memD);
-                            optimalPath10 = dynamique10.classicPath(nextStart, n, g10, memD);
-                        }
-                        d+=d10;
-                        System.out.printf("Length of the smallest hamiltonian circuit10 = %f\n", d10);
-                        System.out.printf("Optimal Hamiltonian Circuit Path10: %s\n", optimalPath10);
-                        System.out.printf("Pos: %s\n", pos10);
-                        for (Integer i : optimalPath10) {
-                            if (i != 0){
-                                optimalPath.add(pos10.get(i-1));
-                            }
-
-                        }
-                    }
-
-                    if (!requests11.isEmpty()){
-                        List<Integer> optimalPath11 = new ArrayList<>();
-                        double d11 = Double.MAX_VALUE;
-                        rTemp.clear();
-                        rTemp.addAll(requests11);
-
-
-                        Graph g11 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                        Dynamique dynamique11 = new Dynamique(g11);
-                        int n = g11.getNbVertices();
-                        int s = dynamique11.createSet(n); // s contains all integer values ranging between 1 and n
-
-                        double[][] memD = new double[n][s + 1];
-                        for (int i = 0; i < n; i++) {
-                            Arrays.fill(memD[i], 0);
-                        }
-                        d11 = classicDynamic(nextStart, s, n, g11, memD);
-                        optimalPath11 = dynamique11.classicPath(nextStart, n, g11, memD);
-
-                        d+=d11;
-                        System.out.printf("Length of the smallest hamiltonian circuit11 = %f\n", d11);
-                        System.out.printf("Optimal Hamiltonian Circuit Path11: %s\n", optimalPath11);
-                        System.out.printf("Pos: %s\n", pos11);
-                        for (Integer i : optimalPath11) {
-                            if (i != 0){
-                                optimalPath.add(pos11.get(i-1));
-                            }
-
-                        }
-                    }
-
-
-
-                    optimalPath.add(0);
-                    System.out.printf("Length of the smallest hamiltonian circuit = %f\n", d);
-                    System.out.printf("Optimal Hamiltonian Circuit Path: %s\n", optimalPath);
-                    List<Chemin> bestChemin = dynamique.bestCheminGlobal(deliveryTour.getCheminDij(),g,optimalPath);
-                    System.out.println("Meilleur chemin global :");
+                    //Utilisation du TSP Dynamique pour résoudre le problème d'ordre des points de livraison
+                    List<Chemin> bestChemin = UseDynamic(deliveryTour);
+                            System.out.println("Meilleur chemin global :");
                     for (Chemin chemin : bestChemin) {
                         System.out.println(chemin);
                     }
@@ -410,7 +149,270 @@ public class Controller {
     }
 
 
+    private List<Chemin> UseDynamic(DeliveryTour deliveryTour){
+        ArrayList <DeliveryRequest> requests8 = new ArrayList<>();
+        ArrayList <DeliveryRequest> requests9 = new ArrayList<>();
+        ArrayList <DeliveryRequest> requests10 = new ArrayList<>();
+        ArrayList <DeliveryRequest> requests11 = new ArrayList<>();
 
+        ArrayList <Integer> pos8 = new ArrayList<>();
+        ArrayList <Integer> pos9 = new ArrayList<>();
+        ArrayList <Integer> pos10 = new ArrayList<>();
+        ArrayList <Integer> pos11 = new ArrayList<>();
+
+
+
+
+        for (int i=0; i < deliveryTour.getRequests().size(); i++) {
+            DeliveryRequest request = deliveryTour.getRequests().get(i);
+
+            System.out.println(request.getTimeWindow().getStartTime());
+
+            if (request.getTimeWindow().isInTimeWindow(8)){
+                System.out.println("8");
+                requests8.add(request);
+                pos8.add(i+1);
+
+            }
+            if (request.getTimeWindow().isInTimeWindow(9)){
+                System.out.println("9");
+                requests9.add(request);
+                pos9.add(i+1);
+            }
+            if (request.getTimeWindow().isInTimeWindow(10)){
+                System.out.println("10");
+                requests10.add(request);
+                pos10.add(i+1);
+            }
+            if (request.getTimeWindow().isInTimeWindow(11)){
+                System.out.println("11");
+                requests11.add(request);
+                pos11.add(i+1);
+            }
+        }
+
+        double d = 0;
+        List<Integer> optimalPath = new ArrayList<>();
+        optimalPath.add(0,0);
+        Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
+        Dynamique dynamique = new Dynamique(g);
+        int nextStart = 0;
+        ArrayList<DeliveryRequest> nextrequests = new ArrayList<>();
+        ArrayList<DeliveryRequest> rTemp = new ArrayList<>();
+//                    huit
+
+        if (!requests8.isEmpty()){
+            List<Integer> optimalPath8 = new ArrayList<>();
+            double d8 = Double.MAX_VALUE;
+            rTemp.addAll(requests8);
+            if (!requests9.isEmpty()){
+                nextrequests.addAll(requests9);
+            }else if (!requests10.isEmpty()) {
+                nextrequests.addAll(requests10);
+            }else if (!requests11.isEmpty()) {
+                nextrequests.addAll(requests11);
+            }else {nextrequests = null;}
+            if (nextrequests != null){
+                for (int request = 0; request < nextrequests.size(); request++) {
+                    rTemp.remove(0);
+                    rTemp.add(nextrequests.get(request));
+                    Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                    Dynamique dynamique8 = new Dynamique(g8);
+                    int n = g8.getNbVertices();
+                    int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
+
+                    double[][] memD = new double[n][s + 1];
+                    for (int i = 0; i < n; i++) {
+                        Arrays.fill(memD[i], 0);
+                    }
+
+                    if (adaptiveDynamic(nextStart, s, n, g8, memD)< d8){
+                        d8 = adaptiveDynamic(nextStart, s, n, g8, memD);
+                        optimalPath8 = dynamique8.adaptivePath(nextStart, n, g8, memD);
+                        optimalPath8.remove(optimalPath8.size() - 1);
+                        nextStart = request;
+                    }
+                }
+            } else {
+
+                Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                Dynamique dynamique8 = new Dynamique(g8);
+                int n = g8.getNbVertices();
+                int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
+
+                double[][] memD = new double[n][s + 1];
+                for (int i = 0; i < n; i++) {
+                    Arrays.fill(memD[i], 0);
+                }
+                d8 = classicDynamic(nextStart, s, n, g8, memD);
+                optimalPath8 = dynamique8.classicPath(nextStart, n, g8, memD);
+            }
+            d+=d8;
+            System.out.printf("Length of the smallest hamiltonian circuit8 = %f\n", d8);
+            System.out.printf("Optimal Hamiltonian Circuit Path8: %s\n", optimalPath8);
+            System.out.printf("Pos: %s\n", pos8);
+            for (Integer i : optimalPath8) {
+                if (i != 0){
+                    optimalPath.add(pos8.get(i-1));
+                }
+
+            }
+        }
+
+
+        if (!requests9.isEmpty()){
+            List<Integer> optimalPath9 = new ArrayList<>();
+            double d9 = Double.MAX_VALUE;
+            rTemp.clear();
+            rTemp.addAll(requests9);
+            if (!requests10.isEmpty()) {
+                nextrequests.clear();
+                nextrequests.addAll(requests10);
+            }else if (!requests11.isEmpty()) {
+                nextrequests.clear();
+                nextrequests.addAll(requests11);
+            }else {nextrequests = null;}
+            if (nextrequests != null){
+                for (int request = 0; request < nextrequests.size(); request++) {
+                    rTemp.remove(0);
+                    rTemp.add(nextrequests.get(request));
+                    Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                    Dynamique dynamique9 = new Dynamique(g9);
+                    int n = g9.getNbVertices();
+                    int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
+
+                    double[][] memD = new double[n][s + 1];
+                    for (int i = 0; i < n; i++) {
+                        Arrays.fill(memD[i], 0);
+                    }
+
+                    if (adaptiveDynamic(nextStart, s, n, g9, memD)< d9){
+                        d9 = adaptiveDynamic(nextStart, s, n, g9, memD);
+                        optimalPath9 = dynamique9.adaptivePath(nextStart, n, g9, memD);
+                        optimalPath9.remove(optimalPath9.size() - 1);
+                        nextStart = request;
+                    }
+                }
+            } else {
+
+                Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                Dynamique dynamique9 = new Dynamique(g9);
+                int n = g9.getNbVertices();
+                int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
+
+                double[][] memD = new double[n][s + 1];
+                for (int i = 0; i < n; i++) {
+                    Arrays.fill(memD[i], 0);
+                }
+                d9 = classicDynamic(nextStart, s, n, g9, memD);
+                optimalPath9 = dynamique9.classicPath(nextStart, n, g9, memD);
+            }
+            d+=d9;
+            System.out.printf("Length of the smallest hamiltonian circuit9 = %f\n", d9);
+            System.out.printf("Optimal Hamiltonian Circuit Path9: %s\n", optimalPath9);
+            System.out.printf("Pos: %s\n", pos9);
+            for (Integer i : optimalPath9) {
+                if (i != 0){
+                    optimalPath.add(pos9.get(i-1));
+                }
+
+            }
+        }
+
+        if (!requests10.isEmpty()){
+            List<Integer> optimalPath10 = new ArrayList<>();
+            double d10 = Double.MAX_VALUE;
+            rTemp.clear();
+            rTemp.addAll(requests10);
+            if (!requests11.isEmpty()) {
+                nextrequests.clear();
+                nextrequests.addAll(requests11);
+            }else {nextrequests = null;}
+            if (nextrequests != null){
+                for (int request = 0; request < nextrequests.size(); request++) {
+                    rTemp.remove(0);
+                    rTemp.add(nextrequests.get(request));
+                    Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                    Dynamique dynamique10 = new Dynamique(g10);
+                    int n = g10.getNbVertices();
+                    int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
+
+                    double[][] memD = new double[n][s + 1];
+                    for (int i = 0; i < n; i++) {
+                        Arrays.fill(memD[i], 0);
+                    }
+
+                    if (adaptiveDynamic(nextStart, s, n, g10, memD)< d10){
+                        d10 = adaptiveDynamic(nextStart, s, n, g10, memD);
+                        optimalPath10 = dynamique10.adaptivePath(nextStart, n, g10, memD);
+                        optimalPath10.remove(optimalPath10.size() - 1);
+                        nextStart = request;
+                    }
+                }
+            } else {
+
+                Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+                Dynamique dynamique10 = new Dynamique(g10);
+                int n = g10.getNbVertices();
+                int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
+
+                double[][] memD = new double[n][s + 1];
+                for (int i = 0; i < n; i++) {
+                    Arrays.fill(memD[i], 0);
+                }
+                d10 = classicDynamic(nextStart, s, n, g10, memD);
+                optimalPath10 = dynamique10.classicPath(nextStart, n, g10, memD);
+            }
+            d+=d10;
+            System.out.printf("Length of the smallest hamiltonian circuit10 = %f\n", d10);
+            System.out.printf("Optimal Hamiltonian Circuit Path10: %s\n", optimalPath10);
+            System.out.printf("Pos: %s\n", pos10);
+            for (Integer i : optimalPath10) {
+                if (i != 0){
+                    optimalPath.add(pos10.get(i-1));
+                }
+
+            }
+        }
+
+        if (!requests11.isEmpty()){
+            List<Integer> optimalPath11 = new ArrayList<>();
+            double d11 = Double.MAX_VALUE;
+            rTemp.clear();
+            rTemp.addAll(requests11);
+
+
+            Graph g11 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
+            Dynamique dynamique11 = new Dynamique(g11);
+            int n = g11.getNbVertices();
+            int s = dynamique11.createSet(n); // s contains all integer values ranging between 1 and n
+
+            double[][] memD = new double[n][s + 1];
+            for (int i = 0; i < n; i++) {
+                Arrays.fill(memD[i], 0);
+            }
+            d11 = classicDynamic(nextStart, s, n, g11, memD);
+            optimalPath11 = dynamique11.classicPath(nextStart, n, g11, memD);
+
+            d+=d11;
+            System.out.printf("Length of the smallest hamiltonian circuit11 = %f\n", d11);
+            System.out.printf("Optimal Hamiltonian Circuit Path11: %s\n", optimalPath11);
+            System.out.printf("Pos: %s\n", pos11);
+            for (Integer i : optimalPath11) {
+                if (i != 0){
+                    optimalPath.add(pos11.get(i-1));
+                }
+
+            }
+        }
+
+
+
+        optimalPath.add(0);
+        System.out.printf("Length of the smallest hamiltonian circuit = %f\n", d);
+        System.out.printf("Optimal Hamiltonian Circuit Path: %s\n", optimalPath);
+        return(dynamique.bestCheminGlobal(deliveryTour.getCheminDij(),g,optimalPath));
+    }
 
     private void MAJDeliveryPointList(int idDeliveryTour){
         DeliveryTour deliveryTour = listeDelivery.get(idDeliveryTour);
