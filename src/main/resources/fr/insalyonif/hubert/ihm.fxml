@@ -23,12 +23,13 @@
             <Button fx:id="newMap" layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="New Map" />
             <Button layoutX="255.0" layoutY="21.0" mnemonicParsing="false" onAction="#addNewCourrier" styleClass="btn-primary" text="New courrier" />
             <Button fx:id="delivery" layoutX="124.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="btn-primary" text="New Delivery" />
+             <Button fx:id="import" layoutX="400" layoutY="21.0" mnemonicParsing="false"  styleClass="btn-primary" text="Import Tours of a day" />
             <ImageView fitHeight="50.0" fitWidth="133.0" layoutX="1073.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@logo.png" />
                </image>
             </ImageView>
-            <Button layoutX="948.0" layoutY="21.0" mnemonicParsing="false" styleClass="btn-primary" text="Save File" />
+            <Button layoutX="948.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleSaveMap" styleClass="btn-primary" text="Save File" />
          </children>
       </Pane>
       <WebView id="webView" fx:id="webView" layoutX="47.0" layoutY="146.0" prefHeight="576.0" prefWidth="633.0" />

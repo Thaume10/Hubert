@@ -101,4 +101,12 @@ public class DeliveryTour {
         this.endTime = endTime;
     }
 
+    @Override
+    public String toString() {
+        return "DeliveryTour{" +
+                "courier=" + courier +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }
