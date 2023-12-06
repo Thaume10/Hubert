@@ -160,33 +160,4 @@ public class CityMap {
         // Retourne null si aucune intersection correspondante n'est trouvée
         return null;
     }
-
-    public void displayIntersections(String filePath) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
-            for (Intersection intersection : intersections) {
-                writer.println("Intersection ID: " + intersection.getId());
-                writer.println("Latitude: " + intersection.getLatitude());
-                writer.println("Longitude: " + intersection.getLongitude());
-
-                // Write predecessors
-                writer.print("Predecessors: ");
-                for (RoadSegment predecessor : intersection.getPredecessors()) {
-                    writer.print(predecessor.getOrigin().getId() + " ");
-                }
-                writer.println();
-
-                // Write successors
-                writer.print("Successors: ");
-                for (RoadSegment successor : intersection.getSuccessors()) {
-                    writer.print(successor.getDestination().getId() + " ");
-                }
-                writer.println();
-
-                writer.println("----------");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-        
 }
