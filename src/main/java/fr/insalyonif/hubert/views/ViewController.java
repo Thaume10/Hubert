@@ -81,7 +81,7 @@ public class ViewController implements Initializable {
                 <div id="map"></div>
                 <script>
                     var clickMarker;
-                    var map = L.map('map').setView([45.755, 4.87], 15);
+                    var map = L.map('map').setView([45.74979, 4.87972], 14);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                         attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
                         maxZoom: 18
@@ -441,7 +441,7 @@ public class ViewController implements Initializable {
 
     private void handleDeliverySelection(DeliveryRequest selectedDelivery) {
         if (engine != null) {
-            String centerMapScript = String.format("map.setView([%f, %f], 16);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.002);
+            String centerMapScript = String.format("map.setView([%f, %f], 14);", selectedDelivery.getDeliveryLocation().getLatitude(), selectedDelivery.getDeliveryLocation().getLongitude()+0.004);
             int index=0;
             for(int i=0;i<centerMapScript.length();i++){
                 if(centerMapScript.charAt(i)==','){
@@ -451,7 +451,7 @@ public class ViewController implements Initializable {
                     }
                 }
             }
-            String markersJs = drawPaths(controller.getCityMap(),selectedDelivery)+centerMapScript;
+            String markersJs = drawPaths(controller.getCityMap(),selectedDelivery);
             String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
             System.out.println("LLAAAA"+mapHtml);
             engine.loadContent(mapHtml);
