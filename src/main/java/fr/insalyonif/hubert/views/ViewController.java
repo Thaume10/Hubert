@@ -355,7 +355,7 @@ public class ViewController implements Initializable {
                 controller.setGlobalDate(LocalDate.now());
 
 
-                String markersJs = displayDeliveryPoints().toString();
+                String markersJs = displayDeliveryPoints(null).toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
                 engine.loadContent(mapHtml);
@@ -374,7 +374,7 @@ public class ViewController implements Initializable {
                 controller.setGlobalDate(datePicker);
 
 
-                String markersJs = displayDeliveryPoints().toString();
+                String markersJs = displayDeliveryPoints(null).toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
                 engine.loadContent(mapHtml);
@@ -399,7 +399,7 @@ public class ViewController implements Initializable {
                 controller = new Controller(selectedFile.getAbsolutePath());
 
 
-                String markersJs = displayDeliveryPoints().toString();
+                String markersJs = displayDeliveryPoints(null).toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
                 engine.loadContent(mapHtml);
@@ -570,7 +570,7 @@ public class ViewController implements Initializable {
     }
 
     public void displayAllTheDeliveryPoints(){
-        String markersJs = drawPaths(controller.getCityMap());
+        String markersJs = drawPaths(controller.getCityMap(), null);
         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
         engine.loadContent(mapHtml);
         this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
