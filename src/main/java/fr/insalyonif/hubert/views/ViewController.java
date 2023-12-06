@@ -161,13 +161,13 @@ public class ViewController implements Initializable {
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,0);
+                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
                     if(traceNewDeliveryPoint == 0){
-                        String markersJs = drawPaths(controller.getCityMap());
+                        String markersJs = drawPaths(controller.getCityMap(), null);
                         String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
                         engine.loadContent(mapHtml);
                         courier.setValue(deliveryIHM.getCourier());
-                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
                     } else if(traceNewDeliveryPoint == 1){
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setContentText("Point non accessible");
@@ -211,7 +211,7 @@ public class ViewController implements Initializable {
                     iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
                     i++;
                     markerJs = String.format(
-                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [35, 40], iconAnchor: [8, 20]})}).addTo(map);"
+                            "var marker = L.marker([" + deliveryRequest.getDeliveryLocation().getLatitude() + ", " + deliveryRequest.getDeliveryLocation().getLongitude() + "],  {icon: L.icon({iconUrl: '%s', iconSize: [30, 40], iconAnchor: [15, 40]})}).addTo(map);"
                                     + "marker.bindTooltip('Nb: %d',{permanent:false}).openTooltip();",
                             //deliveryRequest.getDeliveryLocation().getId()
                             iconUrl, i
