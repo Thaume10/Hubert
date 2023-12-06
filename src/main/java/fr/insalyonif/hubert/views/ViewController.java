@@ -161,21 +161,23 @@ public class ViewController implements Initializable {
                     // Afficher la nouvelle fenêtre
                     newStage.showAndWait();
 
-                    int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
-                    if(traceNewDeliveryPoint == 0){
-                        String markersJs = drawPaths(controller.getCityMap(), null);
-                        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
-                        engine.loadContent(mapHtml);
-                        courier.setValue(deliveryIHM.getCourier());
-                        this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
-                    } else if(traceNewDeliveryPoint == 1){
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("Point non accessible");
-                        alert.showAndWait();
-                    } else if(traceNewDeliveryPoint == 2){
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("Point déjà présent dans la liste");
-                        alert.showAndWait();
+                    if (deliveryIHM.getCourier() != null) {
+                        int traceNewDeliveryPoint = controller.newDeliveryPoint(deliveryIHM,deliveryIHM.getCourier().getId());
+                        if(traceNewDeliveryPoint == 0){
+                            String markersJs = drawPaths(controller.getCityMap(), null);
+                            String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                            engine.loadContent(mapHtml);
+                            courier.setValue(deliveryIHM.getCourier());
+                            this.setDeliveryRequestIHM(controller.getListeDelivery().get(deliveryIHM.getCourier().getId()).getRequests());
+                        } else if(traceNewDeliveryPoint == 1){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("Point non accessible");
+                            alert.showAndWait();
+                        } else if(traceNewDeliveryPoint == 2){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("Point déjà présent dans la liste");
+                            alert.showAndWait();
+                        }
                     }
 
                 } catch (IOException e) {
