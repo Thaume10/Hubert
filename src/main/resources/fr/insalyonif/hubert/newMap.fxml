@@ -10,14 +10,22 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.NewMapController">
+<AnchorPane prefHeight="290.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.NewMapController">
 
     <children>
-        <Text layoutX="45.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h3" text="New Map" />
-        <DatePicker fx:id="datePicker" layoutX="345.0" layoutY="595.0" prefHeight="61.0" prefWidth="234.0" style="-fx-background-color: #77B5FE;" stylesheets="@style.css" />
-        <Button fx:id="fileLoader" layoutX="368.0" layoutY="111.0" onAction="#handleLoadFile" prefHeight="61.0" prefWidth="149.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Load DeliveryTour File" />
+        <Text fontSmoothingType="LCD" layoutX="226.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h3" text="Load New Map">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font></Text>
+        <DatePicker fx:id="datePicker" layoutX="62.0" layoutY="175.0" prefHeight="61.0" prefWidth="234.0" style="-fx-background-color: #77B5FE;" stylesheets="@style.css" />
+        <Button fx:id="fileLoader" layoutX="307.0" layoutY="175.0" onAction="#handleLoadFile" prefHeight="61.0" prefWidth="149.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Load DeliveryTour File" />
         <!-- New button for starting -->
-        <Button fx:id="start" layoutX="176.0" layoutY="185.0" onAction="#handleStart" prefHeight="61.0" prefWidth="96.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Start" />
+        <Button fx:id="start" layoutX="467.0" layoutY="175.0" onAction="#handleStart" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Start" />
+      <ImageView fitHeight="61.0" fitWidth="71.0" layoutX="265.0" layoutY="15.0">
+         <image>
+            <Image url="@logo.png" />
+         </image>
+      </ImageView>
     </children>
 
 </AnchorPane>
