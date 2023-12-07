@@ -173,12 +173,12 @@ public class CreateDynamique implements Dynamique {
         }
 
         if (isEmpty(s)) {
-            mem[debut][n + 1] = g.getCost(debut, n + 1);
-            return g.getCost(debut, n + 1);
+            mem[debut][n] = g.getCost(debut, n);
+            return g.getCost(debut, n);
         }
 
         double min = Double.MAX_VALUE;
-        for (int j = 1; j < n; j++) {
+        for (int j = 1; j < n-1; j++) {
             if (isIn(j, s)) {
                 double d = classicDynamic(j, removeElement(s, j), n, g, mem);
                 if (g.getCost(debut, j) + d < min) min = g.getCost(debut, j) + d;

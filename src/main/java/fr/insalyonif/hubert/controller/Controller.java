@@ -708,7 +708,7 @@ public class Controller {
                     DeliveryRequest deli = new DeliveryRequest(intersectionPlusProche,timeWindowToCreate);
                     listeDelivery.get(i).getRequests().add(deli);
 
-                    List<Chemin> bestChemin = runTSP(listeDelivery.get(i));
+                    List<Chemin> bestChemin = UseDynamic(listeDelivery.get(i));
 
                     listeDelivery.get(i).setPaths(bestChemin);
                     MAJDeliveryPointList(i);
