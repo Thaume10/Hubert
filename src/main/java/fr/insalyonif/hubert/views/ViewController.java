@@ -334,8 +334,15 @@ public class ViewController implements Initializable {
                     polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
                     polylineCoords.append("]");
 
+                    
+
                     if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
-                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        if (deliveryRequest !=null && chemin.getFin() == deliveryRequest.getDeliveryLocation()) {
+                            System.out.println("caca");
+                            polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {weight: 6, color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        }else{
+                            polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        }
                     } else {
                         String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
                         markersJs.append(polylineJs);
