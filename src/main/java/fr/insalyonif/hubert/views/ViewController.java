@@ -469,8 +469,10 @@ public class ViewController implements Initializable {
 
 
             Element map = (Element) doc.getElementsByTagName("map").item(0);
+            Element deliveryTour = (Element) doc.getElementsByTagName("deliveryTour").item(0);
 
-            if (map == null){
+            //TO DO : si map est null alors erreur
+            if (map == null || deliveryTour == null){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Ce fichier ne correspond pas :(");
                 alert.showAndWait();
