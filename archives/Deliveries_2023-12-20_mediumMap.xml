@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<map fileName="mediumMap" globalDate="2023-12-20" >
+    <warehouse address="25303831" />
+    <deliveryTour courier="0" startTime="null" endTime="null">
+        <deliveryRequest deliveryTime="null" >
+            <deliveryLocation latitude="45.76051" longitude="4.879188" id="342867241"/>
+            <timeWindow startTime="9" endTime="10" />
+        </deliveryRequest>
+        <deliveryRequest deliveryTime="null" >
+            <deliveryLocation latitude="45.758698" longitude="4.8869114" id="55463564"/>
+            <timeWindow startTime="9" endTime="10" />
+        </deliveryRequest>
+        <deliveryRequest deliveryTime="null" >
+            <deliveryLocation latitude="45.7465" longitude="4.888546" id="26470092"/>
+            <timeWindow startTime="9" endTime="10" />
+        </deliveryRequest>
+    </deliveryTour>
+    <deliveryTour courier="1" startTime="null" endTime="null">
+    </deliveryTour>
+    <deliveryTour courier="2" startTime="null" endTime="null">
+    </deliveryTour>
+    <deliveryTour courier="3" startTime="null" endTime="null">
+    </deliveryTour>
+    <deliveryTour courier="4" startTime="null" endTime="null">
+    </deliveryTour>
+</map>

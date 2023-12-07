@@ -245,7 +245,7 @@ public class ViewController implements Initializable {
         for( DeliveryTour deliveryTour : controller.getListeDelivery()) {
             int i=0;
             for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()) {
-                if (courrierComboBox!=null && deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+
                     markersJs.append(markerJs);
                     if (target != null && deliveryRequest.getDeliveryLocation().getId() == target.getDeliveryLocation().getId()) {
                         iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
@@ -266,7 +266,7 @@ public class ViewController implements Initializable {
                                 iconUrl, i
                         );
                     }
-                }
+
 
                 markersJs.append(markerJs);
             }
@@ -685,7 +685,8 @@ public class ViewController implements Initializable {
         engine.loadContent(mapHtml);
         setCourierIHM(controller.getListeDelivery());
         this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
-        this.setDeliveryRequestIHM(controller.getListeDelivery().get(1).getRequests());
+        courier.setValue(controller.getListeDelivery().get(0).getCourier());
+        //this.setDeliveryRequestIHM(controller.getListeDelivery().get(1).getRequests());
 
 //        for(DeliveryTour delivery : controller.getListeDelivery()){
 //            for(Chemin request : delivery.getPaths()){

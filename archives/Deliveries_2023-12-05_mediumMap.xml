@@ -4,25 +4,25 @@
     <deliveryTour courier="0" startTime="2" endTime="6">
         <deliveryRequest deliveryTime="null" >
             <deliveryLocation latitude="45.758274" longitude="4.885514" id="1918509928"/>
-            <timeWindow startTime="2023-12-06T09:00:00Z" endTime="2023-12-06T10:00:00Z" />
+            <timeWindow startTime="8" endTime="9" />
         </deliveryRequest>
         <deliveryRequest deliveryTime="null" >
             <deliveryLocation latitude="45.753685" longitude="4.867738" id="3509888072"/>
-            <timeWindow startTime="2023-12-06T08:00:00Z" endTime="2023-12-06T09:00:00Z" />
+            <timeWindow startTime="8" endTime="9" />
         </deliveryRequest>
     </deliveryTour>
     <deliveryTour courier="1" startTime="4" endTime="7">
         <deliveryRequest deliveryTime="null" >
             <deliveryLocation latitude="45.752003" longitude="4.902592" id="191134387"/>
-            <timeWindow startTime="2023-12-06T08:00:00Z" endTime="2023-12-06T09:00:00Z" />
+            <timeWindow startTime="8" endTime="9" />
         </deliveryRequest>
         <deliveryRequest deliveryTime="null" >
             <deliveryLocation latitude="45.755867" longitude="4.8951344" id="191134501"/>
-            <timeWindow startTime="2023-12-06T09:00:00Z" endTime="2023-12-06T10:00:00Z" />
+            <timeWindow startTime="9" endTime="10" />
         </deliveryRequest>
         <deliveryRequest deliveryTime="null" >
             <deliveryLocation latitude="45.75941" longitude="4.86923" id="208769112"/>
-            <timeWindow startTime="2023-12-06T09:00:00Z" endTime="2023-12-06T10:00:00Z" />
+            <timeWindow startTime="9" endTime="10" />
         </deliveryRequest>
     </deliveryTour>
 </map>
