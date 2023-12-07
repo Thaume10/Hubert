@@ -343,6 +343,7 @@ public class Controller {
 
                     deliveryTour.setPaths(bestChemin);
                     MAJDeliveryPointList(idDeliveryTour);
+                    computeDeliveryTime(idDeliveryTour);
                     return 0; //0 for success
                 } else {
                     return 1; //Error -> Non accessible
@@ -567,34 +568,55 @@ public class Controller {
                     MAJDeliveryPointList(i);
 
 
-
-//                    Graph g = new CompleteGraph(listeDelivery.get(i).getCheminDij(), listeDelivery.get(i).getRequests(), cityMap);
-//
-//
-//                    TSP tsp = new TSP1();
-//                    tsp.searchSolution(20000, g);
-//                    System.out.print("Solution of cost " + tsp.getSolutionCost());
-////                    for (int k = 0; k < listeDelivery.size(); k++)
-////                        System.out.print(tsp.getSolution(k) + " ");
-////                    System.out.println("0");
-//                    List<Chemin> bestChemin = tsp.bestCheminGlobal(listeDelivery.get(i).getCheminDij());
-//
-//                    System.out.println("Meilleur chemin global :");
-//                    for (Chemin chemin : bestChemin) {
-//                        System.out.println(chemin);
-//                        //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
-//                    }
-//
-//                    listeDelivery.get(i).setPaths(bestChemin);
-//                    MAJDeliveryPointList(i);
                 }
             }
 
-//            for (Chemin chemin : listeDelivery.get(i).getPaths()) {
-//                System.out.println(" get 0 = "+ chemin);
-//            }
         }
     }
+
+
+    public boolean computeDeliveryTime(int idDeliveryTour){
+        DeliveryTour deliveryTour = this.getListeDelivery().get(idDeliveryTour);
+        ArrayList<DeliveryRequest> deliveryRequests = deliveryTour.getRequests();
+
+        LocalDateTime localDateTime = LocalDateTime.of(globalDate, LocalTime.of(8, 0));
+
+        // Convertir le LocalDateTime en Instant (en utilisant le fuseau horaire UTC, ZoneOffset.UTC)
+        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+
+        // Afficher l'instant
+        //System.out.println("Instant à 8h du matin pour la date spécifique : " + instant);
+        int i=0;
+
+        for(DeliveryRequest deliveryRequest : deliveryRequests){
+            long tempsPasse =(long) (deliveryTour.getPaths().get(i).getCout()/15000) *3600;
+            System.out.println("cout" +tempsPasse);
+            System.out.println("temps passé" +tempsPasse);
+            instant = instant.plusSeconds((long) (deliveryTour.getPaths().get(i).getCout()/15000*3600));
+            Instant endTimeWindow = LocalDateTime.of(globalDate, LocalTime.of(deliveryRequest.getTimeWindow().getEndTime(), 0)).toInstant(ZoneOffset.UTC);
+            Instant startTimeWindow = LocalDateTime.of(globalDate, LocalTime.of(deliveryRequest.getTimeWindow().getStartTime(), 0)).toInstant(ZoneOffset.UTC);
+            if(instant.isBefore(startTimeWindow)){
+                instant =startTimeWindow;
+            }
+            System.out.println("instant "+ instant);
+            if(instant.isBefore(endTimeWindow)) {
+                deliveryRequest.setDeliveryTime(instant);
+                instant = instant.plusSeconds(5 * 60);
+                i++;
+            } else if (instant.isBefore(endTimeWindow.plusSeconds(5*60))){
+                deliveryRequest.setDeliveryTime(instant);
+                instant = instant.plusSeconds(5 * 60);
+                i++;
+                deliveryRequest.setGoOff(true);
+            }else{
+
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 
 
 

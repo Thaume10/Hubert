@@ -11,6 +11,16 @@ public class DeliveryRequest {
     private TimeWindow timeWindow;
     private Instant deliveryTime;
 
+    private boolean goOff = false;
+
+    public boolean isGoOff() {
+        return goOff;
+    }
+
+    public void setGoOff(boolean goOff) {
+        this.goOff = goOff;
+    }
+
     /**
      * Constructeur pour créer une nouvelle demande de livraison.
      *
