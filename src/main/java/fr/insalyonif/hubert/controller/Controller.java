@@ -161,20 +161,21 @@ public class Controller {
         deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
         deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
         if(deliveryTour.getDijkstra().getDeliveryRequest().size()!=1) {
-            Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
-            TSP tsp = new TSP1();
-            tsp.searchSolution(20000, g);
-            System.out.print("Solution of cost " + tsp.getSolutionCost());
-            for (int i = 0; i < listeDelivery.size(); i++)
-                System.out.print(tsp.getSolution(i) + " ");
-            System.out.println("0");
-            List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
-
-            System.out.println("Meilleur chemin global :");
-            for (Chemin chemin : bestChemin) {
-                System.out.println(chemin);
-                //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
-            }
+//            Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
+//            TSP tsp = new TSP1();
+//            tsp.searchSolution(20000, g);
+//            System.out.print("Solution of cost " + tsp.getSolutionCost());
+//            for (int i = 0; i < listeDelivery.size(); i++)
+//                System.out.print(tsp.getSolution(i) + " ");
+//            System.out.println("0");
+//            List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
+//
+//            System.out.println("Meilleur chemin global :");
+//            for (Chemin chemin : bestChemin) {
+//                System.out.println(chemin);
+//                //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+//            }
+            List<Chemin> bestChemin = runTSP(deliveryTour);
 
             deliveryTour.setPaths(bestChemin);
         } else {
