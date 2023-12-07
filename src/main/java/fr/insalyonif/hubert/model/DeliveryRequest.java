@@ -107,7 +107,7 @@ public class DeliveryRequest {
      */
     @Override
     public String toString() {
-        String deliveryTimeString = deliveryTime != null ? DateTimeFormatter.ofPattern("HH:mm").format(deliveryTime.atZone(ZoneId.systemDefault())) : "Non spécifié";
+        String deliveryTimeString = deliveryTime != null ? DateTimeFormatter.ofPattern("HH:mm").format(deliveryTime.atZone(ZoneId.of("UTC"))) : "Non spécifié";
         String timeWindowString = timeWindow != null ? timeWindow.toString() : "Non spécifié";
         if(goOff==false){
             return "Delivery at intersection: " + deliveryLocation.getId() +

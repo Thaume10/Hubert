@@ -399,7 +399,12 @@ public class Controller {
 
                     deliveryTour.setPaths(bestChemin);
                     MAJDeliveryPointList(idDeliveryTour);
-                    computeDeliveryTime(idDeliveryTour);
+                    if(computeDeliveryTime(idDeliveryTour)==false){
+                        deleteDelivery(deliveryTour.getRequests().get(deliveryTour.getRequests().size()-1),idDeliveryTour);
+                        MAJDeliveryPointList(idDeliveryTour);
+                        return 3;
+                    }
+
                     return 0; //0 for success
                 } else {
                     return 1; //Error -> Non accessible
@@ -622,7 +627,6 @@ public class Controller {
 
                     listeDelivery.get(i).setPaths(bestChemin);
                     MAJDeliveryPointList(i);
-
 
                 }
             }

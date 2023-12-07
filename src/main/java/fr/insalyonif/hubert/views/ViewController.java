@@ -227,6 +227,10 @@ public class ViewController implements Initializable {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText("Point déjà présent dans la liste");
                             alert.showAndWait();
+                        }else if(traceNewDeliveryPoint == 3){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("The courier "+deliveryIHM.getCourier().getId()+" is full beetween "+deliveryIHM.getTimeWindow().getStartTime()+"h and "+deliveryIHM.getTimeWindow().getEndTime()+"h");
+                            alert.showAndWait();
                         }
                     }
 
@@ -755,13 +759,7 @@ public class ViewController implements Initializable {
         setCourierIHM(controller.getListeDelivery());
         this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
         courier.setValue(controller.getListeDelivery().get(0).getCourier());
-        //this.setDeliveryRequestIHM(controller.getListeDelivery().get(1).getRequests());
 
-//        for(DeliveryTour delivery : controller.getListeDelivery()){
-//            for(Chemin request : delivery.getPaths()){
-//                 System.out.println("Ici "+request);
-//            }
-//        }
     }
 
 
