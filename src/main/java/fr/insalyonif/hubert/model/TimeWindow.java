@@ -2,14 +2,15 @@ package fr.insalyonif.hubert.model;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Représente une fenêtre temporelle définie par un instant de début et un instant de fin.
  * Cette classe est utile pour gérer des périodes définies dans le temps.
  */
 public class TimeWindow {
-    private Instant startTime;
-    private Instant endTime;
+    private int startTime;
+    private int endTime;
 
     /**
      * Constructeur pour créer une nouvelle fenêtre temporelle.
@@ -17,7 +18,7 @@ public class TimeWindow {
      * @param startTime l'instant de début de la fenêtre temporelle.
      * @param endTime l'instant de fin de la fenêtre temporelle.
      */
-    public TimeWindow(Instant startTime, Instant endTime) {
+    public TimeWindow(int startTime, int endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -27,7 +28,7 @@ public class TimeWindow {
      *
      * @return l'instant de début.
      */
-    public Instant getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
@@ -36,7 +37,7 @@ public class TimeWindow {
      *
      * @param startTime le nouvel instant de début.
      */
-    public void setStartTime(Instant startTime) {
+    public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
 
@@ -45,7 +46,7 @@ public class TimeWindow {
      *
      * @return l'instant de fin.
      */
-    public Instant getEndTime() {
+    public int getEndTime() {
         return endTime;
     }
 
@@ -54,7 +55,7 @@ public class TimeWindow {
      *
      * @param endTime le nouvel instant de fin.
      */
-    public void setEndTime(Instant endTime) {
+    public void setEndTime(int endTime) {
         this.endTime = endTime;
     }
 
@@ -68,12 +69,14 @@ public class TimeWindow {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH").withZone(ZoneId.systemDefault());
 
         // Formater les instants de début et de fin
-        String startTimeFormatted = formatter.format(startTime);
-        String endTimeFormatted = formatter.format(endTime);
+        /*String startTimeFormatted = formatter.format(startTime);
+        String endTimeFormatted = formatter.format(endTime);*/
 
         // Retourner la représentation en chaîne de la fenêtre temporelle avec la mention spécifique
-        return "Passage entre " + startTimeFormatted + "h et " + endTimeFormatted+"h";
+        return "Passage entre " + startTime + "h et " + endTime+"h";
     }
+
+
 
     /**
      * Vérifie si un instant spécifique se situe à l'intérieur de la fenêtre temporelle.
@@ -81,7 +84,7 @@ public class TimeWindow {
      * @param time l'instant à vérifier.
      * @return true si l'instant est à l'intérieur de la fenêtre temporelle, false sinon.
      */
-    public boolean isInTimeWindow(Instant time){
-        return time.isBefore(this.endTime) && time.isAfter(this.startTime);
+    public boolean isInTimeWindow(int time){
+        return (time<endTime && time>=startTime);
     }
 }

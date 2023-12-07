@@ -1,8 +1,6 @@
 package fr.insalyonif.hubert.views;
 
-import fr.insalyonif.hubert.model.CityMap;
 import fr.insalyonif.hubert.model.Courier;
-import fr.insalyonif.hubert.model.Intersection;
 import fr.insalyonif.hubert.model.TimeWindow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +22,11 @@ import java.util.ResourceBundle;
 
 public class DeliveryIHMController implements Initializable {
 
-    ObservableList<String> timeWindows = FXCollections.observableArrayList("8h-9h","9h-10h","10h-11h","11h-12h");
+    ObservableList<TimeWindow> timeWindows = FXCollections.observableArrayList(
+            new TimeWindow(8, 9),
+            new TimeWindow(9, 10),
+            new TimeWindow(10, 11),
+            new TimeWindow(11, 12));
     @FXML
     private TextField lat;
 
@@ -32,10 +34,19 @@ public class DeliveryIHMController implements Initializable {
     private TextField lng;
 
     @FXML
-    private ComboBox deliveryTime;
+    private ComboBox<TimeWindow> deliveryTime;
 
     @FXML
     private Button valider;
+
+    public void setDeliveryTime(ComboBox<TimeWindow> deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
+
+
+    public void setCourier(ComboBox<Courier> courier) {
+        this.courier = courier;
+    }
 
     @FXML
     private ComboBox<Courier> courier;
@@ -48,6 +59,8 @@ public class DeliveryIHMController implements Initializable {
 
     private TimeWindow timeWindow;
 
+    private boolean isValiderClicked = false;
+
 
     @FXML
     void validerButton(ActionEvent event) {
@@ -58,58 +71,39 @@ public class DeliveryIHMController implements Initializable {
                 latDouble = Double.parseDouble(latString);
                 lngDouble = Double.parseDouble(lngString);
 
-                String selectedTimeWindow = (String) deliveryTime.getValue();
+                TimeWindow selectedTimeWindow = (TimeWindow) deliveryTime.getValue();
 
-                if (selectedTimeWindow != null && courier!=null) {
-                    Instant currentInstant = Instant.now();
-                    ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(currentInstant, ZoneId.systemDefault());
-                    LocalTime specificTime;
-                    ZonedDateTime resultDateTime;
-                    Instant startTime ;
-                    Instant endTime ;
-                    switch (selectedTimeWindow) {
-                        case "8h-9h":
-                            specificTime = LocalTime.of(8, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(9, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();
+                if (selectedTimeWindow != null && courier.getValue() != null) {
+                    isValiderClicked = true;
+                    int startTime ;
+                    int endTime ;
+                    switch (selectedTimeWindow.toString()) {
+                        case "Passage entre 8h et 9h":
+                            startTime=8;
+                            endTime=9;
                             break;
-                        case "9h-10h":
-                            specificTime = LocalTime.of(9, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(10, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();
+                        case "Passage entre 9h et 10h":
+                            startTime=9;
+                            endTime=10;
                             break;
-                        case "10h-11h":
-                            specificTime = LocalTime.of(10,0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(11, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();
+                        case "Passage entre 10h et 11h":
+                            startTime=10;
+                            endTime=11;
                             break;
-                        case "11h-12h":
-                            specificTime = LocalTime.of(11, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            startTime= resultDateTime.toInstant();
-                            specificTime = LocalTime.of(12, 0);
-                            resultDateTime = zonedDateTime.with(specificTime);
-                            endTime= resultDateTime.toInstant();
+                        case "Passage entre 11h et 12h":
+                            startTime=11;
+                            endTime=12;
                             break;
                         default:
-                            startTime=Instant.parse("0000-00-00T00:00:00Z");
-                            endTime=Instant.parse("0000-00-00T00:00:00Z");
+                            startTime=0;
+                            endTime=0;
                             break;
                     }
                     timeWindow = new TimeWindow(startTime, endTime);
                 } else {
                     // Gérer le cas où aucun créneau horaire n'est sélectionné
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Il reste un champ vide :(");
+                    alert.setContentText("Il reste un champ vide 😢");
                     alert.showAndWait();
                     return;  // Sortir de la méthode si aucun créneau horaire n'est sélectionné
                 }
@@ -123,6 +117,10 @@ public class DeliveryIHMController implements Initializable {
 
 
         }
+    }
+
+    public boolean isValiderClicked() {
+        return isValiderClicked;
     }
 
     public double getLatDouble() {
@@ -149,6 +147,7 @@ public class DeliveryIHMController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         deliveryTime.setItems(timeWindows);
         listCourier= FXCollections.observableArrayList();
+
         courier.setConverter(new StringConverter<Courier>() {
             @Override
             public String toString(Courier c) {
@@ -170,9 +169,17 @@ public class DeliveryIHMController implements Initializable {
         return courier.getValue();
     }
 
+    public void setInitialCourier(Courier initCourier){
+        this.courier.setValue(initCourier);
+    }
+    public void setInitialTimeWindow(TimeWindow timeWindow){
+        this.deliveryTime.setValue((timeWindow));
+    }
+
     public void setListCourier(ObservableList<Courier> list){
         listCourier=list;
         courier.setItems(listCourier);
     }
+
 
 }
