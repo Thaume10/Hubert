@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
-import java.util.*;
+
 
 import java.time.*;
 import java.util.*;
@@ -131,6 +131,59 @@ public class Controller {
         DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
         defaultDeliveryTour.setDijkstraInverse(dijInv);
         listeDelivery.add(defaultDeliveryTour);
+    }
+
+    public int deleteDelivery(DeliveryRequest requestToDelete, int id) {
+        DeliveryTour deliveryTour= listeDelivery.get(id);
+        System.out.println(requestToDelete);
+        System.out.println(deliveryTour.getDijkstra().getChemins());
+        Intersection interToDelete = requestToDelete.getDeliveryLocation();
+        System.out.println(interToDelete);
+        Iterator<Chemin> cheminIterator = deliveryTour.getDijkstra().getChemins().iterator();
+        while (cheminIterator.hasNext()) {
+            Chemin chemin = cheminIterator.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIterator.remove();
+            }
+        }
+        Iterator<Chemin> cheminIteratorInverse = deliveryTour.getDijkstraInverse().getChemins().iterator();
+        while (cheminIteratorInverse.hasNext()) {
+            Chemin chemin = cheminIteratorInverse.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIteratorInverse.remove();
+            }
+        }
+
+        deliveryTour.getDijkstra().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getDijkstraInverse().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getRequests().remove(requestToDelete);
+        deliveryTour.clearCheminsDij();
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
+        if(deliveryTour.getDijkstra().getDeliveryRequest().size()!=1) {
+//            Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
+//            TSP tsp = new TSP1();
+//            tsp.searchSolution(20000, g);
+//            System.out.print("Solution of cost " + tsp.getSolutionCost());
+//            for (int i = 0; i < listeDelivery.size(); i++)
+//                System.out.print(tsp.getSolution(i) + " ");
+//            System.out.println("0");
+//            List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
+//
+//            System.out.println("Meilleur chemin global :");
+//            for (Chemin chemin : bestChemin) {
+//                System.out.println(chemin);
+//                //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+//            }
+            List<Chemin> bestChemin = runTSP(deliveryTour);
+
+            deliveryTour.setPaths(bestChemin);
+        } else {
+            deliveryTour.setPaths(new ArrayList<>());
+        }
+
+        MAJDeliveryPointList(id);
+        return 0; //0 for success
     }
 
     private List<Chemin> runTSP(DeliveryTour deliveryTour){
@@ -299,6 +352,9 @@ public class Controller {
         }
         return bestChemin;
     }
+
+
+
 
     public int newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
         DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
