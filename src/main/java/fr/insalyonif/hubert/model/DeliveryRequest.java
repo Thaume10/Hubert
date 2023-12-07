@@ -1,6 +1,8 @@
 package fr.insalyonif.hubert.model;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Représente une demande de livraison caractérisée par un lieu de livraison et une fenêtre temporelle.
@@ -105,10 +107,18 @@ public class DeliveryRequest {
      */
     @Override
     public String toString() {
-        String deliveryTimeString = deliveryTime != null ? deliveryTime.toString() : "Non spécifié";
+        String deliveryTimeString = deliveryTime != null ? DateTimeFormatter.ofPattern("HH:mm").format(deliveryTime.atZone(ZoneId.systemDefault())) : "Non spécifié";
         String timeWindowString = timeWindow != null ? timeWindow.toString() : "Non spécifié";
-        return "Delivery at intersection: " + deliveryLocation.getId() +
-                "\nScheduled for: " + deliveryTimeString+
-                "\n"+timeWindowString;
+        if(goOff==false){
+            return "Delivery at intersection: " + deliveryLocation.getId() +
+                    "\nScheduled for: " + deliveryTimeString+
+                    "\n"+timeWindowString;
+        }else{
+            return "Delivery at intersection: " + deliveryLocation.getId() +
+                    "\nScheduled for: " + deliveryTimeString+
+                    "\n"+timeWindowString+
+                    "\nWARNING : Slight delay!";
+        }
+
     }
 }

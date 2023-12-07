@@ -589,6 +589,7 @@ public class Controller {
         int i=0;
 
         for(DeliveryRequest deliveryRequest : deliveryRequests){
+            deliveryRequest.setDeliveryTime(null);
             long tempsPasse =(long) (deliveryTour.getPaths().get(i).getCout()/15000) *3600;
             System.out.println("cout" +tempsPasse);
             System.out.println("temps passé" +tempsPasse);
@@ -609,7 +610,7 @@ public class Controller {
                 i++;
                 deliveryRequest.setGoOff(true);
             }else{
-
+                System.out.println("CACAAAA");
                 return false;
             }
         }
