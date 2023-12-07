@@ -4,75 +4,75 @@ import java.util.List;
 
 public interface Dynamique {
     /**
-     * Create a set that contains all integers ranging from 1 to n-1
-     * @param n The upper limit for the set
-     * @return The created set
+     * Crée un ensemble contenant tous les entiers de 1 à n-1
+     * @param n la limite supérieure de l'ensemble
+     * @return l'ensemble créé
      */
     public int createSet(int n);
 
     /**
-     * Print all elements of the given set
-     * @param s The set to print
+     * Affiche tous les éléments de l'ensemble donné
+     * @param s l'ensemble à afficher
      */
     public void printSet(int s);
 
     /**
-     * Get a Chemin object from a list of chemins based on the given start and end positions
-     * @param chemins The list of chemins
-     * @param debut The starting position
-     * @param fin The ending position
-     * @return The Chemin object corresponding to the start and end positions, or null if not found
+     * Obtient un objet Chemin à partir d'une liste de chemins basée sur les positions de début et de fin fournies
+     * @param chemins la liste de chemins
+     * @param debut la position de départ
+     * @param fin la position de fin
+     * @return L'objet Chemin correspondant aux positions de début et de fin, ou null s'il n'est pas trouvé
      */
     public Chemin getCheminBy(List<Chemin> chemins, int debut, int fin);
 
     /**
-     * Find the best path through a list of chemins based on a given solution
-     * @param chemins The list of chemins
-     * @param g The graph
-     * @param bestSol The best solution
-     * @return The list of chemins representing the best path
+     * Trouve le meilleur chemin dans une liste de chemins basé sur une solution donnée
+     * @param chemins la liste de chemins
+     * @param g le graphe
+     * @param bestSol la meilleure solution
+     * @return La liste de chemins représentant le meilleur chemin
      */
     public List<Chemin> bestCheminGlobal(List<Chemin> chemins, Graph g, List<Integer> bestSol);
 
     /**
-     * Find the optimal path using classic dynamic programming
-     * @param start The starting position
-     * @param n The upper limit for the set
-     * @param g The graph
-     * @param mem The memoization matrix
-     * @return The optimal path as a list of integers
+     * Trouve le chemin optimal en utilisant la programmation dynamique classique
+     * @param start la position de départ
+     * @param n la limite supérieure de l'ensemble
+     * @param g le graphe
+     * @param mem la matrice de mémorisation
+     * @return Le chemin optimal sous forme de liste d'entiers
      */
     public List<Integer> classicPath(int start, int n, Graph g, double[][] mem);
 
     /**
-     * Recursive function for classic dynamic programming
-     * @param i The current position
-     * @param s The current set of remaining positions
-     * @param n The upper limit for the set
-     * @param g The graph
-     * @param mem The memoization matrix
-     * @return The minimum cost for the given parameters
+     * Fonction récursive pour la programmation dynamique classique
+     * @param i la position actuelle
+     * @param s l'ensemble actuel des positions restantes
+     * @param n la limite supérieure de l'ensemble
+     * @param g le graphe
+     * @param mem la matrice de mémorisation
+     * @return Le coût minimum pour les paramètres donnés
      */
     public double classicDynamic(int i, int s, int n, Graph g, double[][] mem);
 
     /**
-     * Find the optimal path using adaptive dynamic programming
-     * @param start The starting position
-     * @param n The upper limit for the set
-     * @param g The graph
-     * @param mem The memoization matrix
-     * @return The optimal path as a list of integers
+     * Trouve le chemin optimal en utilisant la programmation dynamique adaptative
+     * @param start la position de départ
+     * @param n la limite supérieure de l'ensemble
+     * @param g le graphe
+     * @param mem la matrice de mémorisation
+     * @return Le chemin optimal sous forme de liste d'entiers
      */
     public List<Integer> adaptivePath(int start, int n, Graph g, double[][] mem);
 
     /**
-     * Recursive function for adaptive dynamic programming
-     * @param debut The starting position
-     * @param s The current set of remaining positions
-     * @param n The upper limit for the set
-     * @param g The graph
-     * @param mem The memoization matrix
-     * @return The minimum cost for the given parameters
+     * Fonction récursive pour la programmation dynamique adaptative
+     * @param debut la position de départ
+     * @param s l'ensemble actuel des positions restantes
+     * @param n la limite supérieure de l'ensemble
+     * @param g le graphe
+     * @param mem la matrice de mémorisation
+     * @return Le coût minimum pour les paramètres donnés
      */
     public double adaptiveDynamic(int debut, int s, int n, Graph g, double[][] mem);
 }
