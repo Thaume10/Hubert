@@ -51,11 +51,14 @@ public class ViewController implements Initializable {
     private Button validate_delivery;
 
     @FXML
+    private Button delete_delivery;
+
+    @FXML
     private ListView<DeliveryRequest> listViewDelivery;
 
     private ObservableList<DeliveryRequest> listDelivery;
 
-    private  WebEngine engine;
+    private WebEngine engine;
 
     private Controller controller;
 
@@ -77,7 +80,7 @@ public class ViewController implements Initializable {
                 </style>
             </head>
             <body>
-   
+               
                 <div id="map"></div>
                 <script>
                     var clickMarker;
@@ -124,19 +127,36 @@ public class ViewController implements Initializable {
     }
 
     @FXML
-    void addNewCourrier(ActionEvent event){
-        if(controller !=null) {
+    void addNewCourrier(ActionEvent event) {
+        if (controller != null) {
             controller.newDeliveryTour();
             setCourierIHM(controller.getListeDelivery());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Successfully added ! :)");
             alert.showAndWait();
-        }else{
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Il faut d'abord choisir une MAP");
             alert.showAndWait();
         }
     }
+
+    public void handleDeleteDelivery(DeliveryRequest selectedDelivery, int id) {
+        if (controller != null) {
+            int traceDeletePoint = controller.deleteDelivery(selectedDelivery,id);
+            if(traceDeletePoint == 0) {
+                String markersJs = drawPaths(controller.getCityMap(), null);
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                engine.loadContent(mapHtml);
+                this.setDeliveryRequestIHM(controller.getListeDelivery().get(courier.getValue().getId()).getRequests());
+            }
+        }
+    }
+
+
+
+
+
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
         if(event.getSource()==delivery || event.getSource()==validate_delivery) {
@@ -181,11 +201,14 @@ public class ViewController implements Initializable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else{
+            }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Il faut d'abord choisir une MAP");
                 alert.showAndWait();
             }
+
+
+
 
         }
     }
@@ -362,6 +385,8 @@ public class ViewController implements Initializable {
         listDelivery.addAll(delivery);
     }
 
+
+
     public void setCourierIHM(ArrayList<DeliveryTour> deliveryTours) {
         Courier c =courier.getValue();
         listCourier.clear();
@@ -420,6 +445,8 @@ public class ViewController implements Initializable {
             // newValue is the newly selected Courier object
             if (newCourier != null) {
                 handleCourierSelection(newCourier);
+
+
             }
         });
 
@@ -431,9 +458,40 @@ public class ViewController implements Initializable {
             if (selectedDelivery != null) {
                 // Appelez votre fonction avec la DeliveryRequest sélectionnée en tant que paramètre
                 handleDeliverySelection(selectedDelivery);
+                Courier correspondingCourier = getCorrespondingCourier(selectedDelivery);
+                int id = correspondingCourier != null ? correspondingCourier.getId() : -1;
+                System.out.println(id);
+                System.out.println(selectedDelivery);
             }
         });
 
+        delete_delivery.setOnAction(event -> {
+            // Obtenez l'élément sélectionné de la ListView
+            DeliveryRequest selectedDelivery = listViewDelivery.getSelectionModel().getSelectedItem();
+            if (selectedDelivery != null) {
+                Courier correspondingCourier = getCorrespondingCourier(selectedDelivery);
+                int id = correspondingCourier != null ? correspondingCourier.getId() : -1;
+                System.out.println("caca");
+
+                // Appeler la fonction de suppression ici
+                handleDeleteDelivery(selectedDelivery, id);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Choisissez d'abord un point de livraison à annuler");
+                alert.showAndWait();
+            }
+        });
+
+    }
+    private Courier getCorrespondingCourier(DeliveryRequest selectedDelivery) {
+        for (DeliveryTour deliveryTour : controller.getListeDelivery()) {
+            for (DeliveryRequest delivery : deliveryTour.getRequests()) {
+                if (delivery.equals(selectedDelivery)) {
+                    return deliveryTour.getCourier();
+                }
+            }
+        }
+        return null;
     }
 
     private void handleDeliverySelection(DeliveryRequest selectedDelivery) {

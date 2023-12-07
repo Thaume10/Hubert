@@ -1,9 +1,7 @@
 package fr.insalyonif.hubert.controller;
 import fr.insalyonif.hubert.views.DeliveryIHMController;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
+
+import java.util.*;
 
 import fr.insalyonif.hubert.model.*;
 
@@ -84,6 +82,58 @@ public class Controller {
         listeDelivery.add(defaultDeliveryTour);
     }
 
+    public int deleteDelivery(DeliveryRequest requestToDelete, int id) {
+        DeliveryTour deliveryTour= listeDelivery.get(id);
+        System.out.println(requestToDelete);
+        System.out.println(deliveryTour.getDijkstra().getChemins());
+        Intersection interToDelete = requestToDelete.getDeliveryLocation();
+        System.out.println(interToDelete);
+        Iterator<Chemin> cheminIterator = deliveryTour.getDijkstra().getChemins().iterator();
+        while (cheminIterator.hasNext()) {
+            Chemin chemin = cheminIterator.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIterator.remove();
+            }
+        }
+        Iterator<Chemin> cheminIteratorInverse = deliveryTour.getDijkstraInverse().getChemins().iterator();
+        while (cheminIteratorInverse.hasNext()) {
+            Chemin chemin = cheminIteratorInverse.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIteratorInverse.remove();
+            }
+        }
+
+        deliveryTour.getDijkstra().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getDijkstraInverse().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getRequests().remove(requestToDelete);
+        deliveryTour.clearCheminsDij();
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
+        if(deliveryTour.getDijkstra().getDeliveryRequest().size()!=1) {
+            Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
+            TSP tsp = new TSP1();
+            tsp.searchSolution(20000, g);
+            System.out.print("Solution of cost " + tsp.getSolutionCost());
+            for (int i = 0; i < listeDelivery.size(); i++)
+                System.out.print(tsp.getSolution(i) + " ");
+            System.out.println("0");
+            List<Chemin> bestChemin = tsp.bestCheminGlobal(deliveryTour.getCheminDij());
+
+            System.out.println("Meilleur chemin global :");
+            for (Chemin chemin : bestChemin) {
+                System.out.println(chemin);
+                //System.out.println("Départ : " + chemin.getDebut() + " -> Arrivée : " + chemin.getFin()+ " | Coût : " + chemin.getCout());
+            }
+
+            deliveryTour.setPaths(bestChemin);
+        } else {
+            deliveryTour.setPaths(new ArrayList<>());
+        }
+
+        MAJDeliveryPointList(id);
+        return 0; //0 for success
+    }
+
     public int newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
         DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
         if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
@@ -156,6 +206,7 @@ public class Controller {
         DeliveryTour deliveryTour = listeDelivery.get(idDeliveryTour);
         List<Chemin> chemins =deliveryTour.getPaths();
         Map<Intersection, Integer> intersectionIndexMap = new HashMap<>();
+        System.out.println("caca" +chemins.size() );
         for (int i = 0; i < chemins.size(); i++) {
             Chemin chemin = chemins.get(i);
             intersectionIndexMap.put(chemin.getFin(), i);
