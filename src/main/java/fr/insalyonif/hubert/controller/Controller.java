@@ -5,7 +5,7 @@ import java.util.*;
 
 import fr.insalyonif.hubert.model.*;
 
-import static fr.insalyonif.hubert.model.Dynamique.*;
+import static fr.insalyonif.hubert.model.CreateDynamique.*;
 
 public class Controller {
     private CityMap cityMap;
@@ -195,7 +195,7 @@ public class Controller {
         List<Integer> optimalPath = new ArrayList<>();
         optimalPath.add(0,0);
         Graph g = new CompleteGraph(deliveryTour.getCheminDij(), deliveryTour.getRequests(), cityMap);
-        Dynamique dynamique = new Dynamique(g);
+        CreateDynamique dynamique = new CreateDynamique(g);
         int nextStart = 0;
         ArrayList<DeliveryRequest> nextrequests = new ArrayList<>();
         ArrayList<DeliveryRequest> rTemp = new ArrayList<>();
@@ -217,7 +217,7 @@ public class Controller {
                     rTemp.remove(0);
                     rTemp.add(nextrequests.get(request));
                     Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                    Dynamique dynamique8 = new Dynamique(g8);
+                    CreateDynamique dynamique8 = new CreateDynamique(g8);
                     int n = g8.getNbVertices();
                     int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -226,8 +226,8 @@ public class Controller {
                         Arrays.fill(memD[i], 0);
                     }
 
-                    if (adaptiveDynamic(nextStart, s, n, g8, memD)< d8){
-                        d8 = adaptiveDynamic(nextStart, s, n, g8, memD);
+                    if (dynamique8.adaptiveDynamic(nextStart, s, n, g8, memD)< d8){
+                        d8 = dynamique8.adaptiveDynamic(nextStart, s, n, g8, memD);
                         optimalPath8 = dynamique8.adaptivePath(nextStart, n, g8, memD);
                         optimalPath8.remove(optimalPath8.size() - 1);
                         nextStart = request;
@@ -236,7 +236,7 @@ public class Controller {
             } else {
 
                 Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                Dynamique dynamique8 = new Dynamique(g8);
+                CreateDynamique dynamique8 = new CreateDynamique(g8);
                 int n = g8.getNbVertices();
                 int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -244,7 +244,7 @@ public class Controller {
                 for (int i = 0; i < n; i++) {
                     Arrays.fill(memD[i], 0);
                 }
-                d8 = classicDynamic(nextStart, s, n, g8, memD);
+                d8 = dynamique8.classicDynamic(nextStart, s, n, g8, memD);
                 optimalPath8 = dynamique8.classicPath(nextStart, n, g8, memD);
             }
             d+=d8;
@@ -277,7 +277,7 @@ public class Controller {
                     rTemp.remove(0);
                     rTemp.add(nextrequests.get(request));
                     Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                    Dynamique dynamique9 = new Dynamique(g9);
+                    CreateDynamique dynamique9 = new CreateDynamique(g9);
                     int n = g9.getNbVertices();
                     int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -286,8 +286,8 @@ public class Controller {
                         Arrays.fill(memD[i], 0);
                     }
 
-                    if (adaptiveDynamic(nextStart, s, n, g9, memD)< d9){
-                        d9 = adaptiveDynamic(nextStart, s, n, g9, memD);
+                    if (dynamique9.adaptiveDynamic(nextStart, s, n, g9, memD)< d9){
+                        d9 = dynamique9.adaptiveDynamic(nextStart, s, n, g9, memD);
                         optimalPath9 = dynamique9.adaptivePath(nextStart, n, g9, memD);
                         optimalPath9.remove(optimalPath9.size() - 1);
                         nextStart = request;
@@ -296,7 +296,7 @@ public class Controller {
             } else {
 
                 Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                Dynamique dynamique9 = new Dynamique(g9);
+                CreateDynamique dynamique9 = new CreateDynamique(g9);
                 int n = g9.getNbVertices();
                 int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -304,7 +304,7 @@ public class Controller {
                 for (int i = 0; i < n; i++) {
                     Arrays.fill(memD[i], 0);
                 }
-                d9 = classicDynamic(nextStart, s, n, g9, memD);
+                d9 = dynamique9.classicDynamic(nextStart, s, n, g9, memD);
                 optimalPath9 = dynamique9.classicPath(nextStart, n, g9, memD);
             }
             d+=d9;
@@ -333,7 +333,7 @@ public class Controller {
                     rTemp.remove(0);
                     rTemp.add(nextrequests.get(request));
                     Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                    Dynamique dynamique10 = new Dynamique(g10);
+                    CreateDynamique dynamique10 = new CreateDynamique(g10);
                     int n = g10.getNbVertices();
                     int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -342,8 +342,8 @@ public class Controller {
                         Arrays.fill(memD[i], 0);
                     }
 
-                    if (adaptiveDynamic(nextStart, s, n, g10, memD)< d10){
-                        d10 = adaptiveDynamic(nextStart, s, n, g10, memD);
+                    if (dynamique10.adaptiveDynamic(nextStart, s, n, g10, memD)< d10){
+                        d10 = dynamique10.adaptiveDynamic(nextStart, s, n, g10, memD);
                         optimalPath10 = dynamique10.adaptivePath(nextStart, n, g10, memD);
                         optimalPath10.remove(optimalPath10.size() - 1);
                         nextStart = request;
@@ -352,7 +352,7 @@ public class Controller {
             } else {
 
                 Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-                Dynamique dynamique10 = new Dynamique(g10);
+                CreateDynamique dynamique10 = new CreateDynamique(g10);
                 int n = g10.getNbVertices();
                 int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -360,7 +360,7 @@ public class Controller {
                 for (int i = 0; i < n; i++) {
                     Arrays.fill(memD[i], 0);
                 }
-                d10 = classicDynamic(nextStart, s, n, g10, memD);
+                d10 = dynamique10.classicDynamic(nextStart, s, n, g10, memD);
                 optimalPath10 = dynamique10.classicPath(nextStart, n, g10, memD);
             }
             d+=d10;
@@ -383,7 +383,7 @@ public class Controller {
 
 
             Graph g11 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
-            Dynamique dynamique11 = new Dynamique(g11);
+            CreateDynamique dynamique11 = new CreateDynamique(g11);
             int n = g11.getNbVertices();
             int s = dynamique11.createSet(n); // s contains all integer values ranging between 1 and n
 
@@ -391,7 +391,7 @@ public class Controller {
             for (int i = 0; i < n; i++) {
                 Arrays.fill(memD[i], 0);
             }
-            d11 = classicDynamic(nextStart, s, n, g11, memD);
+            d11 = dynamique11.classicDynamic(nextStart, s, n, g11, memD);
             optimalPath11 = dynamique11.classicPath(nextStart, n, g11, memD);
 
             d+=d11;

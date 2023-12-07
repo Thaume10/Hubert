@@ -16,12 +16,14 @@ public interface Graph {
 	public abstract double getCost(int i, int j);
 
 	/**
-	 * @param i 
-	 * @param j 
+	 * @param i
+	 * @param j
 	 * @return true if <code>(i,j)</code> is an arc of <code>this</code>
 	 */
 	public abstract boolean isArc(int i, int j);
 
+	/**
+	 * @return a Map of positions to corresponding indices in the graph
+	 */
 	public abstract Map<Integer, Integer> getPositionToIndexMap();
-
 }
