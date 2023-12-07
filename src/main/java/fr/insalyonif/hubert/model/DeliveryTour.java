@@ -3,6 +3,7 @@ package fr.insalyonif.hubert.model;
 import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
+
 public class DeliveryTour {
     private Courier courier;
     private ArrayList<DeliveryRequest> requests;
@@ -10,95 +11,166 @@ public class DeliveryTour {
     private Instant startTime;
     private Instant endTime;
     private Dijkstra dij;
-
     private ArrayList<Chemin> cheminDij;
-
     private DijkstraInverse dijInv;
 
-
+    /**
+     * Constructeur par défaut de la classe DeliveryTour.
+     * Initialise la liste des requêtes et des chemins Dijkstra.
+     */
     public DeliveryTour() {
-        requests= new ArrayList<>();
+        requests = new ArrayList<>();
         cheminDij = new ArrayList<Chemin>();
     }
 
-    // Getter for courier
-     public Courier getCourier() {
+    /**
+     * Obtient le coursier associé à la tournée de livraison.
+     *
+     * @return Le coursier associé à la tournée de livraison.
+     */
+    public Courier getCourier() {
         return courier;
     }
 
-    // Setter for courier
+    /**
+     * Définit l'algorithme de Dijkstra utilisé pour la tournée de livraison.
+     *
+     * @param dij L'instance de l'algorithme de Dijkstra.
+     */
     public void setDijkstra(Dijkstra dij) {
         this.dij = dij;
     }
 
-     // Getter for courier
-     public Dijkstra getDijkstra() {
+    /**
+     * Obtient l'algorithme de Dijkstra utilisé pour la tournée de livraison.
+     *
+     * @return L'instance de l'algorithme de Dijkstra.
+     */
+    public Dijkstra getDijkstra() {
         return this.dij;
     }
 
-    // Setter for courier
+    /**
+     * Définit l'algorithme de Dijkstra Inverse utilisé pour la tournée de livraison.
+     *
+     * @param dijInv L'instance de l'algorithme de Dijkstra Inverse.
+     */
     public void setDijkstraInverse(DijkstraInverse dijInv) {
         this.dijInv = dijInv;
     }
 
-     // Getter for courier
-     public DijkstraInverse getDijkstraInverse() {
+    /**
+     * Obtient l'algorithme de Dijkstra Inverse utilisé pour la tournée de livraison.
+     *
+     * @return L'instance de l'algorithme de Dijkstra Inverse.
+     */
+    public DijkstraInverse getDijkstraInverse() {
         return this.dijInv;
     }
 
-    // Setter for courier
+    /**
+     * Définit le coursier associé à la tournée de livraison.
+     *
+     * @param courier Le coursier associé à la tournée de livraison.
+     */
     public void setCourier(Courier courier) {
         this.courier = courier;
     }
 
+    /**
+     * Met à jour la liste des chemins Dijkstra pour la tournée de livraison.
+     *
+     * @param chemins La liste des chemins Dijkstra à ajouter.
+     */
     public void majCheminsDij(ArrayList<Chemin> chemins) {
         cheminDij.addAll(chemins);
     }
+
+    /**
+     * Efface la liste des chemins Dijkstra pour la tournée de livraison.
+     */
     public void clearCheminsDij() {
         cheminDij.clear();
     }
+
+    /**
+     * Obtient la liste des chemins Dijkstra pour la tournée de livraison.
+     *
+     * @return La liste des chemins Dijkstra.
+     */
     public ArrayList<Chemin> getCheminDij() {
         return cheminDij;
     }
 
-    // Getter for requests
+    /**
+     * Obtient la liste des requêtes de livraison pour la tournée.
+     *
+     * @return La liste des requêtes de livraison.
+     */
     public ArrayList<DeliveryRequest> getRequests() {
         return requests;
     }
 
-    // Setter for requests
+    /**
+     * Définit la liste des requêtes de livraison pour la tournée.
+     *
+     * @param requests La liste des requêtes de livraison.
+     */
     public void setRequests(ArrayList<DeliveryRequest> requests) {
         this.requests = requests;
     }
 
-     // Getter for requests
+    /**
+     * Obtient la liste des chemins pour la tournée de livraison.
+     *
+     * @return La liste des chemins pour la tournée de livraison.
+     */
     public List<Chemin> getPaths() {
         return paths;
     }
 
-    // Setter for requests
+    /**
+     * Définit la liste des chemins pour la tournée de livraison.
+     *
+     * @param paths La liste des chemins pour la tournée de livraison.
+     */
     public void setPaths(List<Chemin> paths) {
         this.paths = paths;
     }
 
-    // Getter for startTime
+    /**
+     * Obtient le moment de début de la tournée de livraison.
+     *
+     * @return Le moment de début de la tournée de livraison.
+     */
     public Instant getStartTime() {
         return startTime;
     }
 
-    // Setter for startTime
+    /**
+     * Définit le moment de début de la tournée de livraison.
+     *
+     * @param startTime Le moment de début de la tournée de livraison.
+     */
     public void setStartTime(Instant startTime) {
         this.startTime = startTime;
     }
 
-    // Getter for endTime
+    /**
+     * Obtient le moment de fin de la tournée de livraison.
+     *
+     * @return Le moment de fin de la tournée de livraison.
+     */
     public Instant getEndTime() {
         return endTime;
     }
 
-    // Setter for endTime
+    /**
+     * Définit le moment de fin de la tournée de livraison.
+     *
+     * @param endTime Le moment de fin de la tournée de livraison.
+     */
     public void setEndTime(Instant endTime) {
         this.endTime = endTime;
     }
-
 }
