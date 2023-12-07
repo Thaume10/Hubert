@@ -161,6 +161,18 @@ public class CityMap {
         return null;
     }
 
+    public Intersection findIntersectionByID(long id) {
+        // Parcourt toutes les intersections
+        for (Intersection intersection : this.intersections) {
+            if (intersection.getId() == id) {
+                // Retourne l'intersection si la position correspond
+                return intersection;
+            }
+        }
+        // Retourne null si aucune intersection correspondante n'est trouvée
+        return null;
+    }
+
     public void displayIntersections(String filePath) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (Intersection intersection : intersections) {

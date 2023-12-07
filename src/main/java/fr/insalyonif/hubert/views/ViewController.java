@@ -10,15 +10,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import java.awt.Color;
 import javafx.util.StringConverter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.IOException;
@@ -31,7 +34,11 @@ import netscape.javascript.JSObject;
 import fr.insalyonif.hubert.model.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class ViewController implements Initializable {
@@ -45,6 +52,15 @@ public class ViewController implements Initializable {
     @FXML
     private ComboBox<Courier> courier;
 
+    @FXML
+    private Button import1; //Bouton pour importer un fichier existant
+
+    @FXML
+    private Label dateLabel;  //Date du fichier à afficher
+
+    @FXML
+    private Label fileNameLabel; //Date du fichier à afficher
+
 
     private ObservableList<Courier> listCourier;
 
@@ -53,17 +69,22 @@ public class ViewController implements Initializable {
     private Button validate_delivery;
 
     @FXML
+    private Button delete_delivery;
+
+    @FXML
     private ListView<DeliveryRequest> listViewDelivery;
 
     private ObservableList<DeliveryRequest> listDelivery;
 
-    private  WebEngine engine;
+    private WebEngine engine;
 
     private Controller controller;
 
     private double lastClickedLat = 0.0;
 
     private double lastClickedLng = 0.0;
+
+    private String selectedFilePath;
 
     private static final String MAP_HTML_TEMPLATE = """
             <!DOCTYPE html>
@@ -79,7 +100,7 @@ public class ViewController implements Initializable {
                 </style>
             </head>
             <body>
-   
+               
                 <div id="map"></div>
                 <script>
                     var clickMarker;
@@ -126,19 +147,36 @@ public class ViewController implements Initializable {
     }
 
     @FXML
-    void addNewCourrier(ActionEvent event){
-        if(controller !=null) {
+    void addNewCourrier(ActionEvent event) {
+        if (controller != null) {
             controller.newDeliveryTour();
             setCourierIHM(controller.getListeDelivery());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Successfully added ! :)");
             alert.showAndWait();
-        }else{
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Il faut d'abord choisir une MAP");
             alert.showAndWait();
         }
     }
+
+    public void handleDeleteDelivery(DeliveryRequest selectedDelivery, int id) {
+        if (controller != null) {
+            int traceDeletePoint = controller.deleteDelivery(selectedDelivery,id);
+            if(traceDeletePoint == 0) {
+                String markersJs = drawPaths(controller.getCityMap(), null);
+                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+                engine.loadContent(mapHtml);
+                this.setDeliveryRequestIHM(controller.getListeDelivery().get(courier.getValue().getId()).getRequests());
+            }
+        }
+    }
+
+
+
+
+
     @FXML
     void handleOpenNewWindow(ActionEvent event) {
         if(event.getSource()==delivery || event.getSource()==validate_delivery) {
@@ -189,20 +227,33 @@ public class ViewController implements Initializable {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText("Point déjà présent dans la liste");
                             alert.showAndWait();
+                        }else if(traceNewDeliveryPoint == 3){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("The courier "+deliveryIHM.getCourier().getId()+" is full beetween "+deliveryIHM.getTimeWindow().getStartTime()+"h and "+deliveryIHM.getTimeWindow().getEndTime()+"h");
+                            alert.showAndWait();
                         }
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else{
+            }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Il faut d'abord choisir une MAP");
                 alert.showAndWait();
             }
 
+
+
+
         }
     }
+
+
+    public void importAllTheDeliveriesIntoController(String pathname) throws Exception {
+        controller.loadArchiveFile(pathname);
+    }
+
 
 
     // Méthode pour calculer la distance entre deux points géographiques en utilisant la formule de Haversine
@@ -221,7 +272,7 @@ public class ViewController implements Initializable {
         for( DeliveryTour deliveryTour : controller.getListeDelivery()) {
             int i=0;
             for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()) {
-                if (courrierComboBox!=null && deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
+
                     markersJs.append(markerJs);
                     if (target != null && deliveryRequest.getDeliveryLocation().getId() == target.getDeliveryLocation().getId()) {
                         iconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Map_pin_icon.svg/1200px-Map_pin_icon.svg.png";
@@ -242,7 +293,7 @@ public class ViewController implements Initializable {
                                 iconUrl, i
                         );
                     }
-                }
+
 
                 markersJs.append(markerJs);
             }
@@ -287,8 +338,15 @@ public class ViewController implements Initializable {
                     polylineCoords.append("[").append(chemin.getDebut().getLatitude()).append(", ").append(chemin.getDebut().getLongitude()).append("]");
                     polylineCoords.append("]");
 
+                    
+
                     if (deliveryTour.getCourier().getId() == courrierComboBox.getId()) {
-                         polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        if (deliveryRequest !=null && chemin.getFin() == deliveryRequest.getDeliveryLocation()) {
+                            System.out.println("caca");
+                            polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {weight: 6, color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        }else{
+                            polylineJsCouleur = polylineJsCouleur+ "L.polyline(" + polylineCoords + ", {color: '" + generateColor(index,i,deliveryTour.getPaths().size() - 1) + "'}).addTo(map);";
+                        }
                     } else {
                         String polylineJs = "L.polyline(" + polylineCoords + ", {color: 'grey'}).addTo(map);";
                         markersJs.append(polylineJs);
@@ -344,28 +402,164 @@ public class ViewController implements Initializable {
          }
 
     @FXML
-    void handleLoadMap(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open XML Map File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+    void handleLoadMap(ActionEvent event) throws IOException {
+        handleSaveMap(event);
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("Open XML Map File");
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+//        File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+//
+//        if (selectedFile != null) {
+//            try {
+//                // Load the selected XML map file
+//                controller = new Controller(selectedFile.getAbsolutePath());
+//                setCourierIHM(controller.getListeDelivery());
+//                controller.setGlobalDate(LocalDate.now());
+//                listDelivery.clear();
+//
+//                String markersJs = displayDeliveryPoints(null).toString();
+//                String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+//
+//                engine.loadContent(mapHtml);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                // Handle the exception (e.g., show an error message)
+//            }
+//        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/newMap.fxml"));
+        Parent root = (Parent) loader.load();
 
-        if (selectedFile != null) {
-            try {
+
+        // Créer une nouvelle fenêtre
+        Stage newStage = new Stage();
+        newStage.setTitle("New Map");
+        newStage.setScene(new Scene(root));
+        newStage.showAndWait();
+    }
+
+    void loadMap(LocalDate datePicker, String selectedFilePath ) {
+
                 // Load the selected XML map file
-                controller = new Controller(selectedFile.getAbsolutePath());
-
+                controller = new Controller(selectedFilePath);
                 setCourierIHM(controller.getListeDelivery());
+                controller.setGlobalDate(datePicker);
+                System.out.println("passe");
+
+                dateLabel.setText(String.valueOf(datePicker));
+
+                // Convertir la chaîne en objet Path
+                Path path = Paths.get(selectedFilePath);
+                // Obtenir le nom du fichier
+                String fileName = path.getFileName().toString();
+                fileNameLabel.setText(fileName);
+
 
                 String markersJs = displayDeliveryPoints(null).toString();
                 String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
 
                 engine.loadContent(mapHtml);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Handle the exception (e.g., show an error message)
+    }
+
+
+
+    @FXML
+    void handleImportMap(ActionEvent event) throws Exception {
+        // Save le fichier existant
+        handleSaveMap(event);
+
+        //selectedFilePath = "";
+        //listDelivery.clear();
+
+        // Importer les données du xml
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //getClass().getResource("/fr/insalyonif/hubert/successSave.fxml")
+
+
+        // Show open file dialog
+        Stage stage = (Stage) import1.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        // If a file is selected, store its path
+        if (selectedFile != null) {
+            selectedFilePath = selectedFile.getAbsolutePath();
+            File xmlFile = new File(selectedFilePath);
+
+            // Initialisation du constructeur de documents XML
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            // Parsing du document XML
+            Document doc = dBuilder.parse(xmlFile);
+
+            // Normalisation du document XML pour éliminer les espaces blancs inutiles
+            doc.getDocumentElement().normalize();
+            System.out.println("loadArchiveFile");
+
+
+            Element map = (Element) doc.getElementsByTagName("map").item(0);
+            Element deliveryTour = (Element) doc.getElementsByTagName("deliveryTour").item(0);
+
+            //TO DO : si map est null alors erreur
+            if (map == null || deliveryTour == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Ce fichier ne correspond pas :(");
+                alert.showAndWait();
+                return;
             }
+
+            String fileName = map.getAttribute("fileName");
+            LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
+
+
+            System.out.println("fileName File: " + fileName);
+            System.out.println("fileDate File: " + fileDate);
+
+            // Use Path to extract file name and extension
+            //Path path = Paths.get(selectedFilePath);
+            //String fileName = path.getFileName().toString(); // Extracts the file name
+
+            //String[] fileNameParts = fileName.split("_");
+            //String lastWord = fileNameParts[fileNameParts.length - 1];
+
+            String stratPath = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/";
+            String pathMap = stratPath + fileName + ".xml";
+            System.out.println("Path of the map: " + pathMap);
+
+
+            // Extract date from the file name
+            //String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
+            //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+            // Extract the date substring from the file name
+            //String dateString = fileName.substring(11, 21); // Adjust indices based on the actual position of the date in the file name
+
+            // Parse the date string to LocalDate
+            //LocalDate fileDate = LocalDate.parse(dateString, dateFormatter);
+            //System.out.println("File Date: " + fileDate);
+
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));
+//            Parent root = loader.load();
+//
+//            // Afficher la nouvelle scène
+//            Scene scene = new Scene(root);
+//            Stage stage1 = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            stage1.setScene(scene);
+
+            //ViewController viewController = loader.getController();
+            loadMap(fileDate, pathMap);
+            importAllTheDeliveriesIntoController(selectedFilePath);
+            displayAllTheDeliveryPoints();
+
+            stage.show();
         }
+
+
     }
 
     public void setDeliveryRequestIHM(ArrayList<DeliveryRequest> delivery) {
@@ -375,6 +569,8 @@ public class ViewController implements Initializable {
         }*/
         listDelivery.addAll(delivery);
     }
+
+
 
     public void setCourierIHM(ArrayList<DeliveryTour> deliveryTours) {
         Courier c =courier.getValue();
@@ -414,6 +610,8 @@ public class ViewController implements Initializable {
         );
 
         listCourier= FXCollections.observableArrayList();
+
+
         courier.setConverter(new StringConverter<Courier>() {
            @Override
            public String toString(Courier c) {
@@ -434,6 +632,8 @@ public class ViewController implements Initializable {
             // newValue is the newly selected Courier object
             if (newCourier != null) {
                 handleCourierSelection(newCourier);
+
+
             }
         });
 
@@ -445,9 +645,40 @@ public class ViewController implements Initializable {
             if (selectedDelivery != null) {
                 // Appelez votre fonction avec la DeliveryRequest sélectionnée en tant que paramètre
                 handleDeliverySelection(selectedDelivery);
+                Courier correspondingCourier = getCorrespondingCourier(selectedDelivery);
+                int id = correspondingCourier != null ? correspondingCourier.getId() : -1;
+                System.out.println(id);
+                System.out.println(selectedDelivery);
             }
         });
 
+        delete_delivery.setOnAction(event -> {
+            // Obtenez l'élément sélectionné de la ListView
+            DeliveryRequest selectedDelivery = listViewDelivery.getSelectionModel().getSelectedItem();
+            if (selectedDelivery != null) {
+                Courier correspondingCourier = getCorrespondingCourier(selectedDelivery);
+                int id = correspondingCourier != null ? correspondingCourier.getId() : -1;
+                System.out.println("caca");
+
+                // Appeler la fonction de suppression ici
+                handleDeleteDelivery(selectedDelivery, id);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Choisissez d'abord un point de livraison à annuler");
+                alert.showAndWait();
+            }
+        });
+
+    }
+    private Courier getCorrespondingCourier(DeliveryRequest selectedDelivery) {
+        for (DeliveryTour deliveryTour : controller.getListeDelivery()) {
+            for (DeliveryRequest delivery : deliveryTour.getRequests()) {
+                if (delivery.equals(selectedDelivery)) {
+                    return deliveryTour.getCourier();
+                }
+            }
+        }
+        return null;
     }
 
     private void handleDeliverySelection(DeliveryRequest selectedDelivery) {
@@ -468,4 +699,68 @@ public class ViewController implements Initializable {
             engine.loadContent(mapHtml);
         }
     }
+
+    @FXML
+    void handleSaveMap(ActionEvent event) {
+
+        //System.out.println(controller.getListeDelivery().get(0).getStartTime());
+        // Construction du nom de fichier
+
+        
+        String fileName = String.format("Deliveries_%s_%s.xml", controller.getGlobalDate(), controller.getFileName());
+
+        // Get the current working directory
+        String workingDir = System.getProperty("user.dir");
+        
+        // Construct the file path
+        Path filePath = Paths.get(workingDir, "archives", fileName);
+
+        // Create the file
+        File file = new File(filePath.toString());
+        
+
+        // Écriture dans le fichier
+        try (FileWriter fileWriter = new FileWriter(file);
+             PrintWriter printWriter = new PrintWriter(fileWriter)) {
+
+            // Vérifier si le fichier existe
+            if (file.exists()) {
+                // Si le fichier existe, effacer son contenu
+                new PrintWriter(file).close();
+            }
+
+            // Sauvegarde le contenu de la carte de la ville dans le fichier
+            boolean saved = controller.saveCityMapToFile(file.getAbsolutePath());
+
+            if (saved) {
+                // If saved successfully, show the success dialog
+                //FXMLLoader loader = new FXMLLoader(getClass().getResource("successSave.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/successSave.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Success");
+                stage.setScene(new Scene(root));
+                stage.show();
+            }
+
+            System.out.println("Fichier enregistré avec succès à : " + file.getAbsolutePath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer les exceptions liées à l'écriture du fichier
+        }
+    }
+
+    public void displayAllTheDeliveryPoints(){
+        
+        String markersJs = drawPaths(controller.getCityMap(), null);
+        String mapHtml = MAP_HTML_TEMPLATE.formatted(markersJs);
+        engine.loadContent(mapHtml);
+        setCourierIHM(controller.getListeDelivery());
+        this.setDeliveryRequestIHM(controller.getListeDelivery().get(0).getRequests());
+        courier.setValue(controller.getListeDelivery().get(0).getCourier());
+
+    }
+
+
 }

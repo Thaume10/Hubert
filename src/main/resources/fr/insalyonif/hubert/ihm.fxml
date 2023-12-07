@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1201.0" styleClass="back" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.ViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1201.0" styleClass="back" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.insalyonif.hubert.views.ViewController">
 
 
     <children>
-      <ScrollPane layoutX="724.0" layoutY="147.0" prefHeight="643.0" prefWidth="429.0">
+      <ScrollPane layoutX="705.0" layoutY="164.0" prefHeight="600.0" prefWidth="450.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="411.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="569.0" prefWidth="411.0">
                <children>
-                  <ListView fx:id="listViewDelivery" prefHeight="571.0" prefWidth="412.0" />
+                  <ListView fx:id="listViewDelivery" layoutY="7.0" prefHeight="600.0" prefWidth="450.0" />
                </children></AnchorPane>
         </content>
       </ScrollPane>
-      <Pane layoutX="29.0" layoutY="14.0" prefHeight="72.0" prefWidth="1150.0" styleClass="panel-info">
+      <Pane prefHeight="87.0" prefWidth="1201.0" style="-fx-background-color: #77B5FE;" styleClass="panel-info">
          <children>
-            <Button fx:id="newMap" layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="New Map" />
-            <Button layoutX="255.0" layoutY="21.0" mnemonicParsing="false" onAction="#addNewCourrier" styleClass="btn-primary" text="New Courrier" />
-            <Button fx:id="delivery" layoutX="124.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="btn-primary" text="New Delivery" />
-            <ImageView fitHeight="50.0" fitWidth="133.0" layoutX="1073.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <Button fx:id="newMap" layoutX="32.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleLoadMap" styleClass="btn-primary" text="Load New Map" />
+             <Button fx:id="import1" layoutX="158.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleImportMap" styleClass="btn-primary" text="Import existing DeliveryTour" />
+            <ImageView fitHeight="75.0" fitWidth="100.0" layoutX="558.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@logo.png" />
                </image>
             </ImageView>
-            <Button layoutX="948.0" layoutY="21.0" mnemonicParsing="false" styleClass="btn-primary" text="Save File" />
-            <Button layoutX="380.0" layoutY="21.0" mnemonicParsing="false" onAction="#addNewCourrier" styleClass="btn-primary" text="Delete Courrier" />
+            <Button layoutX="959.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleSaveMap" styleClass="btn-primary" text="Save current Delivery Tour" />
          </children>
       </Pane>
-      <WebView id="webView" fx:id="webView" layoutX="47.0" layoutY="146.0" prefHeight="576.0" prefWidth="633.0" />
-      <Button fx:id="validate_delivery" layoutX="569.0" layoutY="101.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" styleClass="alert-success" text="Validate point" />
-      <ComboBox fx:id="courier" layoutX="864.0" layoutY="105.0" prefWidth="150.0" styleClass="lbl-info" />
+        <Label fx:id="dateLabel" layoutX="100.0" layoutY="111.0" text="" /> <!-- Ajoutez cette ligne -->
+        <Label fx:id="fileNameLabel" layoutX="200.0" layoutY="111.0" text="" /> <!-- Ajoutez cette ligne -->
+      <WebView id="webView" fx:id="webView" layoutX="58.0" layoutY="164.0" prefWidth="600.0" />
+      <Button fx:id="validate_delivery" layoutX="557.0" layoutY="115.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" style="-fx-background-color: B6DA9F;" text="Validate point" textFill="WHITE" />
+        <Button fx:id="delete_delivery" layoutX="308.0" layoutY="116.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" prefHeight="29.0" prefWidth="100.0" style="-fx-background-color: db5856;" text="Delete point" textFill="WHITE" />
+        <ComboBox fx:id="courier" layoutX="900.0" layoutY="112.0" prefWidth="150.0" style="-fx-background-color: #77B5FE;" />
+      <Button fx:id="delivery" layoutX="417.0" layoutY="115.0" mnemonicParsing="false" onAction="#handleOpenNewWindow" style="-fx-background-color: B6DA9F;" text="Add Point Manually" textFill="WHITE" />
+      <Button layoutX="798.0" layoutY="112.0" mnemonicParsing="false" onAction="#addNewCourrier" style="-fx-background-color: #77B5FE;" text="New courrier" textFill="WHITE" />
    </children>
 </Pane>

@@ -1,9 +1,33 @@
 package fr.insalyonif.hubert.controller;
 import fr.insalyonif.hubert.views.DeliveryIHMController;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.Instant;
+
+
+import java.time.*;
 import java.util.*;
 
 import fr.insalyonif.hubert.model.*;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.stage.FileChooser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.time.LocalDate;
 
 import static fr.insalyonif.hubert.model.CreateDynamique.*;
 
@@ -15,6 +39,21 @@ public class Controller {
     private ArrayList<DeliveryTour> listeDelivery;
 
     public ArrayList<TimeWindow> timeWindowList= setTimeWindowList();
+
+    private static LocalDate globalDate;
+    private String fileName;
+
+    public static LocalDate getGlobalDate() {
+        return globalDate;
+    }
+
+    public static void setGlobalDate(LocalDate globalDate) {
+        Controller.globalDate = globalDate;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
 
     public CityMap getCityMap() {
         return cityMap;
@@ -55,12 +94,19 @@ public class Controller {
 
         try {
             String xmlMap = path;
+            Path filePath = Paths.get(xmlMap);
             //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
+            fileName = filePath.getFileName().toString();
+            int extensionIndex = fileName.lastIndexOf('.');
+            if (extensionIndex > 0) {
+                fileName = fileName.substring(0, extensionIndex);
+            }
+
             cityMap.loadFromXML(xmlMap);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+    
 
         sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
         Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
@@ -86,67 +132,48 @@ public class Controller {
         listeDelivery.add(defaultDeliveryTour);
     }
 
-    public int newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
-        DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
-        if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
-
-            Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
-
-            // Afficher les résultats
-            System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
-            System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
-            System.out.println(intersectionPlusProche);
-
-            boolean intersectionExist = false;
-            for (DeliveryRequest request : deliveryTour.getRequests()) {
-                if (request.getDeliveryLocation().equals(intersectionPlusProche)) {
-                    System.out.println("equal intersection");
-                    if(request.getTimeWindow().getEndTime() == deliveryIHM.getTimeWindow().getEndTime()){
-                        System.out.println("equal timewindow");
-                        intersectionExist = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!intersectionExist) {
-
-                boolean b1 = deliveryTour.getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
-                boolean b2 = deliveryTour.getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
-
-                //Si un des deux false alors pop up BOOL1 && BOOL2
-                if (b1 && b2) {
-                    deliveryTour.clearCheminsDij();
-                    deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
-                    deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
-                    DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
-                    deliveryTour.getRequests().add(deli);
-                    //System.out.println(deliveryTour.getCheminDij());
-                    //System.out.println(deliveryTour.getRequests());
-
-
-
-                    //Utilisation du TSP Dynamique pour résoudre le problème d'ordre des points de livraison
-                    List<Chemin> bestChemin = UseDynamic(deliveryTour);
-                            System.out.println("Meilleur chemin global :");
-                    for (Chemin chemin : bestChemin) {
-                        System.out.println(chemin);
-                    }
-
-
-                    deliveryTour.setPaths(bestChemin);
-                    MAJDeliveryPointList(idDeliveryTour);
-                    return 0; //0 for success
-                } else {
-                    return 1; //Error -> Non accessible
-                }
-            } else {
-                //System.out.println("L'intersection est déjà présente dans les demandes de livraison.");
-                return 2; //Error -> Point déjà présent
+    public int deleteDelivery(DeliveryRequest requestToDelete, int id) {
+        DeliveryTour deliveryTour= listeDelivery.get(id);
+        System.out.println(requestToDelete);
+        System.out.println(deliveryTour.getDijkstra().getChemins());
+        Intersection interToDelete = requestToDelete.getDeliveryLocation();
+        System.out.println(interToDelete);
+        Iterator<Chemin> cheminIterator = deliveryTour.getDijkstra().getChemins().iterator();
+        while (cheminIterator.hasNext()) {
+            Chemin chemin = cheminIterator.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIterator.remove();
             }
         }
-        return 0;
+        Iterator<Chemin> cheminIteratorInverse = deliveryTour.getDijkstraInverse().getChemins().iterator();
+        while (cheminIteratorInverse.hasNext()) {
+            Chemin chemin = cheminIteratorInverse.next();
+            if (chemin.getFin().equals(interToDelete) || chemin.getDebut().equals(interToDelete)) {
+                cheminIteratorInverse.remove();
+            }
+        }
+
+        deliveryTour.getDijkstra().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getDijkstraInverse().getDeliveryRequest().remove(interToDelete);
+        deliveryTour.getRequests().remove(requestToDelete);
+        deliveryTour.clearCheminsDij();
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+        deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
+        if(deliveryTour.getDijkstra().getDeliveryRequest().size()!=1) {
+
+            List<Chemin> bestChemin = UseDynamic(deliveryTour);
+
+            deliveryTour.setPaths(bestChemin);
+        } else {
+            deliveryTour.setPaths(new ArrayList<>());
+        }
+
+        MAJDeliveryPointList(id);
+        return 0; //0 for success
     }
+
+
+
 
 
     private List<Chemin> UseDynamic(DeliveryTour deliveryTour){
@@ -414,6 +441,67 @@ public class Controller {
         return(dynamique.bestCheminGlobal(deliveryTour.getCheminDij(),g,optimalPath));
     }
 
+
+
+    public int newDeliveryPoint(DeliveryIHMController deliveryIHM, int idDeliveryTour) {
+        DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
+        if(deliveryIHM.getLatDouble()!=0 && deliveryIHM.getLngDouble()!=0) {
+
+            Intersection intersectionPlusProche = trouverIntersectionPlusProche(deliveryIHM.getLatDouble(), deliveryIHM.getLngDouble(), cityMap.getIntersections());
+
+            // Afficher les résultats
+            System.out.println("Coordonnées de l'emplacement donné : " + deliveryIHM.getLatDouble() + ", " + deliveryIHM.getLngDouble());
+            System.out.println("Intersection la plus proche : " + intersectionPlusProche.getLatitude() + ", " + intersectionPlusProche.getLongitude());
+            System.out.println(intersectionPlusProche);
+
+            boolean intersectionExist = false;
+            for (DeliveryRequest request : deliveryTour.getRequests()) {
+                if (request.getDeliveryLocation().equals(intersectionPlusProche)) {
+                    System.out.println("equal intersection");
+                    if(request.getTimeWindow().getEndTime() == deliveryIHM.getTimeWindow().getEndTime()){
+                        System.out.println("equal timewindow");
+                        intersectionExist = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!intersectionExist) {
+
+                boolean b1 = deliveryTour.getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
+                boolean b2 = deliveryTour.getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
+
+                //Si un des deux false alors pop up BOOL1 && BOOL2
+                if (b1 && b2) {
+                    deliveryTour.clearCheminsDij();
+                    deliveryTour.majCheminsDij(deliveryTour.getDijkstra().getChemins());
+                    deliveryTour.majCheminsDij(deliveryTour.getDijkstraInverse().getChemins());
+                    DeliveryRequest deli = new DeliveryRequest((intersectionPlusProche),deliveryIHM.getTimeWindow());
+                    deliveryTour.getRequests().add(deli);
+
+
+                    List<Chemin> bestChemin = UseDynamic(deliveryTour);
+
+                    deliveryTour.setPaths(bestChemin);
+                    MAJDeliveryPointList(idDeliveryTour);
+                    if(computeDeliveryTime(idDeliveryTour)==false){
+                        deleteDelivery(deliveryTour.getRequests().get(deliveryTour.getRequests().size()-1),idDeliveryTour);
+                        MAJDeliveryPointList(idDeliveryTour);
+                        return 3;
+                    }
+
+                    return 0; //0 for success
+                } else {
+                    return 1; //Error -> Non accessible
+                }
+            } else {
+                //System.out.println("L'intersection est déjà présente dans les demandes de livraison.");
+                return 2; //Error -> Point déjà présent
+            }
+        }
+        return 0;
+    }
+
     private void MAJDeliveryPointList(int idDeliveryTour){
         DeliveryTour deliveryTour = listeDelivery.get(idDeliveryTour);
         List<Chemin> chemins =deliveryTour.getPaths();
@@ -505,6 +593,176 @@ public class Controller {
         //A implementer pour vérifier que la time window peut encore recevoir des nouvelles délivery
         return true;
     }
+
+
+
+
+
+    public boolean saveCityMapToFile(String filePath) throws IOException {
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            // Save the CityMap data to the file
+            // You can customize this based on your CityMap data structure and attributes
+            writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.println("<map fileName=\"" + fileName + "\""+ " globalDate=\""+ globalDate + "\" >");
+            writer.println("    <warehouse address=\"" + cityMap.getWareHouseLocation().getId() + "\" />");
+
+            for (DeliveryTour deliveryTour : this.listeDelivery) {
+                writer.println("    <deliveryTour courier=\"" + deliveryTour.getCourier().getId() + "\" startTime=\""+ deliveryTour.getStartTime()+ "\" endTime=\""+ deliveryTour.getEndTime() +"\">");
+//                writer.println("        <courier id=\"" +  + "\" />");
+                for (DeliveryRequest deliveryRequest : deliveryTour.getRequests()){
+                    writer.println("        <deliveryRequest deliveryTime=\""+ deliveryRequest.getDeliveryTime() +"\" >");
+                    writer.println("            <deliveryLocation latitude=\"" + deliveryRequest.getDeliveryLocation().getLatitude() +"\"" +" longitude=\"" + deliveryRequest.getDeliveryLocation().getLongitude() +"\"" + " id=\"" + deliveryRequest.getDeliveryLocation().getId() +"\"/>");
+                    writer.println("            <timeWindow startTime=\"" + deliveryRequest.getTimeWindow().getStartTime() +"\"" +" endTime=\"" + deliveryRequest.getTimeWindow().getEndTime() + "\" />");
+                    writer.println("        </deliveryRequest>");
+                }
+
+                writer.println("    </deliveryTour>");
+            }
+//            "\" latitude=\"" + intersection.getLatitude() +
+//                    "\" longitude=\"" + intersection.getLongitude() + "\" />");
+
+            writer.println("</map>");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Return false if an IOException occurs
+        }
+
+    }
+
+    public void loadArchiveFile(String path) throws Exception {
+        // Création d'une instance de File pour le fichier XML
+        listeDelivery.clear();
+
+        File xmlFile = new File(path);
+
+        // Initialisation du constructeur de documents XML
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+        // Parsing du document XML
+        Document doc = dBuilder.parse(xmlFile);
+
+        // Normalisation du document XML pour éliminer les espaces blancs inutiles
+        doc.getDocumentElement().normalize();
+        System.out.println("loadArchiveFile");
+
+
+
+        //All the delivery tours
+        NodeList deliveryTourList = doc.getElementsByTagName("deliveryTour");
+        for (int i = 0; i < deliveryTourList.getLength(); i++) {
+            Element deliveryTourElement = (Element) deliveryTourList.item(i);
+
+            //Add the couriers
+            Courier c = new Courier((int) Long.parseLong(deliveryTourElement.getAttribute("courier")));
+            DeliveryTour defaultDeliveryTour= new DeliveryTour();
+            defaultDeliveryTour.setCourier(c);
+            sizeGraph = cityMap.getIntersections().size(); // Mettez la taille correcte de votre graphe
+            Dijkstra dij = new Dijkstra(sizeGraph, cityMap);
+            defaultDeliveryTour.setDijkstra(dij);
+            DijkstraInverse dijInv = new DijkstraInverse(sizeGraph,cityMap);
+            defaultDeliveryTour.setDijkstraInverse(dijInv);
+            listeDelivery.add(defaultDeliveryTour);
+
+            System.out.println(c);
+            for (Chemin chemin : dij.getChemins()) {
+                System.out.println(" get 0 = "+ chemin);
+            }
+
+
+
+            //Add the delivery requests
+            NodeList deliveryRequestList = deliveryTourElement.getElementsByTagName("deliveryRequest");
+            for (int j = 0; j < deliveryRequestList.getLength(); j++) {
+                Element deliveryRequest = (Element) deliveryRequestList.item(j);
+                Element deliveryLocation = (Element) deliveryRequest.getElementsByTagName("deliveryLocation").item(0);
+                Element timeWindow = (Element) deliveryRequest.getElementsByTagName("timeWindow").item(0);
+                //DeliveryTour deliveryTour= listeDelivery.get(idDeliveryTour);
+
+                //Get Intersection
+                //long idInter = Long.parseLong(deliveryLocation.getAttribute("id"));
+                double idInter = Double.parseDouble(deliveryLocation.getAttribute("id"));
+                System.out.println("idInter "+idInter );
+
+
+                Intersection intersectionPlusProche = cityMap.findIntersectionByID((long) idInter);
+                System.out.println(intersectionPlusProche );
+
+                boolean b1 = listeDelivery.get(i).getDijkstra().runDijkstra(intersectionPlusProche, sizeGraph);
+                boolean b2 = listeDelivery.get(i).getDijkstraInverse().runDijkstra(intersectionPlusProche, sizeGraph);
+
+
+
+                if(b1 && b2) {
+                    System.out.println(timeWindow.getAttribute("startTime"));
+                    int startTime = Integer.parseInt(timeWindow.getAttribute("startTime"));
+                    int endTime = Integer.parseInt(timeWindow.getAttribute("endTime"));
+                    TimeWindow timeWindowToCreate = new TimeWindow(startTime,endTime);
+
+
+                    listeDelivery.get(i).clearCheminsDij();
+                    listeDelivery.get(i).majCheminsDij(listeDelivery.get(i).getDijkstra().getChemins());
+                    listeDelivery.get(i).majCheminsDij(listeDelivery.get(i).getDijkstraInverse().getChemins());
+                    DeliveryRequest deli = new DeliveryRequest(intersectionPlusProche,timeWindowToCreate);
+                    listeDelivery.get(i).getRequests().add(deli);
+
+                    List<Chemin> bestChemin = runTSP(listeDelivery.get(i));
+
+                    listeDelivery.get(i).setPaths(bestChemin);
+                    MAJDeliveryPointList(i);
+
+                }
+            }
+
+        }
+    }
+
+
+    public boolean computeDeliveryTime(int idDeliveryTour){
+        DeliveryTour deliveryTour = this.getListeDelivery().get(idDeliveryTour);
+        ArrayList<DeliveryRequest> deliveryRequests = deliveryTour.getRequests();
+
+        LocalDateTime localDateTime = LocalDateTime.of(globalDate, LocalTime.of(8, 0));
+
+        // Convertir le LocalDateTime en Instant (en utilisant le fuseau horaire UTC, ZoneOffset.UTC)
+        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+
+        // Afficher l'instant
+        //System.out.println("Instant à 8h du matin pour la date spécifique : " + instant);
+        int i=0;
+
+        for(DeliveryRequest deliveryRequest : deliveryRequests){
+            deliveryRequest.setDeliveryTime(null);
+            long tempsPasse =(long) (deliveryTour.getPaths().get(i).getCout()/15000) *3600;
+            System.out.println("cout" +tempsPasse);
+            System.out.println("temps passé" +tempsPasse);
+            instant = instant.plusSeconds((long) (deliveryTour.getPaths().get(i).getCout()/15000*3600));
+            Instant endTimeWindow = LocalDateTime.of(globalDate, LocalTime.of(deliveryRequest.getTimeWindow().getEndTime(), 0)).toInstant(ZoneOffset.UTC);
+            Instant startTimeWindow = LocalDateTime.of(globalDate, LocalTime.of(deliveryRequest.getTimeWindow().getStartTime(), 0)).toInstant(ZoneOffset.UTC);
+            if(instant.isBefore(startTimeWindow)){
+                instant =startTimeWindow;
+            }
+            System.out.println("instant "+ instant);
+            if(instant.isBefore(endTimeWindow)) {
+                deliveryRequest.setDeliveryTime(instant);
+                instant = instant.plusSeconds(5 * 60);
+                i++;
+            } else if (instant.isBefore(endTimeWindow.plusSeconds(5*60))){
+                deliveryRequest.setDeliveryTime(instant);
+                instant = instant.plusSeconds(5 * 60);
+                i++;
+                deliveryRequest.setGoOff(true);
+            }else{
+                System.out.println("CACAAAA");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 
 
 
