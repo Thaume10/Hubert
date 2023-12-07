@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class StartController {
 
@@ -62,6 +63,7 @@ public class StartController {
 
     @FXML
     public void handleSeeAllDeliveries(ActionEvent event) throws Exception {
+        selectedFilePath = "";
         // TO DO choisir le fichier à reprendre
         // Create a FileChooser
         FileChooser fileChooser = new FileChooser();
@@ -157,6 +159,7 @@ public class StartController {
 
     @FXML
     private void handleCreateNewDeliveries(ActionEvent event) {
+        selectedFilePath = "";
         // Code to handle the "Create new Deliveries" button click
         System.out.println("Create new Deliveries button clicked");
 
@@ -209,6 +212,14 @@ public class StartController {
     private void handleStart(ActionEvent event) throws IOException {
         // Récupérer la date du DatePicker
         //start.setVisible(true);
+        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, "")){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("File Loading Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter Date and File");
+            alert.showAndWait();
+            return;
+        }
 
         // Charger le fichier FXML "ihm.fxml"
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));

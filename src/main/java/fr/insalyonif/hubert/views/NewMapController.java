@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class NewMapController {
 
@@ -30,6 +31,7 @@ public class NewMapController {
 
     @FXML
     private void handleLoadFile(ActionEvent event) {
+
         // Create a FileChooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
@@ -70,6 +72,14 @@ public class NewMapController {
     private void handleStart(ActionEvent event) throws IOException {
         // Récupérer la date du DatePicker
         //start.setVisible(true);
+        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, "")){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("File Loading Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter Date and File");
+            alert.showAndWait();
+            return;
+        }
 
         // Charger le fichier FXML "ihm.fxml"
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));

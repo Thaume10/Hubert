@@ -410,12 +410,14 @@ public class ViewController implements Initializable {
                 setCourierIHM(controller.getListeDelivery());
                 controller.setGlobalDate(datePicker);
                 System.out.println("passe");
+
                 dateLabel.setText(String.valueOf(datePicker));
 
-                int lastIndex = selectedFilePath.lastIndexOf('/');
-                // Extraire la partie après le dernier '/'
-                String dernierMorceau = selectedFilePath.substring(lastIndex + 1);
-                fileNameLabel.setText(dernierMorceau);
+                // Convertir la chaîne en objet Path
+                Path path = Paths.get(selectedFilePath);
+                // Obtenir le nom du fichier
+                String fileName = path.getFileName().toString();
+                fileNameLabel.setText(fileName);
 
 
                 String markersJs = displayDeliveryPoints(null).toString();
