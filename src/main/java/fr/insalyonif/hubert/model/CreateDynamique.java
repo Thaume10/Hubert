@@ -154,7 +154,7 @@ public class CreateDynamique implements Dynamique {
             return;
         }
 
-        for (int j = 1; j < n; j++) {
+        for (int j = 1; j < n-1; j++) {
             if (isIn(j, s)) {
                 double remainingCost = round((mem[i][s] - g.getCost(i, j)) * 1e7) / 1e7;
                 double futureCost = round((adaptiveDynamic(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
