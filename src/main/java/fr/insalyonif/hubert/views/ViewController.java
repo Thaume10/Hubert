@@ -228,6 +228,7 @@ public class ViewController implements Initializable {
                             alert.setContentText("Point déjà présent dans la liste");
                             alert.showAndWait();
                         }else if(traceNewDeliveryPoint == 3){
+
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText("The courier "+deliveryIHM.getCourier().getId()+" is full beetween "+deliveryIHM.getTimeWindow().getStartTime()+"h and "+deliveryIHM.getTimeWindow().getEndTime()+"h");
                             alert.showAndWait();

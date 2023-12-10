@@ -15,6 +15,7 @@ import fr.insalyonif.hubert.model.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -169,6 +170,7 @@ public class Controller {
         }
 
         MAJDeliveryPointList(id);
+        computeDeliveryTime(id);
         return 0; //0 for success
     }
 
@@ -484,8 +486,11 @@ public class Controller {
 
                     deliveryTour.setPaths(bestChemin);
                     MAJDeliveryPointList(idDeliveryTour);
-                    if(computeDeliveryTime(idDeliveryTour)==false){
-                        deleteDelivery(deliveryTour.getRequests().get(deliveryTour.getRequests().size()-1),idDeliveryTour);
+                    DeliveryRequest d =computeDeliveryTime(idDeliveryTour);
+                    System.out.println("delivery a delete "+d);
+                    if(d!=null){
+                            deleteDelivery(deli,idDeliveryTour);
+
                         MAJDeliveryPointList(idDeliveryTour);
                         return 3;
                     }
@@ -720,12 +725,12 @@ public class Controller {
     }
 
 
-    public boolean computeDeliveryTime(int idDeliveryTour){
+    public DeliveryRequest computeDeliveryTime(int idDeliveryTour){
         DeliveryTour deliveryTour = this.getListeDelivery().get(idDeliveryTour);
         ArrayList<DeliveryRequest> deliveryRequests = deliveryTour.getRequests();
 
         LocalDateTime localDateTime = LocalDateTime.of(globalDate, LocalTime.of(8, 0));
-
+        DeliveryRequest pb =null;
         // Convertir le LocalDateTime en Instant (en utilisant le fuseau horaire UTC, ZoneOffset.UTC)
         Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
 
@@ -745,21 +750,27 @@ public class Controller {
                 instant =startTimeWindow;
             }
             System.out.println("instant "+ instant);
+            System.out.println("endTimeWindow "+ endTimeWindow);
+            System.out.println("endTimeWindow "+ deliveryRequest.getTimeWindow());
+
             if(instant.isBefore(endTimeWindow)) {
+                System.out.println("CACAAAA2");
                 deliveryRequest.setDeliveryTime(instant);
                 instant = instant.plusSeconds(5 * 60);
                 i++;
             } else if (instant.isBefore(endTimeWindow.plusSeconds(5*60))){
+                System.out.println("CACAAAA1");
                 deliveryRequest.setDeliveryTime(instant);
                 instant = instant.plusSeconds(5 * 60);
                 i++;
                 deliveryRequest.setGoOff(true);
             }else{
-                System.out.println("CACAAAA");
-                return false;
+                System.out.println("");
+                System.out.println("test\n");
+                pb=deliveryRequest;
             }
         }
-        return true;
+        return pb ;
     }
 
 
