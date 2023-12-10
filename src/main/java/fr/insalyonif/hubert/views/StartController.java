@@ -1,4 +1,6 @@
 package fr.insalyonif.hubert.views;
+
+import fr.insalyonif.hubert.controller.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,16 +11,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class StartController {
@@ -92,7 +103,7 @@ public class StartController {
             //TO DO : si map est null alors erreur
             if (map == null || deliveryTour == null){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("This file does not correspond.");
+                alert.setContentText("Ce fichier ne correspond pas :(");
                 alert.showAndWait();
                 return;
             }
@@ -101,7 +112,7 @@ public class StartController {
             String fileName = map.getAttribute("fileName");
             LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
 
-           
+
             System.out.println("fileName File: " + fileName);
             System.out.println("fileDate File: " + fileDate);
 
@@ -210,7 +221,7 @@ public class StartController {
             alert.showAndWait();
             return;
         }
-        
+
         // Charger le fichier FXML "ihm.fxml"
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fr/insalyonif/hubert/ihm.fxml"));
         Parent root = loader.load();

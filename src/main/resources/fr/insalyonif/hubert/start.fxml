@@ -23,7 +23,7 @@
         <DatePicker fx:id="datePicker" layoutX="345.0" layoutY="595.0" prefHeight="61.0" prefWidth="234.0" style="-fx-background-color: #77B5FE;" stylesheets="@style.css" visible="false" />
         <Button fx:id="fileLoader" layoutX="596.0" layoutY="595.0" onAction="#handleLoadFile" prefHeight="61.0" prefWidth="149.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Load Map" visible="false" />
         <!-- New button for starting -->
-        <Button fx:id="start" disable="true" layoutX="759.0" layoutY="595.0" onAction="#handleStart" prefHeight="61.0" prefWidth="96.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Start " visible="false" />
+        <Button fx:id="start" layoutX="759.0" layoutY="595.0" onAction="#handleStart" prefHeight="61.0" prefWidth="96.0" style="-fx-background-color: #77B5FE;" styleClass="btn-info" stylesheets="@style.css" text="Start " visible="false" />
       <ImageView fitHeight="212.0" fitWidth="245.0" layoutX="480.0" layoutY="216.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@logo.png" />
