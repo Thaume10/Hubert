@@ -183,6 +183,7 @@ public class Controller {
         }
 
         MAJDeliveryPointList(id);
+        computeDeliveryTime(id);
         return 0; //0 for success
     }
 
