@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 
 /**
  * Représente une carte de ville avec un ensemble d'intersections et l'emplacement d'un entrepôt.

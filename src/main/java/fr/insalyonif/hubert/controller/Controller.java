@@ -52,9 +52,7 @@ public class Controller {
         defaultDeliveryTour.setCourier(first);
       
         try {
-            String xmlMap = path;
-            //"src/main/resources/fr/insalyonif/hubert/fichiersXML2022/mediumMap.xml"
-            cityMap.loadFromXML(xmlMap);
+            cityMap.loadFromXML(path);
         } catch (Exception e) {
             e.printStackTrace();
         }
