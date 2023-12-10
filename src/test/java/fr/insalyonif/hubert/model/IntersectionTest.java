@@ -86,4 +86,16 @@ class IntersectionTest {
         Intersection otherIntersection = new Intersection(46.0, 9.0, 54321, 2);
         assertTrue(intersection.compareTo(otherIntersection) < 0, "La méthode compareTo ne fonctionne pas correctement");
     }
+
+    @Test
+    void testCompareToEqual() {
+        Intersection samePositionIntersection = new Intersection(50.0, 10.0, 67890, 1);
+        assertEquals(0, intersection.compareTo(samePositionIntersection), "La méthode compareTo doit retourner 0 pour des positions égales");
+    }
+
+    @Test
+    void testGetCoordinates() {
+        String expectedCoordinates = "lat: " + latitude + " ; lng: " + longitude;
+        assertEquals(expectedCoordinates, intersection.getCoordinates(), "La méthode getCoordinates ne retourne pas la chaîne attendue");
+    }
 }

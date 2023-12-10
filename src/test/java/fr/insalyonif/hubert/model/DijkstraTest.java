@@ -28,7 +28,6 @@ class DijkstraTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        System.out.println(cityMap.toString());
 
         inter1 = cityMap.getIntersections().get(0);
         inter2 = cityMap.getIntersections().get(10);
