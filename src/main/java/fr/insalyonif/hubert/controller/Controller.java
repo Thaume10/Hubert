@@ -188,7 +188,7 @@ public class Controller {
         return intersectionPlusProche;
     }
 
-    private static double distance(double lat1, double lng1, double lat2, double lng2) {
+    static double distance(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 6371; // Rayon de la Terre en kilomètres
 
         double dLat = Math.toRadians(lat2 - lat1);
