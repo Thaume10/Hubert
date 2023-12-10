@@ -150,11 +150,12 @@ public class CreateDynamique implements Dynamique {
 
     private void adaptiveCreatePath(int i, int s, int n, Graph g, double[][] mem, List<Integer> path) {
         if (isEmpty(s)) {
-            path.add(0, i);
+            System.out.println(i);
+            path.add(i);
             return;
         }
 
-        for (int j = 1; j < n-1; j++) {
+        for (int j = 1; j < n; j++) {
             if (isIn(j, s)) {
                 double remainingCost = round((mem[i][s] - g.getCost(i, j)) * 1e7) / 1e7;
                 double futureCost = round((adaptiveDynamic(j, removeElement(s, j), n, g, mem)) * 1e7) / 1e7;
@@ -173,12 +174,12 @@ public class CreateDynamique implements Dynamique {
         }
 
         if (isEmpty(s)) {
-            mem[debut][n] = g.getCost(debut, n);
-            return g.getCost(debut, n);
+            mem[debut][n+1] = g.getCost(debut, n+1);
+            return g.getCost(debut, n+1);
         }
 
         double min = Double.MAX_VALUE;
-        for (int j = 1; j < n-1; j++) {
+        for (int j = 1; j < n - 1; j++) {
             if (isIn(j, s)) {
                 double d = classicDynamic(j, removeElement(s, j), n, g, mem);
                 if (g.getCost(debut, j) + d < min) min = g.getCost(debut, j) + d;

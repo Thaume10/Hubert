@@ -243,18 +243,18 @@ public class Controller {
             }else {nextrequests = null;}
             if (nextrequests != null){
                 for (int request = 0; request < nextrequests.size(); request++) {
-                    rTemp.remove(0);
+//                    rTemp.remove(0);
                     rTemp.add(nextrequests.get(request));
                     Graph g8 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
                     CreateDynamique dynamique8 = new CreateDynamique(g8);
-                    int n = g8.getNbVertices();
+                    int n = g8.getNbVertices() - 1;
                     int s = dynamique8.createSet(n); // s contains all integer values ranging between 1 and n
 
                     double[][] memD = new double[n][s + 1];
                     for (int i = 0; i < n; i++) {
                         Arrays.fill(memD[i], 0);
                     }
-
+                    System.out.println(n);
                     if (dynamique8.adaptiveDynamic(nextStart, s, n, g8, memD)< d8){
                         d8 = dynamique8.adaptiveDynamic(nextStart, s, n, g8, memD);
                         optimalPath8 = dynamique8.adaptivePath(nextStart, n, g8, memD);
@@ -281,7 +281,7 @@ public class Controller {
             System.out.printf("Optimal Hamiltonian Circuit Path8: %s\n", optimalPath8);
             System.out.printf("Pos: %s\n", pos8);
             for (Integer i : optimalPath8) {
-                if (i != 0){
+                if ((i != 0) && (i<pos8.size() + 1)){
                     optimalPath.add(pos8.get(i-1));
                 }
 
@@ -303,11 +303,16 @@ public class Controller {
             }else {nextrequests = null;}
             if (nextrequests != null){
                 for (int request = 0; request < nextrequests.size(); request++) {
-                    rTemp.remove(0);
+                    if (nextStart !=0){
+                        rTemp.remove(0);
+                    }
                     rTemp.add(nextrequests.get(request));
                     Graph g9 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
                     CreateDynamique dynamique9 = new CreateDynamique(g9);
                     int n = g9.getNbVertices();
+                    if (nextStart !=0){
+                        n -= 1;
+                    }
                     int s = dynamique9.createSet(n); // s contains all integer values ranging between 1 and n
 
                     double[][] memD = new double[n][s + 1];
@@ -341,7 +346,7 @@ public class Controller {
             System.out.printf("Optimal Hamiltonian Circuit Path9: %s\n", optimalPath9);
             System.out.printf("Pos: %s\n", pos9);
             for (Integer i : optimalPath9) {
-                if (i != 0){
+                if ((i != 0)&& (i<pos9.size() + 1)){
                     optimalPath.add(pos9.get(i-1));
                 }
 
@@ -359,11 +364,16 @@ public class Controller {
             }else {nextrequests = null;}
             if (nextrequests != null){
                 for (int request = 0; request < nextrequests.size(); request++) {
-                    rTemp.remove(0);
+                    if (nextStart !=0){
+                        rTemp.remove(0);
+                    }
                     rTemp.add(nextrequests.get(request));
                     Graph g10 = new CompleteGraph(deliveryTour.getCheminDij(), rTemp, cityMap);
                     CreateDynamique dynamique10 = new CreateDynamique(g10);
                     int n = g10.getNbVertices();
+                    if (nextStart !=0){
+                        n -= 1;
+                    }
                     int s = dynamique10.createSet(n); // s contains all integer values ranging between 1 and n
 
                     double[][] memD = new double[n][s + 1];
@@ -397,7 +407,7 @@ public class Controller {
             System.out.printf("Optimal Hamiltonian Circuit Path10: %s\n", optimalPath10);
             System.out.printf("Pos: %s\n", pos10);
             for (Integer i : optimalPath10) {
-                if (i != 0){
+                if ((i != 0) && (i<pos10.size() + 1)){
                     optimalPath.add(pos10.get(i-1));
                 }
 
@@ -428,7 +438,7 @@ public class Controller {
             System.out.printf("Optimal Hamiltonian Circuit Path11: %s\n", optimalPath11);
             System.out.printf("Pos: %s\n", pos11);
             for (Integer i : optimalPath11) {
-                if (i != 0){
+                if ((i != 0) && (i<pos11.size() + 1)){
                     optimalPath.add(pos11.get(i-1));
                 }
 
