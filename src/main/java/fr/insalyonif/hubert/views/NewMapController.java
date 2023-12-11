@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class NewMapController {
@@ -72,7 +75,8 @@ public class NewMapController {
     private void handleStart(ActionEvent event) throws IOException {
         // Récupérer la date du DatePicker
         //start.setVisible(true);
-        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, "")){
+        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, null)){
+            //System.out.println("selectedFilePath = "+selectedFilePath);
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("File Loading Failed");
             alert.setHeaderText(null);

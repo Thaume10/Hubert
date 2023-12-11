@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -113,8 +114,8 @@ public class StartController {
             LocalDate fileDate = LocalDate.parse(map.getAttribute("globalDate"));
 
 
-            System.out.println("fileName File: " + fileName);
-            System.out.println("fileDate File: " + fileDate);
+            //System.out.println("fileName File: " + fileName);
+            //System.out.println("fileDate File: " + fileDate);
 
             // Use Path to extract file name and extension
             //Path path = Paths.get(selectedFilePath);
@@ -127,6 +128,17 @@ public class StartController {
             String pathMap = stratPath + fileName + ".xml";
             System.out.println("Path of the map: " + pathMap);
 
+            Path path = Paths.get(pathMap);
+            if (!Files.exists(path)) {
+                //throw new IllegalArgumentException("The map doesn't exist : " + pathMap);
+                // Show an error popup if no file is selected
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("The map doesnt exist");
+                alert.setHeaderText(null);
+                alert.setContentText("The map doesn't exist anymore.");
+                alert.showAndWait();
+                return;
+            }
 
             // Extract date from the file name
             //String datePattern = "yyyy-MM-dd"; // Adjust the pattern based on the actual date format in the file name
@@ -213,7 +225,7 @@ public class StartController {
     private void handleStart(ActionEvent event) throws IOException {
         // Récupérer la date du DatePicker
         //start.setVisible(true);
-        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, "")){
+        if (datePicker.getValue()==null || Objects.equals(selectedFilePath, null)){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("File Loading Failed");
             alert.setHeaderText(null);

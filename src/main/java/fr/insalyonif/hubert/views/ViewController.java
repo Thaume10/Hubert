@@ -18,6 +18,7 @@ import javafx.util.StringConverter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -496,6 +497,18 @@ public class ViewController implements Initializable {
             String stratPath = "src/main/resources/fr/insalyonif/hubert/fichiersXML2022/";
             String pathMap = stratPath + fileName + ".xml";
             System.out.println("Path of the map: " + pathMap);
+
+            Path path = Paths.get(pathMap);
+            if (!Files.exists(path)) {
+                //throw new IllegalArgumentException("The map doesn't exist : " + pathMap);
+                // Show an error popup if no file is selected
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("The map doesnt exist");
+                alert.setHeaderText(null);
+                alert.setContentText("The map doesn't exist anymore.");
+                alert.showAndWait();
+                return;
+            }
 
 
             // Extract date from the file name

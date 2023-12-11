@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<map fileName="mediumMap" globalDate="2023-12-05" >
+<map fileName="mediumMp" globalDate="2023-12-05" >
     <warehouse address="25303831" />
     <deliveryTour courier="0" startTime="null" endTime="null">
         <deliveryRequest deliveryTime="null" >
