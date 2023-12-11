@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TimeWindowTest {
 
-    /*private TimeWindow timeWindow;
+    private TimeWindow timeWindow;
     private int startTime;
     private int endTime;
 
@@ -48,5 +48,5 @@ class TimeWindowTest {
     void testToString() {
         String expectedString = "Passage entre " + startTime + "h et " + endTime + "h";
         assertEquals(expectedString, timeWindow.toString(), "La méthode toString ne retourne pas la chaîne attendue");
-    }*/
+    }
 }

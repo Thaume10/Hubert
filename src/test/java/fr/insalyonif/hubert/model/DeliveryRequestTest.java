@@ -10,13 +10,11 @@ class DeliveryRequestTest {
     private DeliveryRequest deliveryRequest;
     private Intersection testDeliveryLocation;
     private TimeWindow testTimeWindow;
-    private Instant testDeliveryTime;
 
     @BeforeEach
     void setUp() {
         testDeliveryLocation = new Intersection(45.4, 8.7, 12345, 1);
-        testTimeWindow = new TimeWindow(Instant.parse("2023-11-27T08:00:00Z"), Instant.parse("2023-11-27T09:00:00Z"));
-        testDeliveryTime = Instant.parse("2023-11-27T08:30:00Z");
+        testTimeWindow = new TimeWindow(8, 9);
         deliveryRequest = new DeliveryRequest(testDeliveryLocation, testTimeWindow);
     }
 
@@ -42,7 +40,7 @@ class DeliveryRequestTest {
 
     @Test
     void testSetAndGetTimeWindow() {
-        TimeWindow newTimeWindow = new TimeWindow(Instant.parse("2023-11-28T08:00:00Z"), Instant.parse("2023-11-28T09:00:00Z"));
+        TimeWindow newTimeWindow = new TimeWindow(8, 9);
         deliveryRequest.setTimeWindow(newTimeWindow);
         assertSame(newTimeWindow, deliveryRequest.getTimeWindow(), "Le setter/getter pour la fenêtre temporelle ne fonctionne pas correctement");
     }
