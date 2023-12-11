@@ -78,19 +78,19 @@ public class DeliveryIHMController implements Initializable {
                     int startTime ;
                     int endTime ;
                     switch (selectedTimeWindow.toString()) {
-                        case "Delivery between 8h and 9h":
+                        case "Passage entre 8h et 9h":
                             startTime=8;
                             endTime=9;
                             break;
-                        case "Delivery between 9h and 10h":
+                        case "Passage entre 9h et 10h":
                             startTime=9;
                             endTime=10;
                             break;
-                        case "Delivery between 10h and 11h":
+                        case "Passage entre 10h et 11h":
                             startTime=10;
                             endTime=11;
                             break;
-                        case "Delivery between 11h and 12h":
+                        case "Passage entre 11h et 12h":
                             startTime=11;
                             endTime=12;
                             break;
@@ -103,7 +103,7 @@ public class DeliveryIHMController implements Initializable {
                 } else {
                     // Gérer le cas où aucun créneau horaire n'est sélectionné
                     Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("The fied is empty😢");
+                    alert.setContentText("Il reste un champ vide 😢");
                     alert.showAndWait();
                     return;  // Sortir de la méthode si aucun créneau horaire n'est sélectionné
                 }
@@ -111,7 +111,7 @@ public class DeliveryIHMController implements Initializable {
                 stage.close();
             } catch (NumberFormatException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Not a double");
+                alert.setContentText("Pas un double");
                 alert.showAndWait();
             }
 
