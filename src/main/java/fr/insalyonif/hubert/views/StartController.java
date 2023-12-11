@@ -104,7 +104,7 @@ public class StartController {
             //TO DO : si map est null alors erreur
             if (map == null || deliveryTour == null){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Ce fichier ne correspond pas :(");
+                alert.setContentText("The file doesn't correspond :(");
                 alert.showAndWait();
                 return;
             }

@@ -160,9 +160,7 @@ public abstract class AbstractDijkstra {
         for (Intersection deliveryRequest : deliveryRequest) {
             if (deliveryRequest != start) {
                 int[] piCopy = new int[sizeGraph];
-                for (int i = 0; i < sizeGraph; i++) {
-                    piCopy[i] = -1;
-                }
+                Arrays.fill(piCopy, -1);
                 if (pi[deliveryRequest.getPos()] == -1) {
                     return false;
                 }
@@ -196,6 +194,7 @@ public abstract class AbstractDijkstra {
     public ArrayList<Chemin> getChemins() {
         return chemins;
     }
+
 
     /**
      * Retourne la liste des intersections faisant l'objet de demandes de livraison.
