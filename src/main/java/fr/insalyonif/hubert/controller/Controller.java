@@ -570,8 +570,9 @@ public class Controller {
 
     public Object[] findBestCourier(){
         int min = 9999;
-        Courier bestCourier = null;
-        TimeWindow timeWindow =null;
+
+        Courier bestCourier = new Courier(0);
+        TimeWindow timeWindow =new TimeWindow(8,9);
         for(DeliveryTour deliveryTour : listeDelivery){
 
             for(TimeWindow timeWindow1 : timeWindowList){
